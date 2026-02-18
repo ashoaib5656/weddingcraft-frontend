@@ -15,7 +15,7 @@ import {
   Avatar,
 } from "@mui/material";
 import api from "../../api/axios";
-import { authStore } from "../../Utils/authSingleton";
+import { authStore } from "../../utils/authSingleton";
 
 const ChatbotPage = (): JSX.Element => {
   const [connection, setConnection] = useState<HubConnection | null>(null);

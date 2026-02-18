@@ -5,12 +5,15 @@
 /* Theme tokens – tweak once, used everywhere */
 :root {
   --container-max: 1280px;
-  --brand: #7c3aed;         /* primary */
-  --text: #000000;          
-  --muted: #64748b;         /* slate-500 */
+  --brand: #7c3aed;
+  /* primary */
+  --text: #000000;
+  --muted: #64748b;
+  /* slate-500 */
   --bg: #ffffff;
   --bg-elev: #ffffff;
-  --ring: #94a3b8;          /* focus ring */
+  --ring: #94a3b8;
+  /* focus ring */
   --shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
 }
 
@@ -205,15 +208,35 @@ header.navbar {
   cursor: pointer;
   color: var(--text);
   transition: background 0.2s ease;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }
 
-.menu-btn:hover {
-  background: #f8fafc;
+.hamburger-line {
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  display: block;
 }
 
-.menu-btn:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
+/* Hamburger → X animation */
+.menu-btn.open .hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-btn.open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-btn.open .hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 /* Hide chatbot link on desktop */
@@ -226,6 +249,7 @@ header.navbar {
   .navbar-content {
     gap: 10px;
   }
+
   .navbar-left {
     gap: 16px;
   }
@@ -235,46 +259,116 @@ header.navbar {
   .menu-btn {
     display: inline-flex;
   }
-  
+
   /* collapse links on mobile */
   .navbar-links {
     position: absolute;
     left: 0;
     right: 0;
-    top: 58px; /* below bar */
+    top: 58px;
+    /* below bar */
     background: var(--bg-elev);
     box-shadow: var(--shadow);
     padding: 12px 16px;
     flex-direction: column;
     gap: 8px;
-    display: none; /* hidden by default */
+    display: none;
+    /* hidden by default */
     align-items: flex-start;
   }
-  
+
   .navbar-links.open {
-    display: flex; /* shown when toggled */
+    display: flex;
+    /* shown when toggled */
   }
-  
+
   /* Mobile link styles - full width with left-aligned underline */
   .navbar-links .nav-link {
     width: 100%;
     padding: 12px 16px;
   }
-  
+
   .navbar-links .nav-link::after {
     left: 16px;
     transform: translateX(0);
   }
-  
+
   .navbar-links .nav-link:hover::after,
   .navbar-links .nav-link.active::after {
     width: calc(100% - 32px);
   }
-  
+
   .navbar-right {
-    display: none; /* keep header clean – actions can also go inside the menu if you prefer */
+    display: none;
+    /* keep header clean – actions in mobile menu */
   }
-  
+
+  /* Mobile auth section */
+  .mobile-auth-section {
+    width: 100%;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .mobile-auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .mobile-role {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 600;
+    padding: 0 16px;
+    margin-bottom: 4px;
+  }
+
+  .mobile-login-btn,
+  .mobile-logout-btn {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid #e5e7eb;
+    background: #fff;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .mobile-login-btn:hover,
+  .mobile-logout-btn:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+    background: rgba(124, 58, 237, 0.05);
+  }
+
+  .mobile-register-btn {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    background: linear-gradient(90deg, #9b86ff 0%, #7c3aed 60%);
+    color: #fff;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .mobile-register-btn:hover {
+    background: linear-gradient(135deg, #9333ea 0%, #8b5cf6 100%);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+  }
+
   /* Show chatbot link on mobile */
   .hide-desktop {
     display: list-item;
@@ -287,16 +381,17 @@ header.navbar {
     animation: slideDown 0.3s ease-out;
   }
 
-  .navbar-left{
+  .navbar-left {
     width: 100%;
     justify-content: space-between;
   }
-  
+
   @keyframes slideDown {
     from {
       opacity: 0;
       transform: translateY(-10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);

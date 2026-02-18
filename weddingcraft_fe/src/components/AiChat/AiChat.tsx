@@ -2,6 +2,8 @@ import { useState, type JSX } from 'react';
 import api from '../../api/axios';
 import { Box, TextField, Button, List, ListItem, ListItemText, Typography } from '@mui/material';
 
+import './AiChat.scss';
+
 const AiChat = (): JSX.Element => {
   const [prompt, setPrompt] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
@@ -20,20 +22,33 @@ const AiChat = (): JSX.Element => {
   };
 
   return (
-    <Box sx={{ maxWidth: 900, margin: '0 auto' }}>
-      <Typography variant="h5" sx={{ mb: 2 }}>
+    <Box className="ai-chat-root">
+      <Typography variant="h5" className="chat-header">
         AI Assistant
       </Typography>
-      <List>
+      <List className="message-list">
         {messages.map((m, i) => (
-          <ListItem key={i}>
+          <ListItem
+            key={i}
+            className={`message-item ${m.role === 'user' ? 'user-message' : 'ai-message'}`}
+          >
             <ListItemText primary={m.role === 'user' ? 'You' : 'AI'} secondary={m.text} />
           </ListItem>
         ))}
       </List>
-      <Box sx={{ display: 'flex', gap: 1 }}>
-        <TextField fullWidth value={prompt} onChange={(e) => setPrompt(e.target.value)} label="Ask something..." />
-        <Button variant="contained" onClick={send}>
+      <Box className="input-area">
+        <TextField
+          fullWidth
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          label="Ask something..."
+          className="chat-input"
+        />
+        <Button
+          variant="contained"
+          onClick={send}
+          className="send-btn"
+        >
           Send
         </Button>
       </Box>

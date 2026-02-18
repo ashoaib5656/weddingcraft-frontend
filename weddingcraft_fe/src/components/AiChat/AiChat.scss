@@ -1,0 +1,86 @@
+.ai-chat-root {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(124, 58, 237, 0.1);
+    box-shadow: 0 10px 40px rgba(124, 58, 237, 0.05);
+
+    .chat-header {
+        margin-bottom: 1.5rem;
+        color: #1a1a1a;
+        font-weight: 700;
+    }
+
+    .message-list {
+        margin-bottom: 2rem;
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 3px;
+        }
+    }
+
+    .message-item {
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        background: #f9fafb;
+        transition: transform 0.2s ease;
+
+        &:hover {
+            transform: translateX(4px);
+            background: #f3f4f6;
+        }
+
+        &.user-message {
+            background: rgba(124, 58, 237, 0.05);
+            border-left: 4px solid #7c3aed;
+        }
+
+        &.ai-message {
+            background: rgba(16, 185, 129, 0.05);
+            border-left: 4px solid #10b981;
+        }
+    }
+
+    .input-area {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+
+        .chat-input {
+            &.MuiTextField-root {
+                .MuiOutlinedInput-root {
+                    border-radius: 12px;
+                    background: #fff;
+                }
+            }
+        }
+
+        .send-btn {
+            height: 56px;
+            padding: 0 2rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+
+            &:hover {
+                background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+                transform: translateY(-1px);
+            }
+        }
+    }
+}

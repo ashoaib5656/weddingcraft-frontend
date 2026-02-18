@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 40 40">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Center -->
+  <circle cx="0" cy="0" r="4" fill="url(#g)" />
+
+  <!-- Petals (bigger & wider) -->
+  <ellipse cx="-7.5" cy="-2.5" rx="5" ry="7" fill="url(#g)" opacity="0.9"
+           transform="rotate(-30 -7.5 -2.5)" />
+  <ellipse cx="7.5" cy="-2.5" rx="5" ry="7" fill="url(#g)" opacity="0.9"
+           transform="rotate(30 7.5 -2.5)" />
+  <ellipse cx="-5" cy="7.5" rx="5" ry="7" fill="url(#g)" opacity="0.9"
+           transform="rotate(-60 -5 7.5)" />
+  <ellipse cx="5" cy="7.5" rx="5" ry="7" fill="url(#g)" opacity="0.9"
+           transform="rotate(60 5 7.5)" />
+</svg>
+

@@ -1,36 +1,29 @@
-import { useContext, useState, type JSX } from "react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
-import Button from "@mui/material/Button";
-import AuthContext from "../../contexts/AuthContext";
-import "./NavBar.css";
+import { useState, type JSX } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  Container,
+  IconButton,
+  Collapse,
+} from "@mui/material";
 import Logo from "../Logo/Logo";
+import NavLinks from "./NavLinks";
+import AuthActions from "./AuthActions";
 
 const NavBar = (): JSX.Element => {
-  // Your AuthContext shape may use `token` or `accessToken` and `role` or `userRole`.
-  // This component tries common names so it works with either variant.
-  const auth = useContext(AuthContext) as any;
+  const { role, isAuthenticated, logout } = useAuth();
   const nav = useNavigate();
   const [open, setOpen] = useState(false);
 
   const toggleMenu = () => setOpen((v) => !v);
   const closeMenu = () => setOpen(false);
 
-  // normalize token and role
-  const token = auth?.token ?? auth?.accessToken ?? null;
-  const role = auth?.role ?? auth?.userRole ?? null;
-  const isAuthenticated = !!token;
-
-  // Role helpers
-  const isAdmin = role === "Admin";
-  const isManager = role === "Manager";
-  const isVendor = role === "Vendor";
-  const isStaff = role === "Staff";
-  const isCustomer = role === "Customer";
-
   const handleLogout = async () => {
     try {
-      // If your auth.logout returns a promise, await it
-      await auth?.logout?.();
+      await logout();
     } catch (e) {
       // ignore
     } finally {
@@ -40,289 +33,189 @@ const NavBar = (): JSX.Element => {
   };
 
   return (
-    <header className="navbar">
-      <div className="navbar-container">
-        <div className="navbar-content">
-          {/* Left (brand + links) */}
-          <div className="navbar-left">
-            {/* <Link to="/" onClick={closeMenu}>WeddsPot</Link> */}
-            <p className="brand-name">
-              <Logo />
-            </p>
+    <>
+      {/* Mobile Menu Backdrop */}
+      <Box
+        onClick={closeMenu}
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(15, 23, 42, 0.4)",
+          backdropFilter: "blur(4px)",
+          zIndex: 40,
+          display: { xs: "block", md: "none" },
+          opacity: open ? 1 : 0,
+          visibility: open ? "visible" : "hidden",
+          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+          pointerEvents: open ? "auto" : "none",
+          minHeight: "100vh",
+        }}
+      />
 
-            {/* Mobile menu button */}
-            <button
-              className="menu-btn"
-              aria-label="Toggle navigation"
-              aria-expanded={open}
-              onClick={toggleMenu}
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{
+          backgroundColor: "#ffffff",
+          boxShadow: "0 6px 18px rgba(15, 23, 42, 0.08)",
+          zIndex: 50,
+          width: "100%",
+          top: 0,
+          maxHeight: "90px",
+        }}
+      >
+        <Container
+          maxWidth={false}
+          sx={{
+            maxWidth: "1280px",
+            width: "100%",
+            padding: "0 16px !important",
+          }}
+        >
+          <Toolbar
+            disableGutters
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px 0",
+              gap: { xs: "10px", md: "16px" },
+              minHeight: "auto !important",
+            }}
+          >
+            {/* Left side: Logo and Desktop Nav */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: { xs: "16px", md: "28px" },
+                width: { xs: "100%", md: "auto" },
+                justifyContent: { xs: "space-between", md: "flex-start" },
+              }}
             >
-              {/* simple hamburger */}
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M4 6h16M4 12h16M4 18h16"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
+              <Box component="p" sx={{ margin: 0, padding: 0, lineHeight: 1 }}>
+                <Logo />
+              </Box>
 
-            {/* Links */}
-            <ul className={`navbar-links ${open ? "open" : ""}`}>
-              <li>
-                <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    `nav-link ${isActive ? "active" : ""}`
-                  }
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
-                >
-                  Home
-                </NavLink>
-              </li>
-
-              {/* <a
-                href="#home"
-                className={`nav-link`}
-                onClick={closeMenu}
+              {/* Desktop Nav Links */}
+              <Box
+                sx={{
+                  display: { xs: "none", md: "block" },
+                }}
               >
-                Home
-              </a> */}
+                <NavLinks
+                  onClose={closeMenu}
+                  isAuthenticated={isAuthenticated}
+                  role={role}
+                  onLogout={handleLogout}
+                  isMobileMenuOpen={false}
+                />
+              </Box>
 
-              {/* Products visible to everyone (customers and guests) */}
+              {/* Mobile menu button */}
+              <IconButton
+                onClick={toggleMenu}
+                sx={{
+                  display: { xs: "flex", md: "none" },
+                  padding: "8px",
+                  borderRadius: "10px",
+                  color: "#000000",
+                  width: "40px",
+                  height: "40px",
+                  flexDirection: "column",
+                  gap: "5px",
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.04)",
+                  },
+                }}
+                aria-label="Toggle navigation"
+              >
+                <Box
+                  sx={{
+                    width: "22px",
+                    height: "2px",
+                    backgroundColor: "#000000",
+                    borderRadius: "2px",
+                    transition: "all 0.3s ease",
+                    transform: open ? "translateY(7px) rotate(45deg)" : "none",
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: "22px",
+                    height: "2px",
+                    backgroundColor: "#000000",
+                    borderRadius: "2px",
+                    transition: "all 0.3s ease",
+                    opacity: open ? 0 : 1,
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: "22px",
+                    height: "2px",
+                    backgroundColor: "#000000",
+                    borderRadius: "2px",
+                    transition: "all 0.3s ease",
+                    transform: open ? "translateY(-7px) rotate(-45deg)" : "none",
+                  }}
+                />
+              </IconButton>
+            </Box>
 
-              {/* Role specific links */}
-              {/* Admin */}
-              {isAdmin && (
-                <>
-                  <li>
-                    <NavLink
-                      to="/admin/master"
-                      className={({ isActive }) =>
-                        `nav-link ${isActive ? "active" : ""}`
-                      }
-                      onClick={closeMenu}
-                    >
-                      Master
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/admin/inventory"
-                      className={({ isActive }) =>
-                        `nav-link ${isActive ? "active" : ""}`
-                      }
-                      onClick={closeMenu}
-                    >
-                      Inventory
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/admin/users"
-                      className={({ isActive }) =>
-                        `nav-link ${isActive ? "active" : ""}`
-                      }
-                      onClick={closeMenu}
-                    >
-                      Users
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/admin/bills"
-                      className={({ isActive }) =>
-                        `nav-link ${isActive ? "active" : ""}`
-                      }
-                      onClick={closeMenu}
-                    >
-                      Bills
-                    </NavLink>
-                  </li>
-                </>
-              )}
+            {/* Right side: Desktop Auth Actions */}
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <AuthActions
+                isAuthenticated={isAuthenticated}
+                role={role}
+                onLogout={handleLogout}
+              />
+            </Box>
+          </Toolbar>
+        </Container>
 
-              {/* Manager */}
-              {isManager && (
-                <>
-                  <li>
-                    <NavLink
-                      to="/manager/inventory"
-                      className={({ isActive }) =>
-                        `nav-link ${isActive ? "active" : ""}`
-                      }
-                      onClick={closeMenu}
-                    >
-                      Inventory
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/manager/bills"
-                      className={({ isActive }) =>
-                        `nav-link ${isActive ? "active" : ""}`
-                      }
-                      onClick={closeMenu}
-                    >
-                      Bills
-                    </NavLink>
-                  </li>
-                </>
-              )}
-
-              {/* Staff */}
-              {isStaff && (
-                <li>
-                  <NavLink
-                    to="/staff/inventory"
-                    className={({ isActive }) =>
-                      `nav-link ${isActive ? "active" : ""}`
-                    }
-                    onClick={closeMenu}
-                  >
-                    Inventory
-                  </NavLink>
-                </li>
-              )}
-
-              {/* Vendor */}
-              {isVendor && (
-                <li>
-                  <NavLink
-                    to="/vendor/bills"
-                    className={({ isActive }) =>
-                      `nav-link ${isActive ? "active" : ""}`
-                    }
-                    onClick={closeMenu}
-                  >
-                    Bills
-                  </NavLink>
-                </li>
-              )}
-
-              {/* Customer specific (and authenticated users) */}
-              {isCustomer && (
-                <>
-                  <li>
-                    <NavLink
-                      to="/products"
-                      className={({ isActive }) =>
-                        `nav-link ${isActive ? "active" : ""}`
-                      }
-                      onClick={closeMenu}
-                    >
-                      Products
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/customer/bills"
-                      className={({ isActive }) =>
-                        `nav-link ${isActive ? "active" : ""}`
-                      }
-                      onClick={closeMenu}
-                    >
-                      My Bills
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/customer/dashboard"
-                      className={({ isActive }) =>
-                        `nav-link ${isActive ? "active" : ""}`
-                      }
-                      onClick={closeMenu}
-                    >
-                      Dashboard
-                    </NavLink>
-                  </li>
-                </>
-              )}
-
-              {/* About / Contact / Services (common) */}
-              <li>
-                <a href="#about" className={`nav-link`} onClick={closeMenu}>
-                  About Us
-                </a>
-              </li>
-
-              <li>
-                <a href="#contact" className={`nav-link`} onClick={closeMenu}>
-                  Contact
-                </a>
-              </li>
-
-              <li>
-                <a href="#services" className={`nav-link`} onClick={closeMenu}>
-                  Services
-                </a>
-              </li>
-
-              <li>
-                <a href="#reviews" className={`nav-link`} onClick={closeMenu}>
-                  Reviews
-                </a>
-              </li>
-
-              {/* Chatbot (shown only to authenticated users) */}
-              {isAuthenticated && (
-                <li className="hide-desktop">
-                  <NavLink
-                    to="/chatbot"
-                    className={({ isActive }) =>
-                      `nav-link ${isActive ? "active" : ""}`
-                    }
-                    onClick={closeMenu}
-                  >
-                    Chatbot
-                  </NavLink>
-                </li>
-              )}
-            </ul>
-          </div>
-
-          {/* Right actions (visible on desktop) */}
-          <div className="navbar-right">
-            {isAuthenticated ? (
-              <>
-                <span style={{ marginRight: 12, fontWeight: 600 }}>
-                  {role ? `Role: ${role}` : null}
-                </span>
-                <Button
-                  variant="text"
-                  sx={{ fontWeight: 600 }}
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  variant="text"
-                  sx={{ fontWeight: 600 }}
-                  component={Link}
-                  to="/login"
-                >
-                  Login
-                </Button>
-                <Button
-                  variant="contained"
-                  className="nav-action-btn"
-                  component={Link}
-                  to="/register"
-                >
-                  Get Started
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </header>
+        {/* Mobile Menu Expansion - Absolute position overlay */}
+        <Collapse
+          in={open}
+          timeout={300}
+          unmountOnExit
+          sx={{
+            display: { xs: "block", md: "none" },
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            right: 0,
+            backgroundColor: "#ffffff",
+            boxShadow: "0 6px 18px rgba(15, 23, 42, 0.08)",
+            zIndex: 49,
+          }}
+        >
+          <Box
+            sx={{
+              padding: "12px 16px",
+              borderTop: "1px solid #e5e7eb",
+            }}
+          >
+            <NavLinks
+              onClose={closeMenu}
+              isAuthenticated={isAuthenticated}
+              role={role}
+              onLogout={handleLogout}
+              isMobileMenuOpen={true}
+            />
+          </Box>
+        </Collapse>
+      </AppBar>
+    </>
   );
 };
 

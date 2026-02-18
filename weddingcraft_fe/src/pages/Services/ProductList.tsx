@@ -9,9 +9,10 @@ import {
   Typography,
   Button,
   Box,
+  useTheme,
 } from "@mui/material";
 import { Lock as LockIcon } from "@mui/icons-material";
-import { useAuth } from "../../contexts/AuthContext"; // Adjust import based on your auth setup
+import { useAuth } from "../../contexts/AuthContext";
 
 interface Product {
   id: string | number;
@@ -23,11 +24,9 @@ interface Product {
 const ProductList = (): JSX.Element => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const theme = useTheme();
   const nav = useNavigate();
-
-  // Get auth state - adjust based on your auth implementation
-  const auth = useAuth(); // or const token = localStorage.getItem('token');
-  const isAuthenticated = auth?.accessToken !== null; // or !!token
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -46,7 +45,6 @@ const ProductList = (): JSX.Element => {
     }
   }, [isAuthenticated]);
 
-  // Loading state
   if (loading) {
     return (
       <Box
@@ -62,7 +60,6 @@ const ProductList = (): JSX.Element => {
     );
   }
 
-  // Show auth required message if not logged in
   if (!isAuthenticated) {
     return (
       <Box
@@ -81,7 +78,7 @@ const ProductList = (): JSX.Element => {
             p: 6,
             textAlign: "center",
             borderRadius: 3,
-            boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
+            boxShadow: theme.shadows[2],
           }}
         >
           <Box
@@ -89,7 +86,8 @@ const ProductList = (): JSX.Element => {
               width: 80,
               height: 80,
               borderRadius: "50%",
-              bgcolor: "rgba(124, 58, 237, 0.1)",
+              bgcolor: 'primary.light',
+              opacity: 0.8,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -97,14 +95,14 @@ const ProductList = (): JSX.Element => {
               mb: 3,
             }}
           >
-            <LockIcon sx={{ fontSize: 40, color: "#7c3aed" }} />
+            <LockIcon sx={{ fontSize: 40, color: "primary.main" }} />
           </Box>
 
           <Typography
             variant="h5"
             sx={{
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: "text.primary",
               mb: 2,
             }}
           >
@@ -114,7 +112,7 @@ const ProductList = (): JSX.Element => {
           <Typography
             variant="body1"
             sx={{
-              color: "#666",
+              color: "text.secondary",
               mb: 4,
             }}
           >
@@ -132,10 +130,6 @@ const ProductList = (): JSX.Element => {
                 textTransform: "none",
                 fontSize: 16,
                 fontWeight: 600,
-                bgcolor: "#7c3aed",
-                "&:hover": {
-                  bgcolor: "#6d28d9",
-                },
               }}
             >
               Sign In
@@ -151,14 +145,6 @@ const ProductList = (): JSX.Element => {
                 textTransform: "none",
                 fontSize: 16,
                 fontWeight: 600,
-                borderColor: "#7c3aed",
-                color: "#7c3aed",
-                borderWidth: 2,
-                "&:hover": {
-                  bgcolor: "rgba(124, 58, 237, 0.04)",
-                  borderColor: "#7c3aed",
-                  borderWidth: 2,
-                },
               }}
             >
               Create Account
@@ -168,7 +154,7 @@ const ProductList = (): JSX.Element => {
           <Typography
             variant="body2"
             sx={{
-              color: "#999",
+              color: "text.disabled",
               mt: 3,
               fontSize: 14,
             }}
@@ -181,14 +167,13 @@ const ProductList = (): JSX.Element => {
     );
   }
 
-  // Show products if authenticated
   return (
     <Box sx={{ py: 6, px: 2 }}>
       <Box sx={{ maxWidth: 1200, mx: "auto", mb: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           Our Services
         </Typography>
-        <Typography variant="body1" sx={{ color: "#666" }}>
+        <Typography variant="body1" sx={{ color: "text.secondary" }}>
           Choose from our premium wedding services
         </Typography>
       </Box>
@@ -219,13 +204,13 @@ const ProductList = (): JSX.Element => {
                   },
                 }}
               />
-              <CardContent sx={{ p: 3 }}>
+              <CardContent sx={{ px: 2, py: 2 }}>
                 <Typography
                   variant="h6"
                   sx={{
                     fontWeight: 600,
-                    mb: 1,
-                    color: "#1a1a1a",
+                    mb: 0.5,
+                    color: "text.primary",
                   }}
                 >
                   {p.name}
@@ -234,8 +219,8 @@ const ProductList = (): JSX.Element => {
                   variant="h5"
                   sx={{
                     fontWeight: 700,
-                    color: "#7c3aed",
-                    mb: 2,
+                    color: "primary.main",
+                    mb: 1.5,
                   }}
                 >
                   ₹{p.price.toLocaleString("en-IN")}
@@ -249,10 +234,6 @@ const ProductList = (): JSX.Element => {
                     borderRadius: 2,
                     textTransform: "none",
                     fontWeight: 600,
-                    bgcolor: "#7c3aed",
-                    "&:hover": {
-                      bgcolor: "#6d28d9",
-                    },
                   }}
                 >
                   View Details

@@ -1,11 +1,16 @@
-import { type JSX, useEffect, useRef, useState } from "react";
-import "./Reviews.css";
+import { type JSX, useEffect, useRef } from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  Avatar,
+  Rating
+} from "@mui/material";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Review } from "../../Types/Reviews";
 
 gsap.registerPlugin(ScrollTrigger);
-
 
 const reviews: Review[] = [
   {
@@ -67,19 +72,21 @@ const reviews: Review[] = [
 const Reviews = (): JSX.Element => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
-  const cardsRef = useRef<HTMLDivElement | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
+
+  // Triple the reviews to ensure seamless looping on all screen sizes
+  const carouselReviews = [...reviews, ...reviews, ...reviews];
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Set initial states
+      // 1. Initial appearance animations matching site standards
       gsap.set(headerRef.current, { opacity: 0, y: 30 });
-      gsap.set(".review-card", { opacity: 0, y: 40, scale: 0.95 });
+      gsap.set(".review-card", { opacity: 0, scale: 0.9, y: 20 });
 
-      // Animate header
       gsap.to(headerRef.current, {
         scrollTrigger: {
           trigger: section,
@@ -92,20 +99,43 @@ const Reviews = (): JSX.Element => {
         ease: "power3.out",
       });
 
-      // Animate review cards with stagger
       gsap.to(".review-card", {
         scrollTrigger: {
-          trigger: cardsRef.current,
-          start: "top 85%",
+          trigger: section,
+          start: "top 70%",
           toggleActions: "play none none reverse",
         },
         opacity: 1,
         y: 0,
         scale: 1,
-        duration: 0.6,
-        stagger: 0.15,
+        duration: 0.8,
+        stagger: 0.05,
         ease: "power2.out",
       });
+
+      // 2. Continuous Sliding Carousel Logic
+      const track = trackRef.current;
+      if (!track) return;
+
+      // Calculate translation distance (one full set of reviews)
+      const totalWidth = track.scrollWidth;
+      const singleSetWidth = totalWidth / 3;
+
+      // Create the infinite scroll timeline
+      const tl = gsap.timeline({
+        repeat: -1,
+        defaults: { ease: "none" }
+      });
+
+      tl.to(track, {
+        x: -singleSetWidth,
+        duration: 30, // Adjust speed here
+        onRepeat: () => {
+          gsap.set(track, { x: 0 });
+        }
+      });
+
+      timelineRef.current = tl;
 
       ScrollTrigger.refresh();
     }, section);
@@ -116,74 +146,261 @@ const Reviews = (): JSX.Element => {
     };
   }, []);
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <svg
-        key={i}
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill={i < rating ? "#fbbf24" : "#e5e7eb"}
-        className="star-icon"
-      >
-        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-      </svg>
-    ));
+  const handleMouseEnter = () => {
+    timelineRef.current?.pause();
+  };
+
+  const handleMouseLeave = () => {
+    timelineRef.current?.play();
   };
 
   return (
-    <section className="reviews-section" ref={sectionRef}>
-      <div className="reviews-container">
+    <Box
+      component="section"
+      id="reviews-section"
+      ref={sectionRef as any}
+      sx={{
+        width: "100%",
+        py: { xs: 8, md: 5 },
+        background: "linear-gradient(135deg, #fafafa 0%, #ffffff 100%)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <Container
+        disableGutters
+        maxWidth={false}
+        sx={{
+          maxWidth: "1440px",
+          px: { xs: "20px", md: "40px" },
+          mx: "auto",
+        }}
+      >
         {/* Header */}
-        <div className="reviews-header" ref={headerRef}>
-          <h2 className="reviews-title">What Our Clients Say</h2>
-          <p>
+        <Box
+          ref={headerRef as any}
+          sx={{
+            textAlign: "center",
+            mb: { xs: "50px", md: "70px" },
+          }}
+        >
+          <Typography
+            variant="h2"
+            sx={{
+              fontSize: { xs: "28px", sm: "32px", md: "42px" },
+              fontWeight: 700,
+              mb: "16px",
+              color: "#1a1a1a",
+              lineHeight: 1.2,
+              display: "inline-block",
+              position: "relative",
+              "&::after": {
+                content: '""',
+                position: "absolute",
+                bottom: "-10px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "80px",
+                height: "4.5px",
+                background: "linear-gradient(90deg, #9b86ff 0%, #7c3aed 100%)",
+                borderRadius: "4px",
+              },
+            }}
+          >
+            What Our Clients Say
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              fontSize: { xs: "15px", md: "17px" },
+              color: "#666",
+              maxWidth: "600px",
+              margin: "0 auto",
+              lineHeight: 1.6,
+              mt: 1.5,
+            }}
+          >
             Don't just take our word for it - hear from the couples who trusted
             us with their special day.
-          </p>
-        </div>
+          </Typography>
+        </Box>
 
-        {/* Reviews Grid */}
-        <div className="reviews-grid" ref={cardsRef}>
-          {reviews.map((review, index) => (
-            <div
-              key={review.id}
-              className={`review-card ${activeIndex === index ? "active" : ""}`}
-              onMouseEnter={() => setActiveIndex(index)}
-            >
-              {/* Quote Icon */}
-              <div className="quote-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" />
-                </svg>
-              </div>
+        {/* Carousel Wrapper */}
+        <Box
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          sx={{
+            width: "100%",
+            overflow: "hidden", // Clips the sliding track
+            cursor: "grab",
+            "&:active": { cursor: "grabbing" },
+            py: 2
+          }}
+        >
+          {/* Carousel Track */}
+          <Box
+            ref={trackRef as any}
+            sx={{
+              display: "flex",
+              gap: { xs: "20px", md: "30px" },
+              width: "max-content", // Important for horizontal scrolling
+              willChange: "transform"
+            }}
+          >
+            {carouselReviews.map((review, index) => (
+              <Box
+                key={`${review.id}-${index}`}
+                className="review-card"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                sx={{
+                  background: "#fff",
+                  p: { xs: "20px", sm: "24px", md: "28px" },
+                  borderRadius: "24px",
+                  border: "2px solid",
+                  borderColor: "rgba(124, 58, 237, 0.08)",
+                  transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "20px",
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.04)",
+                  width: { xs: "280px", sm: "320px", md: "350px" }, // Reduced width for more compact look
+                  flexShrink: 0,
+                  "&:hover": {
+                    transform: "translateY(-8px) scale(1.02)",
+                    borderColor: "rgba(124, 58, 237, 0.3)",
+                    boxShadow: "0 15px 45px rgba(124, 58, 237, 0.15)",
+                    zIndex: 10,
+                    "& .quote-icon": {
+                      background: "linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)",
+                      color: "#fff",
+                      transform: "scale(1.1) rotate(-5deg)",
+                    },
+                    "& .author-image": {
+                      borderColor: "rgba(124, 58, 237, 0.3)",
+                      transform: "scale(1.05)",
+                    }
+                  },
+                }}
+              >
+                {/* Quote Icon */}
+                <Box
+                  className="quote-icon"
+                  sx={{
+                    width: 48,
+                    height: 48,
+                    background: "linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)",
+                    borderRadius: "12px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#7c3aed",
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" />
+                  </svg>
+                </Box>
 
-              {/* Rating */}
-              <div className="review-rating">{renderStars(review.rating)}</div>
-
-              {/* Review Text */}
-              <p className="review-text">{review.review}</p>
-
-              {/* Author Info */}
-              <div className="review-author">
-                <img
-                  src={review.image}
-                  alt={review.name}
-                  className="author-image"
+                {/* Rating */}
+                <Rating
+                  value={review.rating}
+                  readOnly
+                  size="small"
+                  sx={{
+                    "& .MuiRating-iconFilled": {
+                      color: "#fbbf24",
+                    },
+                    "& .MuiRating-iconEmpty": {
+                      color: "#e5e7eb",
+                    },
+                  }}
                 />
-                <div className="author-details">
-                  <h4>{review.name}</h4>
-                  <p>{review.role}</p>
-                </div>
-              </div>
 
-              {/* Date */}
-              <div className="review-date">{review.date}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+                {/* Review Text */}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: "15px",
+                    lineHeight: 1.7,
+                    color: "#555",
+                    fontStyle: "italic",
+                    flex: 1,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 4,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  "{review.review}"
+                </Typography>
+
+                {/* Author Info */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "14px",
+                    pt: "16px",
+                    borderTop: "1px solid rgba(0, 0, 0, 0.06)",
+                  }}
+                >
+                  <Avatar
+                    src={review.image}
+                    alt={review.name}
+                    className="author-image"
+                    sx={{
+                      width: 52,
+                      height: 52,
+                      border: "3px solid",
+                      borderColor: "rgba(124, 58, 237, 0.1)",
+                      transition: "all 0.3s ease",
+                    }}
+                  />
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#1a1a1a",
+                        mb: 0.5,
+                      }}
+                    >
+                      {review.name}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: "13px",
+                        color: "#7c3aed",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {review.role}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                {/* Date */}
+                <Typography
+                  sx={{
+                    fontSize: "12px",
+                    color: "#999",
+                    position: "absolute",
+                    top: "32px",
+                    right: "32px",
+                  }}
+                >
+                  {review.date}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

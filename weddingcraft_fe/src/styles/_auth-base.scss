@@ -1,0 +1,321 @@
+/* Shared Authentication Styles Partial */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+            linear-gradient(rgba(124, 58, 237, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124, 58, 237, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        z-index: 1;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(167, 139, 250, 0.2) 0%, transparent 70%);
+        top: -300px;
+        right: -200px;
+        z-index: 1;
+        animation: rotate 30s linear infinite;
+
+        @media (max-width: 480px) {
+            width: 400px;
+            height: 400px;
+            top: -200px;
+            right: -150px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        padding: 1rem;
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 440px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    box-shadow:
+        0 10px 40px rgba(124, 58, 237, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    position: relative;
+    z-index: 10;
+    animation: slideInUp 0.6s ease-out;
+    border: 1px solid rgba(124, 58, 237, 0.1);
+
+    @media (max-width: 480px) {
+        padding: 2rem 1.5rem;
+        border-radius: 16px;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 1.5rem;
+
+    h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0 0 0.5rem 0;
+
+        @media (max-width: 480px) {
+            font-size: 1.5rem;
+        }
+    }
+
+    p {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin: 0;
+        letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 480px) {
+        margin-bottom: 1.5rem;
+    }
+}
+
+.auth-header {
+    margin-bottom: 1.5rem;
+
+    h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0 0 0.25rem 0;
+
+        @media (max-width: 480px) {
+            font-size: 1.25rem;
+        }
+    }
+
+    p {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin: 0;
+    }
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.775rem 1rem 0.775rem 2.75rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 0.9375rem;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    color: #1a1a1a;
+
+    &:focus {
+        outline: none;
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        background: #ffffff;
+
+        &~.input-icon {
+            color: #7c3aed;
+        }
+    }
+
+    &::placeholder {
+        color: #9ca3af;
+    }
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+
+    &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%) !important;
+    }
+
+    &:disabled {
+        background: #d1d5db !important;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    position: relative;
+
+    &::before,
+    &::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    span {
+        padding: 0 1rem;
+        color: #9ca3af;
+        font-size: 0.875rem;
+    }
+}
+
+.auth-switch {
+    text-align: center;
+    font-size: 0.9375rem;
+    color: #6b7280;
+
+    a {
+        color: #7c3aed;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: #6d28d9;
+        }
+    }
+}
+
+.toggle-password {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: #7c3aed;
+    }
+}
+
+.auth-error {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.875rem 1rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    color: #dc2626;
+    font-size: 0.875rem;
+
+    svg {
+        flex-shrink: 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
+}

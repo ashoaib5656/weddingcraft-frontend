@@ -18,8 +18,7 @@
 }
 
 .about-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1280px;
   padding: 0 40px;
 }
 
@@ -233,12 +232,25 @@
     gap: 50px;
   }
 
+  .about-content {
+    text-align: left;
+  }
+
   .about-title {
     font-size: 1.75rem;
+    text-align: center;
+    display: block;
+    width: 100%;
+  }
+
+  .about-title::after {
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .about-description {
     font-size: 15px;
+    text-align: center;
   }
 
   .features-grid {

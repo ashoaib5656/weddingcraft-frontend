@@ -25,14 +25,14 @@ import ManagerDashboard from "./pages/Dashboard/Manager/ManagerDashboard";
 import StaffDashboard from "./pages/Dashboard/Staff/StaffDashboard";
 import ClientDashboard from "./pages/Dashboard/Client/ClientDashboard";
 import VendorDashboard from "./pages/Dashboard/Vendor/VendorDashboard";
-import UserProfile from "./pages/Profile/UserProfile";
+import Profile from "./pages/Profile/Profile";
 import CartPage from "./pages/Cart/CartPage";
 import MainLayout from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { DashboardProvider } from "./contexts/DashboardContext";
-import ProtectedRoute from "./components/Routes/ProtectedRoute";
-import PublicRoute from "./Routes/PublicRoute";
+import ProtectedRoute from "./contexts/Auth/requiresRole";
+import PublicRoute from "./contexts/Auth/PublicRoute";
 import { UserRole } from "./Types/auth.types";
 
 export const router = createBrowserRouter([
@@ -134,7 +134,7 @@ export const router = createBrowserRouter([
                     { path: "requests", element: <Requests /> },
                     { path: "bookings", element: <Bookings /> },
                     { path: "saved", element: <SavedVendors /> },
-                    { path: "profile", element: <UserProfile /> },
+                    { path: "profile", element: <Profile /> },
                 ]
             },
             {
@@ -143,7 +143,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "profile",
-                element: <UserProfile />,
+                element: <Profile />,
             },
             {
                 path: "chatbot",

@@ -112,7 +112,7 @@ const VendorDashboard: React.FC = () => {
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12}>
-          <DashboardCard sx={{ p: 0, overflow: 'hidden' }}>
+          <DashboardCard noPadding>
             <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="h6" sx={{ fontWeight: 800 }}>Monthly Success</Typography>
               <Chip label="Real-time Performance" size="small" sx={{ fontWeight: 700, bgcolor: alpha(theme.palette.secondary.main, 0.1), color: theme.palette.secondary.main }} />
@@ -212,7 +212,7 @@ const VendorDashboard: React.FC = () => {
         {/* Tools & Performance */}
         <Grid item xs={12} md={4}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <DashboardCard sx={{ bgcolor: '#0f172a', color: 'white' }}>
+            <DashboardCard variant="dark">
               <Typography variant="h6" sx={{ fontWeight: 800, mb: 3 }}>Business Tools</Typography>
               <Stack spacing={2}>
                 {actionCards.map((card, index) => (

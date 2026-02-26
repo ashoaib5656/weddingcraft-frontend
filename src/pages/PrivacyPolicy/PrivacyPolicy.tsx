@@ -1,10 +1,10 @@
 import { type JSX } from "react";
-import { Container, Typography, Box, Paper } from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
 
 const PrivacyPolicy = (): JSX.Element => {
     return (
-        <Container maxWidth="md" sx={{ py: 8 }}>
-            <Paper elevation={0} sx={{ p: { xs: 3, md: 5 }, borderRadius: 4, border: "1px solid #e5e7eb" }}>
+        <Container sx={{ p: 2 }}>
+            <Box sx={{ p: { xs: 3, md: 5 } }}>
                 <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700, fontFamily: "'Fredoka One', cursive", color: "#1a1a1a" }}>
                     Privacy Policy
                 </Typography>
@@ -55,7 +55,7 @@ const PrivacyPolicy = (): JSX.Element => {
                         </Typography>
                     </section>
                 </Box>
-            </Paper>
+            </Box>
         </Container>
     );
 };

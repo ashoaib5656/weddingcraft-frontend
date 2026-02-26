@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/Auth/useAuth";
 import { Box } from "@mui/material";
 
 const Logo = () => {

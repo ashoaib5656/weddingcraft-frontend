@@ -1,21 +1,12 @@
 import { useState } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import {
-  LayoutDashboard as DashboardIcon,
-  MessageSquare as ChatIcon,
-  Home as HomeIcon,
-  LogOut as LogoutIcon,
-  User
-} from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { icons } from "../../config/iconMap";
 import { type JSX } from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/Auth/useAuth";
 import { useDashboard } from "../../contexts/DashboardContext";
-import { MENU_CONFIG, type MenuItem } from "./SidebarConfig";
 import {
   Box,
   Drawer,
-  List,
-  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -23,6 +14,8 @@ import {
   useTheme,
   alpha
 } from "@mui/material";
+import { MENU_CONFIG, type MenuItem } from "../../config/menuConfig";
+import SidebarSection from "./components/SidebarSection";
 
 const Sidebar = (): JSX.Element => {
   const theme = useTheme();
@@ -53,7 +46,7 @@ const Sidebar = (): JSX.Element => {
 
     // Base menu items that appear for all roles
     const items: MenuItem[] = [
-      { text: "Dashboard", icon: <DashboardIcon size={20} />, path: `/${rolePath}-dashboard` }
+      { text: "Dashboard", icon: icons.Dashboard, path: `/${rolePath}-dashboard` }
     ];
 
     // Role-specific menu items from config
@@ -65,101 +58,18 @@ const Sidebar = (): JSX.Element => {
 
   const getGlobalItems = () => {
     return [
-      { text: "Chatbot", icon: <ChatIcon size={20} />, path: "/chatbot" },
-      { text: "Home", icon: <HomeIcon size={20} />, path: "/" },
-      { text: "Profile", icon: <User size={20} />, path: "/profile" },
+      { text: "Chatbot", icon: icons.Chat, path: "/chatbot" },
+      { text: "Home", icon: icons.Home, path: "/" },
+      { text: "Profile", icon: icons.Profile, path: "/profile" },
     ];
   };
 
   const mainMenuItems = getMenuItems();
   const globalItems = getGlobalItems();
 
-  const renderMenuItem = (item: any) => {
-    const isActive = location.pathname === item.path;
-    return (
-      <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
-        <ListItemButton
-          component={NavLink}
-          to={item.path}
-          onClick={() => {
-            if (window.innerWidth < 1200) closeSidebar();
-          }}
-          sx={{
-            borderRadius: 0,
-            py: 1,
-            minHeight: 48,
-            justifyContent: isExpanded ? 'initial' : 'center',
-            px: 2.5,
-            bgcolor: 'transparent',
-            color: isActive ? 'primary.main' : 'text.secondary',
-            transition: 'color 0.2s',
-            '&:hover': {
-              bgcolor: 'transparent',
-              color: 'primary.main',
-              '& .MuiListItemIcon-root': { color: 'primary.main' },
-              '& .sidebar-item-underline::after': {
-                transform: 'scaleX(1)',
-              }
-            },
-            '&.active': {
-              bgcolor: 'transparent',
-              color: 'primary.main',
-              '& .MuiListItemIcon-root': { color: 'primary.main' },
-              '& .sidebar-item-underline::after': {
-                transform: 'scaleX(1)',
-              }
-            }
-          }}
-        >
-          {/* Inner content box — border only spans this element's width */}
-          <Box
-            className="sidebar-item-underline"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: isExpanded ? 2 : 0,
-              pb: 0.75,
-              position: 'relative',
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                width: '100%',
-                height: '2px',
-                bgcolor: 'primary.main',
-                transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
-                transformOrigin: 'left',
-                transition: 'transform 0.3s ease-in-out',
-              }
-            }}
-          >
-            <ListItemIcon sx={{
-              minWidth: 0,
-              justifyContent: 'center',
-              color: isActive ? 'primary.main' : 'inherit',
-              transition: 'color 0.2s'
-            }}>
-              {item.icon}
-            </ListItemIcon>
-            {isExpanded && (
-              <ListItemText
-                primary={item.text}
-                sx={{ m: 0 }}
-                primaryTypographyProps={{
-                  fontSize: '0.9rem',
-                  fontWeight: isActive ? 700 : 600,
-                  letterSpacing: '0.01em',
-                  whiteSpace: 'nowrap'
-                }}
-              />
-            )}
-          </Box>
-        </ListItemButton>
-      </ListItem>
-    );
+  const handleItemClick = () => {
+    if (window.innerWidth < 1200) closeSidebar();
   };
-
 
   const drawerContent = (
     <Box
@@ -179,14 +89,23 @@ const Sidebar = (): JSX.Element => {
         }
       }}
     >
-
-      <List sx={{ px: 1.5, flexGrow: 1, py: 0 }}>
-        {mainMenuItems.map(renderMenuItem)}
+      <Box sx={{ flexGrow: 1 }}>
+        <SidebarSection
+          items={mainMenuItems}
+          isExpanded={isExpanded}
+          onItemClick={handleItemClick}
+          currentPath={location.pathname}
+        />
 
         <Divider sx={{ my: 2, mx: 1, opacity: 0.6 }} />
 
-        {globalItems.map(renderMenuItem)}
-      </List>
+        <SidebarSection
+          items={globalItems}
+          isExpanded={isExpanded}
+          onItemClick={handleItemClick}
+          currentPath={location.pathname}
+        />
+      </Box>
 
       <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
         <ListItemButton
@@ -202,7 +121,7 @@ const Sidebar = (): JSX.Element => {
           }}
         >
           <ListItemIcon sx={{ minWidth: 0, mr: isExpanded ? 2 : 'auto', justifyContent: 'center', color: 'inherit' }}>
-            <LogoutIcon size={20} />
+            {icons.Logout}
           </ListItemIcon>
           <ListItemText
             primary="Logout"

@@ -8,18 +8,25 @@ import {
   Box,
   TextField,
   Button,
-  Paper,
   Typography,
   List,
   ListItem,
   Avatar,
 } from "@mui/material";
-import api from "../../api/axios";
+import DashboardCard from "../../components/Dashboard/DashboardCard/DashboardCard";
+import { CHAT_SERVICE } from "../../api/services/chat";
 import { authStore } from "../../utils/authSingleton";
+
+interface ChatMessage {
+  id?: string;
+  userEmail?: string;
+  message: string;
+  createdAt: string;
+}
 
 const ChatbotPage = (): JSX.Element => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -28,10 +35,8 @@ const ChatbotPage = (): JSX.Element => {
     // fetch history
     (async () => {
       try {
-        const res = await api.get("/chat/history", {
-          params: { page: 1, pageSize: 200 },
-        });
-        setMessages(res.data.items || []);
+        const data = await CHAT_SERVICE.GetHistory(1, 200);
+        setMessages(data.items || []);
       } catch (e) {
         console.error("failed to fetch history", e);
       }
@@ -44,7 +49,7 @@ const ChatbotPage = (): JSX.Element => {
     const hub = new HubConnectionBuilder()
       .withUrl(
         (import.meta.env.VITE_API_BASE || "http://localhost:5000") +
-          "/hubs/chat",
+        "/hubs/chat",
         {
           accessTokenFactory: () => token ?? "",
           withCredentials: true,
@@ -54,7 +59,7 @@ const ChatbotPage = (): JSX.Element => {
       .withAutomaticReconnect()
       .build();
 
-    hub.on("ReceiveMessage", (payload: any) => {
+    hub.on("ReceiveMessage", (payload: ChatMessage) => {
       setMessages((prev) => [...prev, payload]);
       // scroll
       setTimeout(
@@ -70,7 +75,7 @@ const ChatbotPage = (): JSX.Element => {
       .catch((err) => console.error("SignalR start failed", err));
 
     return () => {
-      hub.stop().catch(() => {});
+      hub.stop().catch(() => { });
       setConnection(null);
     };
   }, []);
@@ -98,15 +103,15 @@ const ChatbotPage = (): JSX.Element => {
         gap: 2,
       }}
     >
-      <Paper sx={{ p: 2 }}>
+      <DashboardCard>
         <Typography variant="h6">WeddingCraft Chatbot</Typography>
         <Typography variant="body2">
           Live chat for support / demo. Messages are stored and broadcast in
           real-time.
         </Typography>
-      </Paper>
+      </DashboardCard>
 
-      <Paper sx={{ p: 2, height: "60vh", overflow: "auto" }}>
+      <DashboardCard sx={{ height: "60vh", overflow: "auto" }}>
         <List>
           {messages.map((m, i) => (
             <ListItem key={m.id ?? i} sx={{ display: "flex", gap: 2 }}>
@@ -126,7 +131,7 @@ const ChatbotPage = (): JSX.Element => {
           ))}
           <div ref={listRef} />
         </List>
-      </Paper>
+      </DashboardCard>
 
       <Box sx={{ display: "flex", gap: 1 }}>
         <TextField

@@ -7,6 +7,8 @@ const endpoints = {
     VerifyToken: "/auth/verify-token",
     VerifyOtp: "/auth/verify-otp",
     Products: "/products",
+    ChatHistory: "/chat/history",
+    AiDesign: "/ai/design",
 }
 
 export default endpoints

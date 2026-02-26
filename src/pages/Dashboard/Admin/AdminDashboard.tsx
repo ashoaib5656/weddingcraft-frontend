@@ -139,7 +139,7 @@ const AdminDashboard: React.FC = () => {
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} md={8}>
-          <DashboardCard sx={{ p: 0, overflow: 'hidden' }}>
+          <DashboardCard noPadding>
             <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="h6" sx={{ fontWeight: 800 }}>Revenue Growth</Typography>
               <Chip label="Monthly" size="small" sx={{ fontWeight: 700, bgcolor: alpha(theme.palette.primary.main, 0.1), color: theme.palette.primary.main }} />
@@ -182,7 +182,7 @@ const AdminDashboard: React.FC = () => {
           </DashboardCard>
         </Grid>
         <Grid item xs={12} md={4}>
-          <DashboardCard sx={{ p: 0, overflow: 'hidden', height: '100%' }}>
+          <DashboardCard noPadding sx={{ height: '100%' }}>
             <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}` }}>
               <Typography variant="h6" sx={{ fontWeight: 800 }}>Vendor Matrix</Typography>
             </Box>
@@ -296,7 +296,7 @@ const AdminDashboard: React.FC = () => {
             </DashboardCard>
 
             {/* Operations Hub */}
-            <DashboardCard sx={{ bgcolor: '#0f172a', color: 'white' }}>
+            <DashboardCard variant="dark">
               <Typography variant="h6" sx={{ fontWeight: 800, mb: 3 }}>Operations Hub</Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {actionCards.map((card, index) => (

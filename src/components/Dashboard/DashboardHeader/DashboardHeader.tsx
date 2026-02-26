@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, alpha, useTheme } from '@mui/material';
+import { Box, Typography, alpha, styled, keyframes } from '@mui/material';
 
 interface DashboardHeaderProps {
     title: string;
@@ -9,18 +9,47 @@ interface DashboardHeaderProps {
     actions?: React.ReactNode;
 }
 
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title, subtitle, tag, live, actions }) => {
-    const theme = useTheme();
+const pulse = keyframes`
+  0% { transform: scale(0.95); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.5; }
+  100% { transform: scale(0.95); opacity: 1; }
+`;
 
+const HeaderContainer = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: theme.spacing(3),
+    marginBottom: theme.spacing(5),
+    [theme.breakpoints.up('sm')]: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+    },
+}));
+
+const LiveBadge = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1.5),
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
+    borderRadius: '50px',
+    backgroundColor: alpha(theme.palette.success.main, 0.1),
+    border: `1px solid ${alpha(theme.palette.success.main, 0.2)}`,
+}));
+
+const PulseDot = styled(Box)(({ theme }) => ({
+    width: 8,
+    height: 8,
+    borderRadius: '50%',
+    backgroundColor: theme.palette.success.main,
+    boxShadow: `0 0 0 4px ${alpha(theme.palette.success.main, 0.2)}`,
+    animation: `${pulse} 2s infinite ease-in-out`,
+}));
+
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title, subtitle, tag, live, actions }) => {
     return (
-        <Box sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            justifyContent: 'space-between',
-            alignItems: { xs: 'flex-start', sm: 'flex-end' },
-            gap: 3,
-            mb: 5
-        }}>
+        <HeaderContainer>
             <Box sx={{ flex: 1 }}>
                 {tag && (
                     <Typography
@@ -62,30 +91,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title, subtitle, tag,
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 {live && (
-                    <Box sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1.5,
-                        px: 2,
-                        py: 1,
-                        borderRadius: '50px',
-                        bgcolor: alpha(theme.palette.success.main, 0.1),
-                        border: '1px solid',
-                        borderColor: alpha(theme.palette.success.main, 0.2)
-                    }}>
-                        <Box sx={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: '50%',
-                            bgcolor: 'success.main',
-                            boxShadow: `0 0 0 4px ${alpha(theme.palette.success.main, 0.2)}`,
-                            '@keyframes pulse': {
-                                '0%': { transform: 'scale(0.95)', opacity: 1 },
-                                '50%': { transform: 'scale(1.2)', opacity: 0.5 },
-                                '100%': { transform: 'scale(0.95)', opacity: 1 }
-                            },
-                            animation: 'pulse 2s infinite ease-in-out'
-                        }} />
+                    <LiveBadge>
+                        <PulseDot />
                         <Typography
                             variant="body2"
                             sx={{
@@ -98,11 +105,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ title, subtitle, tag,
                         >
                             System Live
                         </Typography>
-                    </Box>
+                    </LiveBadge>
                 )}
                 {actions && <Box sx={{ display: 'flex', gap: 2 }}>{actions}</Box>}
             </Box>
-        </Box>
+        </HeaderContainer>
     );
 };
 

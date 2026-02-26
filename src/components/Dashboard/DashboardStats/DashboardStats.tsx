@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, LinearProgress, type SvgIconProps, alpha, useTheme } from '@mui/material';
+import { Box, Typography, LinearProgress, type SvgIconProps, alpha, styled } from '@mui/material';
 import { TrendingUp } from '@mui/icons-material';
 import DashboardCard from '../DashboardCard/DashboardCard';
 
@@ -13,6 +13,43 @@ interface DashboardStatsProps {
     trend?: 'up' | 'down';
 }
 
+const IconWrapper = styled(Box)<{ $color: string }>(({ theme, $color }) => ({
+    width: 48,
+    height: 48,
+    borderRadius: theme.spacing(1.5), // 12px if theme.spacing(1) = 8px
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: alpha($color, 0.1),
+    color: $color,
+}));
+
+const TrendBadge = styled(Box)<{ $trend: 'up' | 'down' }>(({ theme, $trend }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.5),
+    padding: `${theme.spacing(0.25)} ${theme.spacing(1)}`,
+    borderRadius: theme.spacing(0.75),
+    fontSize: '0.75rem',
+    fontWeight: 700,
+    backgroundColor: $trend === 'up'
+        ? alpha(theme.palette.success.main, 0.1)
+        : alpha(theme.palette.error.main, 0.1),
+    color: $trend === 'up'
+        ? theme.palette.success.main
+        : theme.palette.error.main,
+}));
+
+const StyledLinearProgress = styled(LinearProgress)<{ $color: string }>(({ $color }) => ({
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: alpha($color, 0.1),
+    '& .MuiLinearProgress-bar': {
+        backgroundColor: $color,
+        borderRadius: 3,
+    },
+}));
+
 const DashboardStats: React.FC<DashboardStatsProps> = ({
     label,
     value,
@@ -22,46 +59,24 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
     progress,
     trend = 'up',
 }) => {
-    const theme = useTheme();
-
     return (
         <DashboardCard
             sx={{
                 '&:hover': {
-                    boxShadow: theme.shadows[4],
+                    boxShadow: (theme) => theme.shadows[4],
                 }
             }}
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                <Box sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bgcolor: alpha(color, 0.1),
-                    color: color,
-                }}>
+                <IconWrapper $color={color}>
                     <Icon />
-                </Box>
+                </IconWrapper>
                 {change && (
                     <Box sx={{ textAlign: 'right' }}>
-                        <Box sx={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 0.5,
-                            px: 1,
-                            py: 0.25,
-                            borderRadius: '6px',
-                            fontSize: '0.75rem',
-                            fontWeight: 700,
-                            bgcolor: trend === 'up' ? alpha(theme.palette.success.main, 0.1) : alpha(theme.palette.error.main, 0.1),
-                            color: trend === 'up' ? theme.palette.success.main : theme.palette.error.main,
-                        }}>
+                        <TrendBadge $trend={trend}>
                             <TrendingUp sx={{ fontSize: 14 }} />
                             {change}
-                        </Box>
+                        </TrendBadge>
                         <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: 'text.secondary', fontWeight: 500 }}>
                             vs last month
                         </Typography>
@@ -79,18 +94,10 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
 
             {progress !== undefined && (
                 <Box sx={{ mt: 'auto' }}>
-                    <LinearProgress
+                    <StyledLinearProgress
                         variant="determinate"
                         value={progress}
-                        sx={{
-                            height: 6,
-                            borderRadius: 3,
-                            bgcolor: alpha(color, 0.1),
-                            '& .MuiLinearProgress-bar': {
-                                bgcolor: color,
-                                borderRadius: 3,
-                            },
-                        }}
+                        $color={color}
                     />
                 </Box>
             )}

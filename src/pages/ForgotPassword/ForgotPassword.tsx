@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, type JSX } from "react";
-import { Mail, Lock, ArrowRight, CheckCircle, ArrowLeft, Eye, EyeOff, Key } from "lucide-react";
+import { Mail, ArrowRight, CheckCircle, ArrowLeft, Key } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -7,9 +7,7 @@ import {
   TextField,
   Button,
   IconButton,
-  InputAdornment,
   Stack,
-  CircularProgress,
   Paper,
   Stepper,
   Step,
@@ -17,9 +15,13 @@ import {
   Alert,
   Fade,
 } from "@mui/material";
+import InputField from "../../components/Form/InputField";
+import PasswordField from "../../components/Form/PasswordField";
+import FormButton from "../../components/Form/FormButton";
 import { gsap } from "gsap";
 import Logo from "../../components/Logo/Logo";
 import { AUTH_SERVICE } from "../../api/services/auth";
+import { isValidEmail, isValidPassword, isMatching, isValidOtp } from "../../utils/validation";
 
 const ForgotPasswordPage: React.FC = (): JSX.Element => {
   const [step, setStep] = useState(0); // 0: Email, 1: OTP, 2: New Password
@@ -27,8 +29,6 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,7 +54,7 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
       setError("Please enter your email address");
       return;
     }
-    if (!/\S+@\S+\.\S+/.test(email)) {
+    if (!isValidEmail(email)) {
       setError("Please enter a valid email address");
       return;
     }
@@ -74,7 +74,7 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
       } else {
         setError(response.error || "Failed to send OTP");
       }
-    } catch (err) {
+    } catch {
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);
@@ -83,7 +83,7 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
 
   // Step 2: Verify OTP
   const handleVerifyOtp = async () => {
-    if (!otp || otp.length !== 6) {
+    if (!isValidOtp(otp)) {
       setError("Please enter a valid 6-digit OTP");
       return;
     }
@@ -103,7 +103,7 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
       } else {
         setError(response.error || "Invalid OTP");
       }
-    } catch (err) {
+    } catch {
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);
@@ -117,12 +117,12 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
       return;
     }
 
-    if (newPassword.length < 6) {
+    if (!isValidPassword(newPassword)) {
       setError("Password must be at least 6 characters long");
       return;
     }
 
-    if (newPassword !== confirmPassword) {
+    if (!isMatching(newPassword, confirmPassword)) {
       setError("Passwords do not match");
       return;
     }
@@ -141,7 +141,7 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
       } else {
         setError(response.error || "Failed to reset password");
       }
-    } catch (err) {
+    } catch {
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);
@@ -168,54 +168,25 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
               </Typography>
 
               <Stack spacing={3}>
-                <Box>
-                  <Typography component="label" sx={{ fontSize: "0.875rem", fontWeight: 600, color: "#334155", mb: 0.5, display: "block" }}>
-                    Email Address
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    placeholder="Ex: yourname@example.com"
-                    type="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (error) setError("");
-                    }}
-                    variant="outlined"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Mail size={18} color="#94a3b8" />
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: "10px", bgcolor: "#f8fafc" },
-                    }}
-                  />
-                </Box>
-
-                <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={handleSendOtp}
-                  disabled={loading}
-                  sx={{
-                    py: 1.5,
-                    borderRadius: "10px",
-                    textTransform: "none",
-                    fontSize: "1rem",
-                    fontWeight: 600,
-                    bgcolor: "#7c3aed",
-                    boxShadow: "0 4px 12px rgba(124, 58, 237, 0.25)",
-                    "&:hover": { bgcolor: "#6d28d9" },
+                <InputField
+                  label="Email Address"
+                  placeholder="Ex: yourname@example.com"
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError("");
                   }}
+                  icon={<Mail size={18} color="#94a3b8" />}
+                />
+
+                <FormButton
+                  onClick={handleSendOtp}
+                  loading={loading}
+                  icon={<ArrowRight size={20} />}
                 >
-                  {loading ? <CircularProgress size={24} color="inherit" /> : (
-                    <Stack direction="row" alignItems="center" gap={1}>
-                      Send Code <ArrowRight size={20} />
-                    </Stack>
-                  )}
-                </Button>
+                  Send Code
+                </FormButton>
               </Stack>
             </Box>
           </Fade>
@@ -240,7 +211,7 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
                     fullWidth
                     placeholder="000 000"
                     value={otp}
-                    onChange={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                       setOtp(e.target.value.replace(/\D/g, "").slice(0, 6));
                       if (error) setError("");
                     }}
@@ -253,28 +224,13 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
                   />
                 </Box>
 
-                <Button
-                  fullWidth
-                  variant="contained"
+                <FormButton
                   onClick={handleVerifyOtp}
-                  disabled={loading}
-                  sx={{
-                    py: 1.5,
-                    borderRadius: "10px",
-                    textTransform: "none",
-                    fontSize: "1rem",
-                    fontWeight: 600,
-                    bgcolor: "#7c3aed",
-                    boxShadow: "0 4px 12px rgba(124, 58, 237, 0.25)",
-                    "&:hover": { bgcolor: "#6d28d9" },
-                  }}
+                  loading={loading}
+                  icon={<ArrowRight size={20} />}
                 >
-                  {loading ? <CircularProgress size={24} color="inherit" /> : (
-                    <Stack direction="row" alignItems="center" gap={1}>
-                      Verify OTP <ArrowRight size={20} />
-                    </Stack>
-                  )}
-                </Button>
+                  Verify OTP
+                </FormButton>
 
                 <Typography sx={{ textAlign: "center", fontSize: "0.875rem", color: "#64748b" }}>
                   Didn't receive the code?{" "}
@@ -298,95 +254,34 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
               </Typography>
 
               <Stack spacing={2.5}>
-                <Box>
-                  <Typography component="label" sx={{ fontSize: "0.875rem", fontWeight: 600, color: "#334155", mb: 0.5, display: "block" }}>
-                    New Password
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    placeholder="Min. 6 characters"
-                    type={showPassword ? "text" : "password"}
-                    value={newPassword}
-                    onChange={(e) => {
-                      setNewPassword(e.target.value);
-                      if (error) setError("");
-                    }}
-                    variant="outlined"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Lock size={18} color="#94a3b8" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" size="small">
-                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: "10px", bgcolor: "#f8fafc" },
-                    }}
-                  />
-                </Box>
-
-                <Box>
-                  <Typography component="label" sx={{ fontSize: "0.875rem", fontWeight: 600, color: "#334155", mb: 0.5, display: "block" }}>
-                    Confirm Password
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    placeholder="Repeat new password"
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => {
-                      setConfirmPassword(e.target.value);
-                      if (error) setError("");
-                    }}
-                    variant="outlined"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Lock size={18} color="#94a3b8" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end" size="small">
-                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                      sx: { borderRadius: "10px", bgcolor: "#f8fafc" },
-                    }}
-                  />
-                </Box>
-
-                <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={handleResetPassword}
-                  disabled={loading}
-                  sx={{
-                    py: 1.5,
-                    mt: 1,
-                    borderRadius: "10px",
-                    textTransform: "none",
-                    fontSize: "1rem",
-                    fontWeight: 600,
-                    bgcolor: "#7c3aed",
-                    boxShadow: "0 4px 12px rgba(124, 58, 237, 0.25)",
-                    "&:hover": { bgcolor: "#6d28d9" },
+                <PasswordField
+                  label="New Password"
+                  placeholder="Min. 6 characters"
+                  value={newPassword}
+                  onChange={(e) => {
+                    setNewPassword(e.target.value);
+                    if (error) setError("");
                   }}
+                />
+
+                <PasswordField
+                  label="Confirm Password"
+                  placeholder="Repeat new password"
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    if (error) setError("");
+                  }}
+                />
+
+                <FormButton
+                  onClick={handleResetPassword}
+                  loading={loading}
+                  icon={<Key size={20} />}
+                  sx={{ mt: 1 }}
                 >
-                  {loading ? <CircularProgress size={24} color="inherit" /> : (
-                    <Stack direction="row" alignItems="center" gap={1}>
-                      Update Password <Key size={20} />
-                    </Stack>
-                  )}
-                </Button>
+                  Update Password
+                </FormButton>
               </Stack>
             </Box>
           </Fade>

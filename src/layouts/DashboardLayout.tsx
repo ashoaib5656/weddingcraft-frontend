@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/Auth/useAuth";
 import { useDashboard } from "../contexts/DashboardContext";
 import { type JSX, useState } from "react";
 import { getInitials } from "../utils/userUtils";

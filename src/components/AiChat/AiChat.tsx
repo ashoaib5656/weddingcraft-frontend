@@ -1,5 +1,10 @@
 import { useState, type JSX } from 'react';
-import api from '../../api/axios';
+import { AI_SERVICE } from '../../api/services/ai';
+
+interface AiMessage {
+  role: 'user' | 'assistant';
+  text: string;
+}
 import {
   Box,
   TextField,
@@ -15,21 +20,22 @@ import {
 const AiChat = (): JSX.Element => {
   const theme = useTheme();
   const [prompt, setPrompt] = useState('');
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<AiMessage[]>([]);
 
   const send = async () => {
     if (!prompt.trim()) return;
     setMessages((prev) => [...prev, { role: 'user', text: prompt }]);
     try {
-      const res = await api.post('/ai/design', {
+      const data = await AI_SERVICE.GetAiDesign({
         ProductType: 'general',
         Theme: prompt,
         ColorScheme: '',
         AdditionalDetails: ''
       });
-      setMessages((prev) => [...prev, { role: 'assistant', text: res.data.response }]);
-    } catch (e: any) {
-      setMessages((prev) => [...prev, { role: 'assistant', text: 'Error: ' + (e?.message || 'unknown') }]);
+      setMessages((prev) => [...prev, { role: 'assistant', text: data.response }]);
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : 'unknown';
+      setMessages((prev) => [...prev, { role: 'assistant', text: 'Error: ' + errorMessage }]);
     } finally {
       setPrompt('');
     }

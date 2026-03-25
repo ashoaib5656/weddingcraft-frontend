@@ -7,8 +7,7 @@ import {
   Warning as AlertIcon,
   TrackChanges as TargetIcon,
 } from '@mui/icons-material';
-import { Box, Grid, Typography, Button, Avatar, Chip, LinearProgress, Stack, Paper, useTheme, alpha } from '@mui/material';
-import DashboardHeader from "../../../components/Dashboard/DashboardHeader/DashboardHeader";
+import { Box, Grid, Typography, Button, Avatar, LinearProgress, Stack, Paper, useTheme, alpha } from '@mui/material';
 import DashboardStats from "../../../components/Dashboard/DashboardStats/DashboardStats";
 import DashboardCard from "../../../components/Dashboard/DashboardCard/DashboardCard";
 
@@ -113,14 +112,21 @@ const ManagerDashboard: React.FC = () => {
   ];
 
   return (
-    <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1600, margin: '0 auto' }}>
-      <DashboardHeader
-        title="Fleet Operations"
-        subtitle="Managing peak event synchronization and team logistics."
-        tag="Operations Overview"
-        actions={<Button variant="contained" sx={{ bgcolor: theme.palette.secondary.main, borderRadius: '12px', fontWeight: 700, p: '10px 24px' }}>Deploy Team</Button>}
-      />
-
+    <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            fontWeight: 900, 
+            mb: 4, 
+            letterSpacing: '-0.02em',
+            background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            display: 'inline-block'
+          }}
+        >
+          Operations Management
+        </Typography>
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {stats.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
@@ -197,17 +203,17 @@ const ManagerDashboard: React.FC = () => {
                       <Typography sx={{ fontWeight: 700, fontSize: '1rem' }}>{event.event}</Typography>
                       <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>{event.venue}</Typography>
                     </Box>
-                    <Chip
-                      label={event.status}
-                      size="small"
-                      sx={{
-                        bgcolor: event.status === 'live' ? alpha(theme.palette.success.main, 0.1) : alpha(theme.palette.info.main, 0.1),
-                        color: event.status === 'live' ? 'success.main' : 'info.main',
-                        fontWeight: 800,
-                        textTransform: 'uppercase',
-                        fontSize: '0.65rem'
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        fontWeight: 900, 
+                        color: event.status === 'live' ? 'success.main' : 'info.main', 
+                        textTransform: 'uppercase', 
+                        fontSize: '0.65rem' 
                       }}
-                    />
+                    >
+                      {event.status}
+                    </Typography>
                   </Box>
                   <Box sx={{
                     display: 'flex',
@@ -238,7 +244,17 @@ const ManagerDashboard: React.FC = () => {
       <DashboardCard sx={{ bgcolor: '#0f172a', color: 'white' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 800 }}>Workflow Hub</Typography>
-          <Chip label="Active Control Mode" size="small" sx={{ bgcolor: 'rgba(255,255,255,0.1)', color: 'white', fontWeight: 600, fontSize: '0.7rem' }} />
+          <Typography 
+            variant="caption" 
+            sx={{ 
+              fontWeight: 900, 
+              color: 'white', 
+              textTransform: 'uppercase', 
+              fontSize: '0.65rem' 
+            }}
+          >
+            Active Control Mode
+          </Typography>
         </Box>
         <Grid container spacing={2}>
           {actionCards.map((card, index) => (
@@ -258,7 +274,17 @@ const ManagerDashboard: React.FC = () => {
                     <card.icon />
                   </Avatar>
                   {card.count && (
-                    <Chip label={`${card.count} Pending`} size="small" sx={{ bgcolor: card.color, color: 'white', fontWeight: 800, fontSize: '0.7rem' }} />
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        fontWeight: 900, 
+                        color: 'white', 
+                        textTransform: 'uppercase', 
+                        fontSize: '0.65rem' 
+                      }}
+                    >
+                      {card.count} Pending
+                    </Typography>
                   )}
                 </Box>
                 <Typography sx={{ fontWeight: 700, mb: 0.5 }}>{card.title}</Typography>

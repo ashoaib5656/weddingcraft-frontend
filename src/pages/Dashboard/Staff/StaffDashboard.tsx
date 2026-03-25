@@ -8,8 +8,7 @@ import {
   AccessTime as ClockIcon,
   Phone as PhoneIcon,
 } from '@mui/icons-material';
-import { Box, Grid, Typography, Button, Avatar, Chip, Stack, useTheme, alpha } from '@mui/material';
-import DashboardHeader from "../../../components/Dashboard/DashboardHeader/DashboardHeader";
+import { Box, Grid, Typography, Button, Avatar, Stack, useTheme, alpha } from '@mui/material';
 import DashboardStats from "../../../components/Dashboard/DashboardStats/DashboardStats";
 import DashboardCard from "../../../components/Dashboard/DashboardCard/DashboardCard";
 
@@ -103,30 +102,21 @@ const StaffDashboard: React.FC = () => {
   ];
 
   return (
-    <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1600, margin: '0 auto' }}>
-      <DashboardHeader
-        title="Field Operations"
-        subtitle="Real-time task synchronization and site management."
-        tag="Task Overview"
-        actions={
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1.5,
-            padding: '8px 16px',
-            background: 'white',
-            borderRadius: '12px',
-            border: `1.5px solid ${theme.dashboard.glassBorder}`,
-            boxShadow: theme.shadows[1],
-          }}>
-            <ClockIcon sx={{ fontSize: 18, color: theme.palette.secondary.main }} />
-            <Typography variant="body2" sx={{ fontWeight: 800, color: 'text.primary', fontSize: '1.1rem' }}>
-              10:45 AM
-            </Typography>
-          </Box>
-        }
-      />
-
+    <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            fontWeight: 900, 
+            mb: 4, 
+            letterSpacing: '-0.02em',
+            background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            display: 'inline-block'
+          }}
+        >
+          Team Dashboard
+        </Typography>
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {stats.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
@@ -141,7 +131,17 @@ const StaffDashboard: React.FC = () => {
           <DashboardCard sx={{ height: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
               <Typography variant="h6" sx={{ fontWeight: 800 }}>Operation Board</Typography>
-              <Chip label="3 Active" size="small" sx={{ bgcolor: alpha(theme.palette.success.main, 0.1), color: 'success.main', fontWeight: 800, fontSize: '0.7rem' }} />
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  fontWeight: 900, 
+                  color: 'success.main', 
+                  textTransform: 'uppercase', 
+                  fontSize: '0.65rem' 
+                }}
+              >
+                3 Active
+              </Typography>
             </Box>
             <Stack spacing={2}>
               {todayTasks.map((item, index) => (
@@ -167,18 +167,17 @@ const StaffDashboard: React.FC = () => {
                       <Typography sx={{ fontWeight: 700, fontSize: '1rem', textDecoration: item.status === 'completed' ? 'line-through' : 'none' }}>
                         {item.task}
                       </Typography>
-                      <Chip
-                        label={item.priority}
-                        size="small"
-                        sx={{
-                          height: 20,
-                          fontSize: '0.6rem',
-                          fontWeight: 800,
-                          textTransform: 'uppercase',
-                          bgcolor: item.priority === 'high' ? alpha(theme.palette.error.main, 0.1) : alpha(theme.palette.secondary.main, 0.1),
-                          color: item.priority === 'high' ? 'error.main' : theme.palette.secondary.main
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          fontWeight: 900, 
+                          color: item.priority === 'high' ? 'error.main' : theme.palette.secondary.main, 
+                          textTransform: 'uppercase', 
+                          fontSize: '0.6rem' 
                         }}
-                      />
+                      >
+                        {item.priority}
+                      </Typography>
                     </Box>
                     <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
                       {item.event} • <Box component="span" sx={{ color: theme.palette.secondary.main }}>{item.location}</Box>
@@ -226,13 +225,17 @@ const StaffDashboard: React.FC = () => {
                       <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{card.title}</Typography>
                       <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>{card.desc}</Typography>
                     </Box>
-                    <Chip label={card.status} size="small" sx={{
-                      height: 20,
-                      fontSize: '0.65rem',
-                      fontWeight: 800,
-                      bgcolor: 'rgba(255,255,255,0.1)',
-                      color: 'rgba(255,255,255,0.8)'
-                    }} />
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        fontWeight: 900, 
+                        color: 'rgba(255,255,255,0.8)', 
+                        textTransform: 'uppercase', 
+                        fontSize: '0.65rem' 
+                      }}
+                    >
+                      {card.status}
+                    </Typography>
                   </Button>
                 ))}
               </Stack>

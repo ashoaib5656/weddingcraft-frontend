@@ -1,18 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
     Box,
     Typography,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Chip,
     IconButton,
     Button,
-    Avatar,
     alpha,
     useTheme,
     Grid,
@@ -21,13 +12,14 @@ import {
     CalendarMonth as CalendarIcon,
     List as ListIcon,
     MoreVert as MoreVertIcon,
-    Event as EventIcon,
     LocationOn as LocationIcon,
     Person as PersonIcon
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/Auth/useAuth';
-import DashboardHeader from '../../components/Dashboard/DashboardHeader/DashboardHeader';
+import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
+import TableComponent from '../../components/TableComponent/TableComponent';
+import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
 
 // Mock data for bookings
 const mockBookings = [
@@ -53,15 +45,122 @@ const BookingsPage = () => {
         }
     };
 
-    return (
-        <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1600, margin: '0 auto' }}>
-            <DashboardHeader
-                title={currentRole === 'client' ? "My Bookings" : "Bookings Management"}
-                subtitle="Keep track of all your scheduled events and confirmations."
-                tag="Schedule"
-            />
+    const columns = useMemo(
+        () => [
+            {
+                accessorKey: 'id',
+                header: 'Booking ID',
+                Cell: ({ cell }: any) => (
+                    <Typography 
+                        variant="caption" 
+                        sx={{ 
+                            color: 'text.secondary', 
+                            fontWeight: 700,
+                            fontSize: '0.85rem'
+                        }}
+                    >
+                        {cell.getValue() as string}
+                    </Typography>
+                )
+            },
+            {
+                accessorKey: 'title',
+                header: 'Booking Details',
+                Cell: ({ row }: any) => {
+                    const booking = row.original;
+                    return (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Box>
+                                <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{booking.title}</Typography>
+                            </Box>
+                        </Box>
+                    );
+                }
+            },
+            {
+                id: 'clientOrVendor',
+                accessorFn: (row: any) => currentRole === 'vendor' ? row.client : row.vendor,
+                header: currentRole === 'vendor' ? 'Client' : 'Vendor',
+                Cell: ({ cell }: any) => (
+                    <Typography sx={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                        {cell.getValue() as string}
+                    </Typography>
+                )
+            },
+            {
+                accessorKey: 'date',
+                header: 'Date',
+                Cell: ({ cell }: any) => (
+                    <Typography variant="caption" sx={{ fontWeight: 700 }}>{cell.getValue() as string}</Typography>
+                )
+            },
+            {
+                accessorKey: 'amount',
+                header: 'Amount',
+                Cell: ({ cell }: any) => (
+                    <Typography sx={{ fontSize: '0.85rem', fontWeight: 700 }}>{cell.getValue() as string}</Typography>
+                )
+            },
+            {
+                accessorKey: 'status',
+                header: 'Status',
+                Cell: ({ cell }: any) => (
+                    <Typography 
+                        variant="caption" 
+                        sx={{ 
+                            fontWeight: 900, 
+                            color: `${theme.palette[getStatusColor(cell.getValue() as string) as 'success' | 'warning' | 'error' | 'info'].main}`, 
+                            textTransform: 'uppercase', 
+                            fontSize: '0.65rem' 
+                        }}
+                    >
+                        {cell.getValue() as string}
+                    </Typography>
+                )
+            },
+            {
+                accessorKey: 'actions',
+                header: 'Actions',
+                muiTableHeadCellProps: { align: 'center' as const },
+                muiTableBodyCellProps: { align: 'center' as const },
+                enableColumnFilter: false,
+                enableSorting: false,
+                Cell: () => (
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <IconButton size="small"><MoreVertIcon fontSize="small" /></IconButton>
+                    </Box>
+                )
+            }
+        ],
+        [currentRole, theme]
+    );
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3, gap: 1 }}>
+    const table = useMaterialReactTable({
+        muiTopToolbarProps: { sx: { p: '14px' } },
+        columns,
+        data: mockBookings,
+        enableColumnActions: false,
+        enableColumnFilters: true,
+        enableSorting: true,
+        enablePagination: true,
+        enableRowSelection: true,
+        enableGlobalFilter: true,
+        initialState: {
+            pagination: { pageSize: 10, pageIndex: 0 },
+            showGlobalFilter: false,
+        },
+        muiTablePaperProps: {
+            elevation: 0,
+            sx: {
+                borderRadius: '0',
+                border: 'none',
+            },
+        },
+    });
+
+    return (
+        <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Bookings listing</Typography>            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3, gap: 1 }}>
                 <Button
                     startIcon={<ListIcon />}
                     variant={viewMode === 'list' ? 'contained' : 'outlined'}
@@ -81,60 +180,19 @@ const BookingsPage = () => {
             </Box>
 
             {viewMode === 'list' ? (
-                <DashboardCard>
-                    <TableContainer component={Paper} elevation={0} sx={{ bgcolor: 'transparent' }}>
-                        <Table sx={{ minWidth: 650 }}>
-                            <TableHead>
-                                <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.05) }}>
-                                    <TableCell sx={{ fontWeight: 800 }}>Booking Details</TableCell>
-                                    <TableCell sx={{ fontWeight: 800 }}>{currentRole === 'vendor' ? 'Client' : 'Vendor'}</TableCell>
-                                    <TableCell sx={{ fontWeight: 800 }}>Date</TableCell>
-                                    <TableCell sx={{ fontWeight: 800 }}>Amount</TableCell>
-                                    <TableCell sx={{ fontWeight: 800 }}>Status</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 800 }}>Actions</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {mockBookings.map((booking) => (
-                                    <TableRow key={booking.id} sx={{ '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.02) } }}>
-                                        <TableCell>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1), color: 'primary.main' }}>
-                                                    <EventIcon fontSize="small" />
-                                                </Avatar>
-                                                <Box>
-                                                    <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{booking.title}</Typography>
-                                                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>{booking.id}</Typography>
-                                                </Box>
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography sx={{ fontSize: '0.85rem', fontWeight: 600 }}>
-                                                {currentRole === 'vendor' ? booking.client : booking.vendor}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography variant="caption" sx={{ fontWeight: 700 }}>{booking.date}</Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography sx={{ fontSize: '0.85rem', fontWeight: 700 }}>{booking.amount}</Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={booking.status}
-                                                size="small"
-                                                color={getStatusColor(booking.status) as any}
-                                                sx={{ fontWeight: 800, fontSize: '0.7rem' }}
-                                            />
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <IconButton size="small"><MoreVertIcon fontSize="small" /></IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                <DashboardCard sx={{ p: 0, overflow: 'hidden' }}>
+                    <Box sx={{ p: '14px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: `1px solid ${theme.dashboard?.glassBorder || alpha(theme.palette.divider, 0.1)}` }}>
+                        <TableHeaderToolbar 
+                            table={table} 
+                            isSmall 
+                            ExcelData={{
+                                data: mockBookings,
+                                fileName: 'Bookings_Report'
+                            }}
+                        />
+                    </Box>
+                    <TableComponent table={table} />
+                    <TableBottomToolbar table={table} />
                 </DashboardCard>
             ) : (
                 <Grid container spacing={3}>
@@ -165,7 +223,17 @@ const BookingsPage = () => {
                                     <Typography variant="caption" sx={{ fontWeight: 600 }}>{mockBookings[i - 1]?.client || 'Guest'}</Typography>
                                 </Box>
                                 <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Chip label="Confirmed" size="small" color="success" sx={{ height: 20, fontSize: '0.65rem' }} />
+                                    <Typography 
+                                        variant="caption" 
+                                        sx={{ 
+                                            fontWeight: 900, 
+                                            color: 'success.main', 
+                                            textTransform: 'uppercase', 
+                                            fontSize: '0.65rem' 
+                                        }}
+                                    >
+                                        Confirmed
+                                    </Typography>
                                     <Button size="small" sx={{ fontSize: '0.7rem', fontWeight: 700 }}>View Details</Button>
                                 </Box>
                             </DashboardCard>
@@ -177,7 +245,6 @@ const BookingsPage = () => {
     );
 };
 
-// Mock missing icon
 const LocationOnIcon = ({ sx, ...props }: any) => <LocationIcon sx={sx} {...props} />;
 
 export default BookingsPage;

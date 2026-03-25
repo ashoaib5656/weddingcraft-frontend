@@ -64,6 +64,13 @@ let theme = createTheme({
         }
       }
     },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          padding: '8px 14px',
+        }
+      }
+    },
     MuiButton: {
       styleOverrides: {
         root: {

@@ -1,0 +1,53 @@
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    dateFormat?: string;
+}
+
+interface AuthState {
+    user: User | null;
+    isAuthenticated: boolean;
+    loading: boolean;
+    error: string | null;
+}
+
+const initialState: AuthState = {
+    user: {
+        id: '1',
+        name: 'Admin User',
+        email: 'admin@weddingcraft.com',
+        role: 'admin',
+        dateFormat: 'DD/MM/YYYY'
+    }, // Providing mock user data for now as per project context
+    isAuthenticated: true,
+    loading: false,
+    error: null,
+};
+
+const authSlice = createSlice({
+    name: 'auth',
+    initialState,
+    reducers: {
+        setUser: (state, action: PayloadAction<User | null>) => {
+            state.user = action.payload;
+            state.isAuthenticated = !!action.payload;
+        },
+        setLoading: (state, action: PayloadAction<boolean>) => {
+            state.loading = action.payload;
+        },
+        setError: (state, action: PayloadAction<string | null>) => {
+            state.error = action.payload;
+        },
+        logout: (state) => {
+            state.user = null;
+            state.isAuthenticated = false;
+        },
+    },
+});
+
+export const { setUser, setLoading, setError, logout } = authSlice.actions;
+export default authSlice.reducer;

@@ -10,8 +10,7 @@ import {
   Cake as CakeIcon,
   CardGiftcard as GiftIcon,
 } from '@mui/icons-material';
-import { Box, Grid, Typography, Button, Avatar, Chip, LinearProgress, useTheme, alpha } from '@mui/material';
-import DashboardHeader from "../../../components/Dashboard/DashboardHeader/DashboardHeader";
+import { Box, Grid, Typography, Button, Avatar, LinearProgress, useTheme, alpha } from '@mui/material';
 import DashboardStats from "../../../components/Dashboard/DashboardStats/DashboardStats";
 import DashboardCard from "../../../components/Dashboard/DashboardCard/DashboardCard";
 import Chart from "react-apexcharts";
@@ -104,13 +103,8 @@ const ClientDashboard: React.FC = () => {
   ];
 
   return (
-    <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1600, margin: '0 auto' }}>
-      <DashboardHeader
-        title="Wedding Dashboard"
-        subtitle="Manage your special day with elegance and ease."
-        tag="Wedding Journey"
-      />
-
+    <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Client Dashboard</Typography>
       {/* Hero Header Section */}
       <DashboardCard
         sx={{
@@ -195,9 +189,29 @@ const ClientDashboard: React.FC = () => {
           <DashboardCard sx={{ p: 0, overflow: 'hidden' }}>
             <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="h6" sx={{ fontWeight: 800 }}>Financial Overview</Typography>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Chip label="Allocated: ₹15L" size="small" sx={{ fontWeight: 700, bgcolor: alpha(theme.palette.secondary.main, 0.1), color: theme.palette.secondary.main }} />
-                <Chip label="Spent: ₹8.2L" size="small" sx={{ fontWeight: 700, bgcolor: alpha(theme.palette.success.main, 0.1), color: theme.palette.success.main }} />
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    fontWeight: 900, 
+                    color: theme.palette.secondary.main, 
+                    textTransform: 'uppercase', 
+                    fontSize: '0.65rem' 
+                  }}
+                >
+                  Allocated: ₹15L
+                </Typography>
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    fontWeight: 900, 
+                    color: theme.palette.success.main, 
+                    textTransform: 'uppercase', 
+                    fontSize: '0.65rem' 
+                  }}
+                >
+                  Spent: ₹8.2L
+                </Typography>
               </Box>
             </Box>
             <Box sx={{ p: 2 }}>
@@ -273,18 +287,18 @@ const ClientDashboard: React.FC = () => {
                       {vendor.category} • {vendor.date}
                     </Typography>
                   </Box>
-                  <Chip
-                    label={vendor.status}
-                    size="small"
-                    sx={{
-                      ml: 2,
-                      bgcolor: alpha(theme.palette.success.main, 0.1),
-                      color: theme.palette.success.main,
-                      fontWeight: 800,
-                      textTransform: 'uppercase',
-                      fontSize: '0.65rem'
+                  <Typography 
+                    variant="caption" 
+                    sx={{ 
+                      fontWeight: 900, 
+                      color: 'success.main', 
+                      textTransform: 'uppercase', 
+                      fontSize: '0.65rem',
+                      ml: 2
                     }}
-                  />
+                  >
+                    {vendor.status}
+                  </Typography>
                 </Box>
               ))}
             </Box>
@@ -294,7 +308,20 @@ const ClientDashboard: React.FC = () => {
         <Grid item xs={12} md={4}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <DashboardCard sx={{ bgcolor: '#0f172a', color: 'white' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 3 }}>Planning Hub</Typography>
+              <Typography 
+          variant="h4" 
+          sx={{ 
+            fontWeight: 900, 
+            mb: 4, 
+            letterSpacing: '-0.02em',
+            background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            display: 'inline-block'
+          }}
+        >
+          My Wedding Journey
+        </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {actionCards.map((card, index) => (
                   <Button key={index} fullWidth sx={{
@@ -324,13 +351,17 @@ const ClientDashboard: React.FC = () => {
                       <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>{card.desc}</Typography>
                     </Box>
                     {card.count && (
-                      <Chip label={card.count} size="small" sx={{
-                        height: 20,
-                        fontSize: '0.7rem',
-                        fontWeight: 800,
-                        bgcolor: card.color,
-                        color: 'white'
-                      }} />
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          fontWeight: 900, 
+                          color: 'primary.main', 
+                          textTransform: 'uppercase', 
+                          fontSize: '0.65rem' 
+                        }}
+                      >
+                        {card.count}
+                      </Typography>
                     )}
                   </Button>
                 ))}

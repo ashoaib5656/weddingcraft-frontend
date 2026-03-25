@@ -9,8 +9,7 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-    Divider,
-    Chip
+    Divider
 } from '@mui/material';
 import {
     Description as ReportIcon,
@@ -20,7 +19,6 @@ import {
     Assessment as AssessmentIcon,
     PieChart as PieIcon
 } from '@mui/icons-material';
-import DashboardHeader from '../../components/Dashboard/DashboardHeader/DashboardHeader';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 
 const Reports = () => {
@@ -34,12 +32,8 @@ const Reports = () => {
     ];
 
     return (
-        <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1000, margin: '0 auto' }}>
-            <DashboardHeader
-                title="Reports & Documentation"
-                subtitle="Access system-generated reports, performance metrics, and data summaries."
-                tag="Documentation"
-            />
+        <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Reports listing</Typography>
 
             <Grid container spacing={3}>
                 {reportTypes.map((report, index) => (
@@ -88,7 +82,17 @@ const Reports = () => {
                                         secondary="Requested by Admin • Processing"
                                         primaryTypographyProps={{ fontWeight: 700, fontSize: '0.9rem' }}
                                     />
-                                    <Chip label="Queued" size="small" variant="outlined" sx={{ fontWeight: 800, fontSize: '0.7rem' }} />
+                                    <Typography 
+                                        variant="caption" 
+                                        sx={{ 
+                                            fontWeight: 900, 
+                                            color: 'text.disabled', 
+                                            textTransform: 'uppercase', 
+                                            fontSize: '0.65rem' 
+                                        }}
+                                    >
+                                        Queued
+                                    </Typography>
                                 </ListItem>
                                 {i < 2 && <Divider />}
                             </Box>

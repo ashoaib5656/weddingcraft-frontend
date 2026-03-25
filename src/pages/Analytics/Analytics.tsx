@@ -14,7 +14,6 @@ import {
     ArrowUpward as ArrowUpIcon,
     ArrowDownward as ArrowDownIcon
 } from '@mui/icons-material';
-import DashboardHeader from '../../components/Dashboard/DashboardHeader/DashboardHeader';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 
 const AnalyticsPage = () => {
@@ -28,12 +27,8 @@ const AnalyticsPage = () => {
     ];
 
     return (
-        <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1600, margin: '0 auto' }}>
-            <DashboardHeader
-                title="Analytics & Reports"
-                subtitle="Monitor business growth, revenue, and platform performance."
-                tag="Insights"
-            />
+        <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Analytics listing</Typography>
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {stats.map((stat, index) => (

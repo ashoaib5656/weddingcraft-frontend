@@ -7,10 +7,7 @@ import {
   Box,
   Typography,
   Divider,
-  Alert,
-  MenuItem,
-  Select,
-  FormControl,
+  Alert
 } from "@mui/material";
 import InputField from "../../components/Form/InputField";
 import PasswordField from "../../components/Form/PasswordField";
@@ -18,7 +15,6 @@ import PhoneInput from "../../components/Form/PhoneInput";
 import FormButton from "../../components/Form/FormButton";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/Auth/useAuth";
-import { UserRole, ALL_ROLES, ROLE_LABELS } from "../../constants/roles";
 import { isValidEmail, isValidPassword, isMatching, isValidPhone } from "../../utils/validation";
 
 const RegisterPage: React.FC = (): JSX.Element => {
@@ -26,7 +22,6 @@ const RegisterPage: React.FC = (): JSX.Element => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState<string>(UserRole.CLIENT); // Default to Client
   const [errors, setErrors] = useState<{
     email?: string;
     phone?: string;
@@ -213,7 +208,7 @@ const RegisterPage: React.FC = (): JSX.Element => {
             </Alert>
           )}
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 1.25 }}>
             <InputField
               label="Email Address"
               placeholder="Ex: yourname@example.com"
@@ -263,51 +258,6 @@ const RegisterPage: React.FC = (): JSX.Element => {
               error={!!errors.confirmPassword}
               helperText={errors.confirmPassword}
             />
-
-            {/* Role Selection */}
-            <Box>
-              <Typography
-                component="label"
-                sx={{
-                  fontSize: "0.80rem",
-                  fontWeight: 600,
-                  color: "#334155",
-                  mb: 0.25,
-                  display: "block",
-                  fontFamily: "'Inter', sans-serif",
-                }}
-              >
-                Account Type
-              </Typography>
-              <FormControl fullWidth size="small">
-                <Select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  sx={{
-                    borderRadius: "8px",
-                    background: "#f8fafc",
-                    fontSize: "0.875rem",
-                    height: "42px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#e2e8f0",
-                      borderWidth: "1px",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#cbd5e1",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#7c3aed",
-                    },
-                  }}
-                >
-                  {ALL_ROLES.map((roleValue) => (
-                    <MenuItem key={roleValue} value={roleValue}>
-                      {ROLE_LABELS[roleValue as keyof typeof ROLE_LABELS]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
 
             <FormButton
               type="submit"

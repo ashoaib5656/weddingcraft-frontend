@@ -27,7 +27,6 @@ import { type RootState } from '../../store';
 import { removeItem, clearCart } from '../../store/slices/cartSlice';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 import { useNavigate } from 'react-router-dom';
-import DashboardHeader from '../../components/Dashboard/DashboardHeader/DashboardHeader';
 import gsap from 'gsap';
 
 
@@ -128,12 +127,8 @@ const CartPage = (): JSX.Element => {
     }
 
     return (
-        <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1400, mx: 'auto' }}>
-            <DashboardHeader
-                title="Your Booking Protocol"
-                subtitle="Review and refine your selected premium services and products."
-                tag="Selection Management"
-            />
+        <Box sx={{ p: 0, maxWidth: 1400, mx: 'auto' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Cart listing</Typography>
 
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '1fr 400px' }, gap: 5 }}>
                 <Box ref={listRef}>

@@ -7,8 +7,7 @@ import {
   Image as ImageIcon,
   Mail as EmailIcon,
 } from '@mui/icons-material';
-import { Box, Grid, Typography, Button, Avatar, Chip, Stack, useTheme, alpha } from '@mui/material';
-import DashboardHeader from "../../../components/Dashboard/DashboardHeader/DashboardHeader";
+import { Box, Grid, Typography, Button, Avatar, Stack, useTheme, alpha } from '@mui/material';
 import DashboardStats from "../../../components/Dashboard/DashboardStats/DashboardStats";
 import DashboardCard from "../../../components/Dashboard/DashboardCard/DashboardCard";
 import Chart from "react-apexcharts";
@@ -94,14 +93,21 @@ const VendorDashboard: React.FC = () => {
   ];
 
   return (
-    <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1600, margin: '0 auto' }}>
-      <DashboardHeader
-        title="Vendor Portal"
-        subtitle="Global reach and transaction management dashboard."
-        tag="Business Overview"
-        actions={<Button variant="contained" sx={{ bgcolor: theme.palette.secondary.main, borderRadius: '12px', fontWeight: 700, p: '10px 24px', '&:hover': { bgcolor: alpha(theme.palette.secondary.main, 0.9) } }}>Post Update</Button>}
-      />
-
+    <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            fontWeight: 900, 
+            mb: 4, 
+            letterSpacing: '-0.02em',
+            background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            display: 'inline-block'
+          }}
+        >
+          Vendor Dashboard
+        </Typography>
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {stats.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
@@ -115,7 +121,17 @@ const VendorDashboard: React.FC = () => {
           <DashboardCard noPadding>
             <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="h6" sx={{ fontWeight: 800 }}>Monthly Success</Typography>
-              <Chip label="Real-time Performance" size="small" sx={{ fontWeight: 700, bgcolor: alpha(theme.palette.secondary.main, 0.1), color: theme.palette.secondary.main }} />
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  fontWeight: 900, 
+                  color: theme.palette.secondary.main, 
+                  textTransform: 'uppercase', 
+                  fontSize: '0.65rem' 
+                }}
+              >
+                Real-time Performance
+              </Typography>
             </Box>
             <Box sx={{ p: 2 }}>
               <Chart
@@ -187,18 +203,17 @@ const VendorDashboard: React.FC = () => {
                     </Typography>
                   </Box>
                   <Box sx={{ ml: 2, textAlign: 'right' }}>
-                    <Chip
-                      label={booking.status}
-                      size="small"
-                      sx={{
-                        mb: 0.5,
-                        bgcolor: booking.status === 'confirmed' ? alpha(theme.palette.success.main, 0.1) : alpha(theme.palette.warning.main, 0.1),
-                        color: booking.status === 'confirmed' ? 'success.main' : 'warning.main',
-                        fontWeight: 800,
-                        textTransform: 'uppercase',
-                        fontSize: '0.65rem'
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        fontWeight: 900, 
+                        color: booking.status === 'confirmed' ? 'success.main' : 'warning.main', 
+                        textTransform: 'uppercase', 
+                        fontSize: '0.65rem' 
                       }}
-                    />
+                    >
+                      {booking.status}
+                    </Typography>
                     <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', fontWeight: 700 }}>
                       {booking.date}
                     </Typography>
@@ -243,13 +258,17 @@ const VendorDashboard: React.FC = () => {
                       <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>{card.desc}</Typography>
                     </Box>
                     {card.count && (
-                      <Chip label={card.count} size="small" sx={{
-                        height: 20,
-                        fontSize: '0.7rem',
-                        fontWeight: 800,
-                        bgcolor: card.color,
-                        color: 'white'
-                      }} />
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          fontWeight: 900, 
+                          color: 'primary.main', 
+                          textTransform: 'uppercase', 
+                          fontSize: '0.65rem' 
+                        }}
+                      >
+                        {card.count}
+                      </Typography>
                     )}
                   </Button>
                 ))}

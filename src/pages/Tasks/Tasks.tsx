@@ -7,7 +7,6 @@ import {
     ListItem,
     ListItemText,
     ListItemIcon,
-    Chip,
     IconButton,
     Button,
     alpha,
@@ -16,11 +15,10 @@ import {
 } from '@mui/material';
 import {
     Add as AddIcon,
-    Delete as DeleteIcon,
+    MoreVert as MoreIcon,
     Flag as FlagIcon,
     CalendarMonth as CalendarIcon
 } from '@mui/icons-material';
-import DashboardHeader from '../../components/Dashboard/DashboardHeader/DashboardHeader';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 
 const Tasks = () => {
@@ -46,13 +44,8 @@ const Tasks = () => {
     };
 
     return (
-        <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 800, margin: '0 auto' }}>
-            <DashboardHeader
-                title="My Tasks"
-                subtitle="Manage and track your wedding coordination checklist."
-                tag="To-Do"
-            />
-
+        <Box sx={{ p: 0, maxWidth: 800, margin: '0 auto' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Tasks listing</Typography>
             <DashboardCard>
                 <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
                     <TextField
@@ -106,13 +99,18 @@ const Tasks = () => {
                                 }}
                             />
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Chip
-                                    label={task.priority}
-                                    size="small"
-                                    color={getPriorityColor(task.priority) as any}
-                                    sx={{ fontWeight: 800, fontSize: '0.6rem', height: 20 }}
-                                />
-                                <IconButton size="small" color="error"><DeleteIcon fontSize="small" /></IconButton>
+                                <Typography 
+                                    variant="caption" 
+                                    sx={{ 
+                                        fontWeight: 900, 
+                                        color: `${theme.palette[getPriorityColor(task.priority) as 'success' | 'warning' | 'error' | 'info'].main}`, 
+                                        textTransform: 'uppercase', 
+                                        fontSize: '0.65rem' 
+                                    }}
+                                >
+                                    {task.priority}
+                                </Typography>
+                                <IconButton size="small"><MoreIcon fontSize="small" /></IconButton>
                             </Box>
                         </ListItem>
                     ))}

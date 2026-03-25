@@ -1,32 +1,19 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
 import {
     Box,
     Typography,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Chip,
     IconButton,
-    TextField,
-    InputAdornment,
     Button,
-    Avatar,
     alpha,
     useTheme
 } from '@mui/material';
 import {
-    Search as SearchIcon,
-    MoreVert as MoreVertIcon,
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-    Badge as BadgeIcon
+    MoreVert as MoreVertIcon
 } from '@mui/icons-material';
-import DashboardHeader from '../../components/Dashboard/DashboardHeader/DashboardHeader';
+import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
+import TableComponent from '../../components/TableComponent/TableComponent';
+import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
 
 // Mock data for managers
 const mockManagers = [
@@ -37,86 +24,167 @@ const mockManagers = [
 
 const Managers = () => {
     const theme = useTheme();
-    const [searchTerm, setSearchTerm] = useState('');
+
+    const columns = useMemo(
+        () => [
+            {
+                accessorKey: 'name',
+                header: 'Manager Details',
+                Cell: ({ row }: any) => {
+                    const manager = row.original;
+                    return (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Box>
+                                <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{manager.name}</Typography>
+                            </Box>
+                        </Box>
+                    );
+                }
+            },
+            {
+                accessorKey: 'email',
+                header: 'Email',
+                Cell: ({ cell }: any) => (
+                    <Typography 
+                        variant="caption" 
+                        sx={{ 
+                            color: 'text.secondary', 
+                            fontWeight: 600,
+                            fontSize: '0.85rem'
+                        }}
+                    >
+                        {cell.getValue() as string}
+                    </Typography>
+                )
+            },
+            {
+                accessorKey: 'department',
+                header: 'Department',
+                Cell: ({ cell }: any) => (
+                    <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>{cell.getValue() as string}</Typography>
+                )
+            },
+            {
+                accessorKey: 'joined',
+                header: 'Joined Date',
+                Cell: ({ cell }: any) => (
+                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
+                )
+            },
+            {
+                accessorKey: 'status',
+                header: 'Status',
+                Cell: ({ cell }: any) => (
+                    <Typography 
+                        variant="caption" 
+                        sx={{ 
+                            fontWeight: 900, 
+                            color: `${theme.palette[cell.getValue() === 'Active' ? 'success' : 'warning'].main}`, 
+                            textTransform: 'uppercase', 
+                            fontSize: '0.65rem' 
+                        }}
+                    >
+                        {cell.getValue() as string}
+                    </Typography>
+                )
+            },
+            {
+                accessorKey: 'actions',
+                header: 'Actions',
+                muiTableHeadCellProps: { align: 'center' as const },
+                muiTableBodyCellProps: { align: 'center' as const },
+                enableColumnFilter: false,
+                enableSorting: false,
+                Cell: () => (
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <IconButton size="small">
+                            <MoreVertIcon fontSize="small" />
+                        </IconButton>
+                    </Box>
+                )
+            }
+        ],
+        [theme]
+    );
+
+    const table = useMaterialReactTable({
+        muiTopToolbarProps: { sx: { p: '14px' } },
+        columns,
+        data: mockManagers,
+        enableColumnActions: false,
+        enableColumnFilters: true,
+        enableSorting: true,
+        enablePagination: true,
+        enableRowSelection: true,
+        enableGlobalFilter: true,
+        initialState: {
+            pagination: { pageSize: 10, pageIndex: 0 },
+            showGlobalFilter: false,
+        },
+        muiTablePaperProps: {
+            elevation: 0,
+            sx: {
+                borderRadius: '0',
+                border: 'none',
+            },
+        },
+    });
 
     return (
-        <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1600, margin: '0 auto' }}>
-            <DashboardHeader
-                title="Platform Managers"
-                subtitle="View and manage department managers across the WedsPot platform."
-                tag="Security"
-            />
+        <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 4, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Manager Management
+            </Typography>
 
-            <DashboardCard>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, gap: 2, flexWrap: 'wrap' }}>
-                    <TextField
-                        placeholder="Search managers..."
-                        size="small"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        sx={{ width: { xs: '100%', sm: 300 } }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon fontSize="small" color="action" />
-                                </InputAdornment>
-                            ),
+            <DashboardCard sx={{ mt: 3, p: 0, overflow: 'hidden' }}>
+                <Box sx={{ 
+                    p: '14px', 
+                    display: 'flex', 
+                    justifyContent: 'flex-end', 
+                    alignItems: 'center', 
+                    flexWrap: 'wrap', 
+                    gap: 2, 
+                    borderBottom: `1px solid ${theme.dashboard?.glassBorder || alpha(theme.palette.divider, 0.1)}` 
+                }}>
+                    <TableHeaderToolbar 
+                        table={table} 
+                        isSmall 
+                        ExcelData={{
+                            data: mockManagers,
+                            fileName: 'Managers_Export'
                         }}
+                        actionButton={
+                            <Button 
+                                variant="contained" 
+                                size="small" 
+                                sx={{ 
+                                    borderRadius: '10px', 
+                                    bgcolor: theme.palette.primary.main,
+                                    height: '32px',
+                                    textTransform: 'none',
+                                    fontWeight: 700,
+                                    px: 2
+                                }}
+                            >
+                                Add
+                            </Button>
+                        }
                     />
-                    <Button variant="contained" size="small" sx={{ borderRadius: '10px' }}>Add Manager</Button>
                 </Box>
 
-                <TableContainer component={Paper} elevation={0} sx={{ bgcolor: 'transparent' }}>
-                    <Table sx={{ minWidth: 650 }}>
-                        <TableHead>
-                            <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.05) }}>
-                                <TableCell sx={{ fontWeight: 800 }}>Manager Details</TableCell>
-                                <TableCell sx={{ fontWeight: 800 }}>Department</TableCell>
-                                <TableCell sx={{ fontWeight: 800 }}>Joined Date</TableCell>
-                                <TableCell sx={{ fontWeight: 800 }}>Status</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 800 }}>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {mockManagers.filter(m => m.name.toLowerCase().includes(searchTerm.toLowerCase())).map((manager) => (
-                                <TableRow key={manager.id} sx={{ '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.02) } }}>
-                                    <TableCell>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                            <Avatar sx={{ bgcolor: alpha(theme.palette.info.main, 0.1), color: theme.palette.info.main }}>
-                                                <BadgeIcon fontSize="small" />
-                                            </Avatar>
-                                            <Box>
-                                                <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{manager.name}</Typography>
-                                                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>{manager.email}</Typography>
-                                            </Box>
-                                        </Box>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>{manager.department}</Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary' }}>{manager.joined}</Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Chip
-                                            label={manager.status}
-                                            size="small"
-                                            color={manager.status === 'Active' ? 'success' : 'warning'}
-                                            sx={{ fontWeight: 800, fontSize: '0.7rem' }}
-                                        />
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 0.5 }}>
-                                            <IconButton size="small" color="primary"><EditIcon fontSize="small" /></IconButton>
-                                            <IconButton size="small" color="error"><DeleteIcon fontSize="small" /></IconButton>
-                                            <IconButton size="small"><MoreVertIcon fontSize="small" /></IconButton>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <TableComponent table={table} />
+                <TableBottomToolbar table={table} />
             </DashboardCard>
         </Box>
     );

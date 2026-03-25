@@ -34,11 +34,16 @@ import { DashboardProvider } from "./contexts/DashboardContext";
 import ProtectedRoute from "./contexts/Auth/requiresRole";
 import PublicRoute from "./contexts/Auth/PublicRoute";
 import { UserRole } from "./Types/auth.types";
+import BillsPage from "./pages/Bills/Bills";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         element: <MainLayout><Home /></MainLayout>,
+    },
+    {
+                path: "bills",
+                element: <BillsPage />,
     },
     { path: "/privacy", element: <MainLayout><PrivacyPolicy /></MainLayout> },
     { path: "/terms", element: <MainLayout><TermsOfService /></MainLayout> },

@@ -5,7 +5,6 @@ import {
     CardMedia,
     Button,
     Rating,
-    Chip,
     IconButton
 } from '@mui/material';
 import {
@@ -16,7 +15,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../store/slices/cartSlice';
 import { type RootState } from '../../store';
 import { useSnackbar } from '../../contexts/SnackbarContext';
-import DashboardHeader from '../../components/Dashboard/DashboardHeader/DashboardHeader';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 
 interface Product {
@@ -97,12 +95,8 @@ const ProductsPage = () => {
     };
 
     return (
-        <Box sx={{ p: { xs: 2, md: 3 } }}>
-            <DashboardHeader
-                title="Solutions Catalog"
-                subtitle="Explore premium services and assets for your wedding protocol"
-            />
-
+        <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Product Management</Typography>
             <Grid container spacing={3} sx={{ mt: 1 }}>
                 {mockProducts.map((product) => (
                     <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
@@ -114,9 +108,8 @@ const ProductsPage = () => {
                                     image={product.image}
                                     alt={product.name}
                                 />
-                                <Chip
-                                    label={product.category}
-                                    size="small"
+                                <Typography
+                                    variant="caption"
                                     sx={{
                                         position: 'absolute',
                                         top: 12,
@@ -125,9 +118,13 @@ const ProductsPage = () => {
                                         backdropFilter: 'blur(4px)',
                                         fontWeight: 800,
                                         color: 'primary.main',
-                                        borderRadius: 1.5
+                                        borderRadius: 1.5,
+                                        px: 1,
+                                        py: 0.5
                                     }}
-                                />
+                                >
+                                    {product.category}
+                                </Typography>
                             </Box>
 
                             <Box sx={{ p: 2, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>

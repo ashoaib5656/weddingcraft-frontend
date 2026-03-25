@@ -1,27 +1,18 @@
+import { useMemo } from 'react';
 import {
     Box,
     Typography,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Chip,
     IconButton,
-    Button,
-    Tooltip,
     useTheme,
-    alpha
 } from '@mui/material';
 import {
-    ReceiptLong as BillIcon,
-    Download as DownloadIcon,
-    Visibility as ViewIcon,
-    CreditCard as PayIcon
+    MoreVert as MoreIcon,
+    ReceiptLong as BillIcon
 } from '@mui/icons-material';
-import DashboardHeader from '../../components/Dashboard/DashboardHeader/DashboardHeader';
+import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
+import TableComponent from '../../components/TableComponent/TableComponent';
+import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
 
 interface Bill {
     id: string;
@@ -37,6 +28,14 @@ const mockBills: Bill[] = [
     { id: '2', invoiceNumber: 'INV-2024-002', client: 'Meera & Rohan', amount: 250000, date: '2024-03-18', status: 'pending' },
     { id: '3', invoiceNumber: 'INV-2024-003', client: 'Priya & Vikram', amount: 680000, date: '2024-03-20', status: 'overdue' },
     { id: '4', invoiceNumber: 'INV-2024-004', client: 'Amit & Ritu', amount: 125000, date: '2024-03-22', status: 'pending' },
+    { id: '5', invoiceNumber: 'INV-2024-001', client: 'Arjun & Sneha', amount: 450000, date: '2024-03-15', status: 'paid' },
+    { id: '6', invoiceNumber: 'INV-2024-002', client: 'Meera & Rohan', amount: 250000, date: '2024-03-18', status: 'pending' },
+    { id: '7', invoiceNumber: 'INV-2024-003', client: 'Priya & Vikram', amount: 680000, date: '2024-03-20', status: 'overdue' },
+    { id: '8', invoiceNumber: 'INV-2024-004', client: 'Amit & Ritu', amount: 125000, date: '2024-03-22', status: 'pending' },
+    { id: '9', invoiceNumber: 'INV-2024-001', client: 'Arjun & Sneha', amount: 450000, date: '2024-03-15', status: 'paid' },
+    { id: '10', invoiceNumber: 'INV-2024-002', client: 'Meera & Rohan', amount: 250000, date: '2024-03-18', status: 'pending' },
+    { id: '11', invoiceNumber: 'INV-2024-003', client: 'Priya & Vikram', amount: 680000, date: '2024-03-20', status: 'overdue' },
+    { id: '12', invoiceNumber: 'INV-2024-004', client: 'Amit & Ritu', amount: 125000, date: '2024-03-22', status: 'pending' },
 ];
 
 const BillsPage = () => {
@@ -59,97 +58,119 @@ const BillsPage = () => {
         }).format(amount);
     };
 
-    return (
-        <Box sx={{ p: { xs: 2, md: 3 } }}>
-            <DashboardHeader
-                title="Financial Ledger"
-                subtitle="Track invoices, payments, and financial protocols"
-            />
-
-            <DashboardCard sx={{ mt: 3, p: 0 }}>
-                <Box sx={{ p: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${theme.dashboard.glassBorder}` }}>
-                    <Typography variant="h6" sx={{ fontWeight: 800 }}>Invoices</Typography>
-                    <Button
-                        variant="contained"
-                        size="small"
-                        startIcon={<DownloadIcon />}
-                        sx={{
-                            borderRadius: 2,
-                            textTransform: 'none',
-                            fontWeight: 700,
-                            bgcolor: alpha(theme.palette.primary.main, 0.1),
-                            color: 'primary.main',
-                            boxShadow: 'none',
-                            '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2), boxShadow: 'none' }
+    const columns = useMemo(
+        () => [
+            {
+                accessorKey: 'invoiceNumber',
+                header: 'Invoice #',
+                Cell: ({ row }: any) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
+                        <BillIcon sx={{ color: 'text.disabled', fontSize: 16 }} />
+                        <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '10px' }}>{row.original.invoiceNumber}</Typography>
+                    </Box>
+                ),
+            },
+            {
+                accessorKey: 'client',
+                header: 'Client / Event',
+                Cell: ({ cell }: any) => (
+                    <Typography variant="caption" sx={{ fontWeight: 500, fontSize: '10px' }}>{cell.getValue()}</Typography>
+                ),
+            },
+            {
+                accessorKey: 'amount',
+                header: 'Amount',
+                Cell: ({ cell }: any) => (
+                    <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.primary', fontSize: '10px' }}>
+                        {formatCurrency(cell.getValue() as number)}
+                    </Typography>
+                ),
+            },
+            {
+                accessorKey: 'date',
+                header: 'Due Date',
+                Cell: ({ cell }: any) => (
+                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '9px' }}>{cell.getValue()}</Typography>
+                ),
+            },
+            {
+                accessorKey: 'status',
+                header: 'Status',
+                Cell: ({ cell }: any) => (
+                    <Typography 
+                        variant="caption" 
+                        sx={{ 
+                            fontWeight: 900, 
+                            color: `${theme.palette[getStatusColor(cell.getValue() as Bill['status']) as 'success' | 'warning' | 'error' | 'info'].main}`, 
+                            textTransform: 'uppercase', 
+                            fontSize: '0.65rem' 
                         }}
                     >
-                        Export All
-                    </Button>
+                        {cell.getValue() as string}
+                    </Typography>
+                ),
+            },
+            {
+                accessorKey: 'actions',
+                header: 'Actions',
+                muiTableHeadCellProps: { align: 'center' as const },
+                muiTableBodyCellProps: { align: 'center' as const },
+                enableColumnFilter: false,
+                enableSorting: false,
+                Cell: () => (
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <IconButton size="small">
+                            <MoreIcon fontSize="small" />
+                        </IconButton>
+                    </Box>
+                ),
+            },
+        ],
+        [theme]
+    );
+
+    const table = useMaterialReactTable({
+        muiTopToolbarProps: { sx: { p: '14px' } },
+        columns,
+        data: mockBills,
+        enableColumnActions: false,
+        enableColumnFilters: true,
+        enableSorting: true,
+        enablePagination: true,
+        enableRowSelection: true,
+        enableGlobalFilter: true, // Added
+        initialState: {
+            pagination: { pageSize: 10, pageIndex: 0 },
+            showGlobalFilter: false,
+        },
+        muiTablePaperProps: {
+            elevation: 0,
+            sx: {
+                borderRadius: '0',
+                border: 'none',
+            },
+        },
+    });
+
+    return (
+        <Box sx={{ p: 0 }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Bills listing</Typography>            <DashboardCard sx={{ mt: 3, p: 0, overflow: 'hidden' }}>
+                <Box sx={{ p: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${theme.dashboard.glassBorder}` }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>Invoices</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <TableHeaderToolbar 
+                            table={table} 
+                            isSmall 
+                            ExcelData={{
+                                data: mockBills,
+                                fileName: 'Bills_Export'
+                            }}
+                        />
+                    </Box>
                 </Box>
 
-                <TableContainer>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell sx={{ fontWeight: 700, color: 'text.secondary' }}>Invoice #</TableCell>
-                                <TableCell sx={{ fontWeight: 700, color: 'text.secondary' }}>Client / Event</TableCell>
-                                <TableCell sx={{ fontWeight: 700, color: 'text.secondary' }}>Amount</TableCell>
-                                <TableCell sx={{ fontWeight: 700, color: 'text.secondary' }}>Due Date</TableCell>
-                                <TableCell sx={{ fontWeight: 700, color: 'text.secondary' }}>Status</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, color: 'text.secondary' }}>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {mockBills.map((bill) => (
-                                <TableRow key={bill.id} sx={{ '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.02) } }}>
-                                    <TableCell>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <BillIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
-                                            <Typography variant="body2" sx={{ fontWeight: 700 }}>{bill.invoiceNumber}</Typography>
-                                        </Box>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="body2" sx={{ fontWeight: 500 }}>{bill.client}</Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="body2" sx={{ fontWeight: 800, color: 'text.primary' }}>
-                                            {formatCurrency(bill.amount)}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>{bill.date}</Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Chip
-                                            label={bill.status}
-                                            size="small"
-                                            variant="outlined"
-                                            color={getStatusColor(bill.status)}
-                                            sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.65rem' }}
-                                        />
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <Tooltip title="View Details">
-                                            <IconButton size="small" sx={{ color: 'primary.main' }}>
-                                                <ViewIcon fontSize="small" />
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Tooltip title="Pay Now">
-                                            <IconButton size="small" sx={{ color: 'success.main', ml: 0.5 }}>
-                                                <PayIcon fontSize="small" />
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Tooltip title="Download PDF">
-                                            <IconButton size="small" sx={{ color: 'text.secondary', ml: 0.5 }}>
-                                                <DownloadIcon fontSize="small" />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <TableComponent table={table} />
+                <TableBottomToolbar table={table} />
             </DashboardCard>
         </Box>
     );

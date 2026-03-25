@@ -13,7 +13,6 @@ import {
     AccountBalance as BankIcon,
     Savings as SavingsIcon
 } from '@mui/icons-material';
-import DashboardHeader from '../../components/Dashboard/DashboardHeader/DashboardHeader';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 
 const Revenue = () => {
@@ -27,13 +26,8 @@ const Revenue = () => {
     ];
 
     return (
-        <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1600, margin: '0 auto' }}>
-            <DashboardHeader
-                title="Revenue & Analytics"
-                subtitle="Detailed financial overview of the WedsPot platform performance."
-                tag="Financials"
-            />
-
+        <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Revenue listing</Typography>
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {financeStats.map((stat, index) => (
                     <Grid item xs={12} sm={6} lg={3} key={index}>

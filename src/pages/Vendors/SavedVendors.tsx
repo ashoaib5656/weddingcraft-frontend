@@ -11,7 +11,6 @@ import {
     Delete as DeleteIcon,
     Store as StoreIcon
 } from '@mui/icons-material';
-import DashboardHeader from '../../components/Dashboard/DashboardHeader/DashboardHeader';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 
 const mockSavedVendors = [
@@ -23,12 +22,7 @@ const SavedVendorsPage = () => {
 
     return (
         <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1600, margin: '0 auto' }}>
-            <DashboardHeader
-                title="Saved Vendors"
-                subtitle="Manage the vendors you've favorited for your upcoming event."
-                tag="Collection"
-            />
-
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Saved Vendors listing</Typography>
             {mockSavedVendors.length > 0 ? (
                 <Grid container spacing={3}>
                     {mockSavedVendors.map((vendor) => (

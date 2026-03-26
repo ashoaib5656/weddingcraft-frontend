@@ -4,14 +4,11 @@ import {
     Typography,
     IconButton,
     Button,
-    Avatar,
     alpha,
     useTheme
 } from '@mui/material';
 import {
-    FilterList as FilterIcon,
-    MoreVert as MoreVertIcon,
-    Store as StoreIcon
+    MoreVert as MoreVertIcon
 } from '@mui/icons-material';
 import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
@@ -42,18 +39,22 @@ const VendorsPage = () => {
     const columns = useMemo(
         () => [
             {
+                accessorKey: 'id',
+                header: 'Vendor ID',
+                Cell: ({ cell }: any) => (
+                    <Typography sx={{ fontWeight: 700, fontSize: '12px', color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
+                )
+            },
+            {
                 accessorKey: 'name',
                 header: 'Vendor Details',
                 Cell: ({ row }: any) => {
                     const vendor = row.original;
                     return (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Avatar sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.1), color: theme.palette.secondary.main }}>
-                                <StoreIcon fontSize="small" />
-                            </Avatar>
                             <Box>
-                                <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{vendor.name}</Typography>
-                                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>ID: {vendor.id} • {vendor.contact}</Typography>
+                                <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>{vendor.name}</Typography>
+                                <Typography sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '11px' }}>Owner: {vendor.contact}</Typography>
                             </Box>
                         </Box>
                     );
@@ -63,14 +64,14 @@ const VendorsPage = () => {
                 accessorKey: 'category',
                 header: 'Category',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>{cell.getValue()}</Typography>
+                    <Typography sx={{ fontWeight: 600, fontSize: '12px', color: 'text.primary' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
                 accessorKey: 'location',
                 header: 'Location',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>{cell.getValue()}</Typography>
+                    <Typography sx={{ fontWeight: 600, fontSize: '12px', color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
@@ -78,10 +79,10 @@ const VendorsPage = () => {
                 header: 'Rating',
                 Cell: ({ cell }: any) => (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                        <Typography sx={{ fontSize: '0.9rem', fontWeight: 800, color: 'warning.main' }}>
-                            {cell.getValue()}
+                        <Typography sx={{ fontWeight: 800, color: 'warning.main', fontSize: '13px' }}>
+                            {cell.getValue() as string}
                         </Typography>
-                        <Typography sx={{ fontSize: '0.8rem', color: 'warning.main' }}>★</Typography>
+                        <Box component="span" sx={{ color: 'warning.main', fontWeight: 800, fontSize: '12px' }}>★</Box>
                     </Box>
                 )
             },
@@ -90,12 +91,12 @@ const VendorsPage = () => {
                 header: 'Status',
                 Cell: ({ cell }: any) => (
                     <Typography 
-                        variant="caption" 
                         sx={{ 
                             fontWeight: 900, 
                             color: `${theme.palette[getStatusColor(cell.getValue() as string) as 'success' | 'warning' | 'error' | 'info'].main}`, 
-                            textTransform: 'uppercase', 
-                            fontSize: '0.65rem' 
+                            fontSize: '10px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
                         }}
                     >
                         {cell.getValue() as string}
@@ -180,19 +181,6 @@ const VendorsPage = () => {
                         }}
                         actionButton={
                             <Box sx={{ display: 'flex', gap: 1.5 }}>
-                                <Button 
-                                    startIcon={<FilterIcon />} 
-                                    variant="outlined" 
-                                    size="small" 
-                                    sx={{ 
-                                        borderRadius: '10px',
-                                        height: '32px',
-                                        textTransform: 'none',
-                                        fontWeight: 700
-                                    }}
-                                >
-                                    Filter
-                                </Button>
                                 <Button 
                                     variant="contained" 
                                     size="small" 

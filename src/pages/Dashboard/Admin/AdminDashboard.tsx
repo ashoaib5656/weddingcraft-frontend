@@ -158,14 +158,11 @@ const AdminDashboard: React.FC = () => {
         <Grid item xs={12} md={8}>
           <DashboardCard noPadding>
             <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800 }}>Revenue Growth</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900, color: 'text.primary' }}>Revenue Growth</Typography>
               <Typography 
-                variant="caption" 
+                variant="overline" 
                 sx={{ 
-                  fontWeight: 900, 
                   color: theme.palette.primary.main, 
-                  textTransform: 'uppercase', 
-                  fontSize: '0.65rem' 
                 }}
               >
                 Monthly
@@ -211,7 +208,7 @@ const AdminDashboard: React.FC = () => {
         <Grid item xs={12} md={4}>
           <DashboardCard noPadding sx={{ minHeight: 520 }}>
             <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}` }}>
-              <Typography variant="h6" sx={{ fontWeight: 800 }}>Vendor Matrix</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900, color: 'text.primary' }}>Vendor Matrix</Typography>
             </Box>
             <Box 
               sx={{ 
@@ -326,7 +323,7 @@ const AdminDashboard: React.FC = () => {
           <DashboardCard sx={{ height: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                <Typography variant="h6" sx={{ fontWeight: 800 }}>Real-time Operations</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 900, color: 'text.primary' }}>Real-time Operations</Typography>
               </Box>
               <Button 
                 variant="outlined" 
@@ -389,30 +386,29 @@ const AdminDashboard: React.FC = () => {
                     </Box>
                     <Box sx={{ flexGrow: 1 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5, alignItems: 'center' }}>
-                        <Typography sx={{ fontWeight: 800, fontSize: '0.95rem', color: 'text.primary' }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>
                           {activity.name}
                         </Typography>
                         <Typography 
                           variant="caption" 
                           sx={{ 
-                            fontWeight: 900, 
                             color: 'text.secondary', 
-                            textTransform: 'uppercase', 
-                            fontSize: '0.65rem' 
+                            fontSize: '0.7rem',
+                            fontWeight: 600,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.02em'
                           }}
                         >
                           {activity.time}
                         </Typography>
                       </Box>
                       <Typography 
-                        variant="caption" 
+                        variant="overline" 
                         sx={{ 
                           color: paletteColor.main, 
-                          fontWeight: 800, 
                           mb: 0.5, 
                           display: 'inline-block',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px'
+                          letterSpacing: '0.05em'
                         }}
                       >
                         {activity.action}
@@ -425,10 +421,9 @@ const AdminDashboard: React.FC = () => {
                           p: 1.25,
                           px: 1.5,
                           borderRadius: '10px',
-                          fontSize: '0.8125rem',
                           border: `1px solid ${theme.dashboard.glassBorder}`,
                           borderLeft: `3px solid ${paletteColor.main}`,
-                          lineHeight: 1.5
+                          lineHeight: 1.6
                         }}
                       >
                         {activity.desc}
@@ -446,7 +441,7 @@ const AdminDashboard: React.FC = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             {/* Top Vendors */}
             <DashboardCard>
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 3 }}>Revenue Leaders</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900, mb: 3, color: 'text.primary' }}>Revenue Leaders</Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {topVendors.map((vendor, index) => (
                   <Box key={index} sx={{
@@ -455,21 +450,18 @@ const AdminDashboard: React.FC = () => {
                     background: 'rgba(255,255,255,0.4)',
                     border: `1px solid ${theme.dashboard.glassBorder}`
                   }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography sx={{ fontWeight: 800 }}>{vendor.name}</Typography>
-                      <Typography sx={{ fontWeight: 900, color: 'success.main' }}>{vendor.revenue}</Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, alignItems: 'center' }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>{vendor.name}</Typography>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 900, color: 'primary.main' }}>{vendor.revenue}</Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary' }}>
                         {vendor.bookings} Bookings
                       </Typography>
                       <Typography 
-                        variant="caption" 
+                        variant="overline" 
                         sx={{ 
-                          fontWeight: 900, 
                           color: 'warning.main', 
-                          textTransform: 'uppercase', 
-                          fontSize: '0.65rem',
                           display: 'flex',
                           alignItems: 'center',
                           gap: 0.2
@@ -506,7 +498,7 @@ const AdminDashboard: React.FC = () => {
                 pointerEvents: 'none'
               }} />
 
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 3, letterSpacing: '0.5px' }}>
+              <Typography variant="h5" sx={{ fontWeight: 900, mb: 3, color: 'text.primary' }}>
                 Operations Hub
               </Typography>
               
@@ -558,7 +550,7 @@ const AdminDashboard: React.FC = () => {
                     </Box>
                     <Box sx={{ flexGrow: 1, textAlign: 'left' }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography sx={{ fontWeight: 800, fontSize: '0.95rem' }}>{card.title}</Typography>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{card.title}</Typography>
                         {card.count && (
                           <Box sx={{ 
                             px: 1, 

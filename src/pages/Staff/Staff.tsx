@@ -4,7 +4,6 @@ import {
     Typography,
     IconButton,
     Button,
-    Avatar,
     alpha,
     useTheme
 } from '@mui/material';
@@ -41,18 +40,21 @@ const Staff = () => {
     const columns = useMemo(
         () => [
             {
+                accessorKey: 'id',
+                header: 'Staff ID',
+                Cell: ({ cell }: any) => (
+                    <Typography sx={{ fontWeight: 700, fontSize: '12px', color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
+                )
+            },
+            {
                 accessorKey: 'name',
                 header: 'Staff Name',
                 Cell: ({ row }: any) => {
                     const member = row.original;
                     return (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Avatar sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.1), color: theme.palette.secondary.main, fontWeight: 700 }}>
-                                {member.name.charAt(0)}
-                            </Avatar>
                             <Box>
-                                <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{member.name}</Typography>
-                                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>ID: {member.id}</Typography>
+                                <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>{member.name}</Typography>
                             </Box>
                         </Box>
                     );
@@ -62,7 +64,7 @@ const Staff = () => {
                 accessorKey: 'role',
                 header: 'Role',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontWeight: 600, fontSize: '12px', color: 'text.primary' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
@@ -75,11 +77,11 @@ const Staff = () => {
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <EmailIcon sx={{ fontSize: 13, color: 'text.secondary' }} />
-                                <Typography variant="caption" sx={{ fontWeight: 600 }}>{member.email}</Typography>
+                                <Typography sx={{ fontWeight: 600, fontSize: '11px', color: 'text.secondary' }}>{member.email}</Typography>
                             </Box>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <PhoneIcon sx={{ fontSize: 13, color: 'text.secondary' }} />
-                                <Typography variant="caption" sx={{ fontWeight: 600 }}>{member.phone}</Typography>
+                                <Typography sx={{ fontWeight: 600, fontSize: '11px', color: 'text.secondary' }}>{member.phone}</Typography>
                             </Box>
                         </Box>
                     );
@@ -90,12 +92,12 @@ const Staff = () => {
                 header: 'Status',
                 Cell: ({ cell }: any) => (
                     <Typography 
-                        variant="caption" 
                         sx={{ 
                             fontWeight: 900, 
                             color: `${theme.palette[getStatusColor(cell.getValue() as string) as 'success' | 'warning' | 'error' | 'info'].main}`, 
-                            textTransform: 'uppercase', 
-                            fontSize: '0.65rem' 
+                            fontSize: '10px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
                         }}
                     >
                         {cell.getValue() as string}

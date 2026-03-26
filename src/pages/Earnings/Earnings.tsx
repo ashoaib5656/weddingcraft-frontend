@@ -5,15 +5,13 @@ import {
     Grid,
     alpha,
     useTheme,
-    IconButton,
-    Button
+    IconButton
 } from '@mui/material';
 import {
     MoreVert as MoreIcon,
     Wallet as WalletIcon,
     TrendingUp as TrendingUpIcon,
     AccountBalance as BankIcon,
-    Download as DownloadIcon,
     ArrowUpward as ArrowUpIcon
 } from '@mui/icons-material';
 import { useMaterialReactTable } from 'material-react-table';
@@ -42,7 +40,7 @@ const EarningsPage = () => {
                 accessorKey: 'id',
                 header: 'Transaction ID',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontWeight: 600, fontSize: '11px', color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
@@ -53,8 +51,8 @@ const EarningsPage = () => {
                     const txn = row.original;
                     return (
                         <Box>
-                            <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{txn.client}</Typography>
-                            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>{txn.event}</Typography>
+                            <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>{txn.client}</Typography>
+                            <Typography sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '11px' }}>{txn.event}</Typography>
                         </Box>
                     );
                 }
@@ -63,14 +61,14 @@ const EarningsPage = () => {
                 accessorKey: 'amount',
                 header: 'Amount',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '0.9rem', fontWeight: 800 }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontSize: '13px', fontWeight: 800, color: 'text.primary' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
                 accessorKey: 'date',
                 header: 'Date',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontWeight: 700, color: 'text.secondary', fontSize: '11px' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
@@ -78,12 +76,12 @@ const EarningsPage = () => {
                 header: 'Status',
                 Cell: ({ cell }: any) => (
                     <Typography 
-                        variant="caption" 
                         sx={{ 
                             fontWeight: 900, 
                             color: `${theme.palette[cell.getValue() === 'Paid' ? 'success' : cell.getValue() === 'Pending' ? 'warning' : 'info'].main}`, 
-                            textTransform: 'uppercase', 
-                            fontSize: '0.65rem' 
+                            fontSize: '10px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
                         }}
                     >
                         {cell.getValue() as string}
@@ -134,7 +132,20 @@ const EarningsPage = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Earnings listing</Typography>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 4, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Earnings & Payouts
+            </Typography>
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {stats.map((stat, index) => (
                     <Grid item xs={12} sm={4} key={index}>
@@ -150,13 +161,13 @@ const EarningsPage = () => {
                                     {stat.icon}
                                 </Box>
                                 <Box>
-                                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: 'block' }}>
+                                    <Typography sx={{ color: 'text.secondary', fontWeight: 600, display: 'block', fontSize: '11px' }}>
                                         {stat.label}
                                     </Typography>
-                                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5 }}>
+                                    <Typography sx={{ fontWeight: 800, mt: 0.5, fontSize: '1.5rem', color: stat.color }}>
                                         {stat.value}
                                     </Typography>
-                                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'success.main', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                    <Typography sx={{ fontWeight: 800, color: 'success.main', display: 'flex', alignItems: 'center', gap: 0.5, fontSize: '11px' }}>
                                         <ArrowUpIcon sx={{ fontSize: 12 }} /> {stat.change}
                                     </Typography>
                                 </Box>
@@ -169,10 +180,9 @@ const EarningsPage = () => {
             <DashboardCard sx={{ mt: 3, p: 0, overflow: 'hidden' }}>
                 <Box sx={{ p: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2, borderBottom: `1px solid ${theme.dashboard?.glassBorder || alpha(theme.palette.divider, 0.1)}` }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography sx={{ fontWeight: 800 }}>Recent Transactions</Typography>
+                        <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>Recent Transactions</Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Button startIcon={<DownloadIcon />} variant="outlined" size="small" sx={{ borderRadius: '10px', fontWeight: 700 }}>Download Statement</Button>
                         <TableHeaderToolbar 
                             table={table} 
                             isSmall 

@@ -28,7 +28,20 @@ const AnalyticsPage = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Analytics listing</Typography>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 4, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Analytics & Insights
+            </Typography>
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {stats.map((stat, index) => (
@@ -36,10 +49,10 @@ const AnalyticsPage = () => {
                         <DashboardCard>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                 <Box>
-                                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: 'block', mb: 0.5 }}>
+                                    <Typography sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '11px', display: 'block', mb: 0.5 }}>
                                         {stat.label}
                                     </Typography>
-                                    <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
+                                    <Typography sx={{ fontWeight: 800, mb: 1, fontSize: '1.5rem', color: stat.color }}>
                                         {stat.value}
                                     </Typography>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -49,15 +62,15 @@ const AnalyticsPage = () => {
                                             <ArrowDownIcon sx={{ fontSize: 16, color: 'error.main' }} />
                                         )}
                                         <Typography
-                                            variant="caption"
                                             sx={{
-                                                fontWeight: 700,
+                                                fontWeight: 800,
+                                                fontSize: '11px',
                                                 color: stat.trend === 'up' ? 'success.main' : 'error.main'
                                             }}
                                         >
                                             {stat.change}
                                         </Typography>
-                                        <Typography variant="caption" sx={{ color: 'text.secondary', ml: 0.5 }}>vs last month</Typography>
+                                        <Typography sx={{ color: 'text.secondary', ml: 0.5, fontSize: '11px', fontWeight: 500 }}>vs last month</Typography>
                                     </Box>
                                 </Box>
                                 <Box sx={{
@@ -79,11 +92,11 @@ const AnalyticsPage = () => {
                 <Grid item xs={12} lg={8}>
                     <DashboardCard sx={{ height: 400 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-                            <Typography sx={{ fontWeight: 800 }}>Revenue Growth (Last 6 Months)</Typography>
+                            <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>Revenue Growth (Last 6 Months)</Typography>
                             <Box sx={{ display: 'flex', gap: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                     <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: 'primary.main' }} />
-                                    <Typography variant="caption" sx={{ fontWeight: 600 }}>Revenue</Typography>
+                                    <Typography sx={{ fontWeight: 600, fontSize: '11px', color: 'text.secondary' }}>Revenue</Typography>
                                 </Box>
                             </Box>
                         </Box>
@@ -112,7 +125,7 @@ const AnalyticsPage = () => {
                                             opacity: 0.8
                                         }} />
                                     </Box>
-                                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary' }}>
+                                    <Typography sx={{ fontWeight: 800, color: 'text.secondary', fontSize: '10px', textTransform: 'uppercase' }}>
                                         {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'][i]}
                                     </Typography>
                                 </Box>
@@ -133,8 +146,8 @@ const AnalyticsPage = () => {
                             ].map((category, i) => (
                                 <Box key={i}>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                                        <Typography variant="caption" sx={{ fontWeight: 700 }}>{category.name}</Typography>
-                                        <Typography variant="caption" sx={{ fontWeight: 700 }}>{category.value}%</Typography>
+                                        <Typography sx={{ fontWeight: 800, fontSize: '11px', color: 'text.primary' }}>{category.name}</Typography>
+                                        <Typography sx={{ fontWeight: 800, fontSize: '11px', color: 'text.secondary' }}>{category.value}%</Typography>
                                     </Box>
                                     <LinearProgress
                                         variant="determinate"

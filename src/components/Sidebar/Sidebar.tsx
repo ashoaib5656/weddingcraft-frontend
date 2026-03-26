@@ -59,7 +59,6 @@ const Sidebar = (): JSX.Element => {
   const getGlobalItems = () => {
     return [
       { text: "Chatbot", icon: icons.Chat, path: "/chatbot" },
-      { text: "Home", icon: icons.Home, path: "/" },
       { text: "Profile", icon: icons.Profile, path: "/profile" },
     ];
   };

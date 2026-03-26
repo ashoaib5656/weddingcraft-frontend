@@ -27,7 +27,20 @@ const Revenue = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Revenue listing</Typography>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 4, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.success.main}, ${theme.palette.primary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Revenue Analytics
+            </Typography>
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {financeStats.map((stat, index) => (
                     <Grid item xs={12} sm={6} lg={3} key={index}>
@@ -43,13 +56,13 @@ const Revenue = () => {
                                     {stat.icon}
                                 </Box>
                                 <Box>
-                                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: 'block' }}>
+                                    <Typography sx={{ color: 'text.secondary', fontWeight: 600, display: 'block', fontSize: '11px' }}>
                                         {stat.label}
                                     </Typography>
-                                    <Typography variant="h5" sx={{ fontWeight: 800 }}>
+                                    <Typography sx={{ fontWeight: 800, fontSize: '1.5rem', color: stat.color }}>
                                         {stat.value}
                                     </Typography>
-                                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'success.main', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                    <Typography sx={{ fontWeight: 800, color: 'success.main', display: 'flex', alignItems: 'center', gap: 0.5, fontSize: '11px' }}>
                                         <ArrowUpIcon sx={{ fontSize: 12 }} /> {stat.change}
                                     </Typography>
                                 </Box>
@@ -62,7 +75,7 @@ const Revenue = () => {
             <Grid container spacing={3}>
                 <Grid item xs={12} lg={8}>
                     <DashboardCard sx={{ height: 400 }}>
-                        <Typography sx={{ fontWeight: 800, mb: 4 }}>Revenue Trend (Annual)</Typography>
+                        <Typography sx={{ fontWeight: 900, mb: 4, color: 'text.primary', fontSize: '14px' }}>Revenue Trend (Annual)</Typography>
                         <Box sx={{ height: 300, display: 'flex', alignItems: 'flex-end', gap: 1.5, px: 2 }}>
                             {[30, 45, 60, 40, 70, 85, 95, 80, 75, 90, 100, 110].map((h, i) => (
                                 <Box key={i} sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
@@ -74,7 +87,7 @@ const Revenue = () => {
                                         transition: '0.3s',
                                         '&:hover': { bgcolor: 'primary.main' }
                                     }} />
-                                    <Typography variant="caption" sx={{ fontSize: '0.65rem', fontWeight: 700, color: 'text.secondary' }}>
+                                    <Typography sx={{ fontSize: '10px', fontWeight: 800, color: 'text.secondary', textTransform: 'uppercase' }}>
                                         {['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][i]}
                                     </Typography>
                                 </Box>
@@ -85,7 +98,7 @@ const Revenue = () => {
 
                 <Grid item xs={12} lg={4}>
                     <DashboardCard sx={{ height: 400 }}>
-                        <Typography sx={{ fontWeight: 800, mb: 4 }}>Revenue Sources</Typography>
+                        <Typography sx={{ fontWeight: 900, mb: 4, color: 'text.primary', fontSize: '14px' }}>Revenue Sources</Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                             {[
                                 { name: 'Subscription Fees', value: 35, color: '#7c3aed' },
@@ -95,8 +108,8 @@ const Revenue = () => {
                             ].map((src, i) => (
                                 <Box key={i}>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
-                                        <Typography variant="caption" sx={{ fontWeight: 700 }}>{src.name}</Typography>
-                                        <Typography variant="caption" sx={{ fontWeight: 700 }}>{src.value}%</Typography>
+                                        <Typography sx={{ fontWeight: 800, fontSize: '11px', color: 'text.primary' }}>{src.name}</Typography>
+                                        <Typography sx={{ fontWeight: 800, fontSize: '11px', color: 'text.secondary' }}>{src.value}%</Typography>
                                     </Box>
                                     <LinearProgress
                                         variant="determinate"

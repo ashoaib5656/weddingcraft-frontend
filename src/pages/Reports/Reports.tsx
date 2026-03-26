@@ -9,7 +9,8 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-    Divider
+    Divider,
+    IconButton
 } from '@mui/material';
 import {
     Description as ReportIcon,
@@ -33,7 +34,20 @@ const Reports = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Reports listing</Typography>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 4, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Analytics Reports
+            </Typography>
 
             <Grid container spacing={3}>
                 {reportTypes.map((report, index) => (
@@ -51,7 +65,7 @@ const Reports = () => {
                                         {report.icon}
                                     </Box>
                                     <Box>
-                                        <Typography sx={{ fontWeight: 800, fontSize: '1rem' }}>{report.title}</Typography>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{report.title}</Typography>
                                         <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
                                             {report.date} • {report.size}
                                         </Typography>
@@ -69,30 +83,33 @@ const Reports = () => {
 
             <Box sx={{ mt: 5 }}>
                 <DashboardCard>
-                    <Typography variant="h6" sx={{ fontWeight: 800, mb: 3 }}>Recent Report Requests</Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 900, mb: 3, color: 'text.primary' }}>Recent Report Requests</Typography>
                     <List disablePadding>
                         {[1, 2, 3].map((_, i) => (
                             <Box key={i}>
-                                <ListItem sx={{ py: 2 }}>
+                                <ListItem 
+                                    sx={{ py: 2 }}
+                                    secondaryAction={
+                                        <Typography 
+                                            variant="overline" 
+                                            sx={{ 
+                                                fontWeight: 900, 
+                                                color: 'text.disabled', 
+                                                fontSize: '0.75rem' 
+                                            }}
+                                        >
+                                            Queued
+                                        </Typography>
+                                    }
+                                >
                                     <ListItemIcon sx={{ minWidth: 40 }}>
                                         <ReportIcon color="action" />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={`Custom Report Request #${1024 + i}`}
                                         secondary="Requested by Admin • Processing"
-                                        primaryTypographyProps={{ fontWeight: 700, fontSize: '0.9rem' }}
+                                        primaryTypographyProps={{ variant: 'subtitle2', sx: { fontWeight: 700 } }}
                                     />
-                                    <Typography 
-                                        variant="caption" 
-                                        sx={{ 
-                                            fontWeight: 900, 
-                                            color: 'text.disabled', 
-                                            textTransform: 'uppercase', 
-                                            fontSize: '0.65rem' 
-                                        }}
-                                    >
-                                        Queued
-                                    </Typography>
                                 </ListItem>
                                 {i < 2 && <Divider />}
                             </Box>
@@ -100,29 +117,6 @@ const Reports = () => {
                     </List>
                 </DashboardCard>
             </Box>
-        </Box>
-    );
-};
-
-// Mock IconButton
-const IconButton = ({ children }: any) => {
-    const theme = useTheme();
-    return (
-        <Box
-            component="button"
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                p: 0.5,
-                borderRadius: 1,
-                border: 'none',
-                bgcolor: 'transparent',
-                cursor: 'pointer',
-                '&:hover': { bgcolor: alpha(theme.palette.text.primary, 0.05) }
-            }}
-        >
-            {children}
         </Box>
     );
 };

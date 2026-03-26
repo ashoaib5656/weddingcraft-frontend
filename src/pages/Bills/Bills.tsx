@@ -65,8 +65,8 @@ const BillsPage = () => {
                 header: 'Invoice #',
                 Cell: ({ row }: any) => (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
-                        <BillIcon sx={{ color: 'text.disabled', fontSize: 16 }} />
-                        <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '10px' }}>{row.original.invoiceNumber}</Typography>
+                        <BillIcon sx={{ color: 'text.disabled', fontSize: 14 }} />
+                        <Typography sx={{ fontWeight: 700, fontSize: '11px', color: 'text.secondary' }}>{row.original.invoiceNumber}</Typography>
                     </Box>
                 ),
             },
@@ -74,14 +74,14 @@ const BillsPage = () => {
                 accessorKey: 'client',
                 header: 'Client / Event',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="caption" sx={{ fontWeight: 500, fontSize: '10px' }}>{cell.getValue()}</Typography>
+                    <Typography sx={{ fontWeight: 600, fontSize: '12px', color: 'text.primary' }}>{cell.getValue() as string}</Typography>
                 ),
             },
             {
                 accessorKey: 'amount',
                 header: 'Amount',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.primary', fontSize: '10px' }}>
+                    <Typography sx={{ fontWeight: 800, color: 'text.primary', fontSize: '13px' }}>
                         {formatCurrency(cell.getValue() as number)}
                     </Typography>
                 ),
@@ -90,7 +90,7 @@ const BillsPage = () => {
                 accessorKey: 'date',
                 header: 'Due Date',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '9px' }}>{cell.getValue()}</Typography>
+                    <Typography sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '11px' }}>{cell.getValue() as string}</Typography>
                 ),
             },
             {
@@ -98,12 +98,12 @@ const BillsPage = () => {
                 header: 'Status',
                 Cell: ({ cell }: any) => (
                     <Typography 
-                        variant="caption" 
                         sx={{ 
                             fontWeight: 900, 
                             color: `${theme.palette[getStatusColor(cell.getValue() as Bill['status']) as 'success' | 'warning' | 'error' | 'info'].main}`, 
                             textTransform: 'uppercase', 
-                            fontSize: '0.65rem' 
+                            fontSize: '10px',
+                            letterSpacing: '0.05em'
                         }}
                     >
                         {cell.getValue() as string}
@@ -153,8 +153,21 @@ const BillsPage = () => {
     });
 
     return (
-        <Box sx={{ p: 0 }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Bills listing</Typography>            <DashboardCard sx={{ mt: 3, p: 0, overflow: 'hidden' }}>
+        <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 4, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Bills Management
+            </Typography>            <DashboardCard sx={{ mt: 3, p: 0, overflow: 'hidden' }}>
                 <Box sx={{ p: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${theme.dashboard.glassBorder}` }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>Invoices</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

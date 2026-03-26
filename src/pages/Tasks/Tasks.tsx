@@ -45,7 +45,20 @@ const Tasks = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 800, margin: '0 auto' }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Tasks listing</Typography>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 4, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Task Pipeline
+            </Typography>
             <DashboardCard>
                 <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
                     <TextField
@@ -93,19 +106,18 @@ const Tasks = () => {
                                     </Box>
                                 }
                                 primaryTypographyProps={{
+                                    variant: 'subtitle2',
                                     fontWeight: 700,
-                                    fontSize: '0.95rem',
                                     sx: { textDecoration: task.completed ? 'line-through' : 'none' }
                                 }}
                             />
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Typography 
-                                    variant="caption" 
+                                    variant="overline" 
                                     sx={{ 
                                         fontWeight: 900, 
                                         color: `${theme.palette[getPriorityColor(task.priority) as 'success' | 'warning' | 'error' | 'info'].main}`, 
-                                        textTransform: 'uppercase', 
-                                        fontSize: '0.65rem' 
+                                        fontSize: '0.75rem' 
                                     }}
                                 >
                                     {task.priority}

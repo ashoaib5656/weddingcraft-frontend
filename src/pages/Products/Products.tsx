@@ -1,21 +1,14 @@
 import {
     Box,
     Typography,
-    Grid,
-    CardMedia,
-    Button,
-    Rating,
-    IconButton
+    Grid
 } from '@mui/material';
-import {
-    Favorite as FavoriteIcon,
-    ShoppingCart as CartIcon
-} from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../store/slices/cartSlice';
 import { type RootState } from '../../store';
+import { useTheme } from '@mui/material/styles';
 import { useSnackbar } from '../../contexts/SnackbarContext';
-import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
+import Product from '../../components/Product/Product';
 
 interface Product {
     id: string;
@@ -28,7 +21,7 @@ interface Product {
     image: string;
 }
 
-const mockProducts: Product[] = [
+const mockProducts: any[] = [
     {
         id: '1',
         name: 'Royal Heritage Banquet',
@@ -37,7 +30,8 @@ const mockProducts: Product[] = [
         numericPrice: 250000,
         rating: 4.8,
         reviews: 124,
-        image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=800'
+        badge: 'Popular',
+        image: '/assets/products/minimal_product_showcase_4k_1774508739394.png'
     },
     {
         id: '2',
@@ -47,7 +41,8 @@ const mockProducts: Product[] = [
         numericPrice: 1500,
         rating: 4.9,
         reviews: 89,
-        image: 'https://images.unsplash.com/photo-1530103043960-ef38714abb15?auto=format&fit=crop&q=80&w=800'
+        badge: 'New',
+        image: '/assets/products/lifestyle_product_elegant_4k_1774508758859.png'
     },
     {
         id: '3',
@@ -57,7 +52,7 @@ const mockProducts: Product[] = [
         numericPrice: 120000,
         rating: 4.7,
         reviews: 56,
-        image: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800'
+        image: '/assets/products/closeup_texture_premium_4k_1774508774359.png'
     },
     {
         id: '4',
@@ -67,11 +62,12 @@ const mockProducts: Product[] = [
         numericPrice: 85000,
         rating: 4.9,
         reviews: 210,
-        image: 'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&q=80&w=800'
+        image: '/assets/products/ui_style_mock_presentation_4k_1774508791055.png'
     },
 ];
 
 const ProductsPage = () => {
+    const theme = useTheme();
     const dispatch = useDispatch();
     const { success, info } = useSnackbar();
     const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -96,79 +92,35 @@ const ProductsPage = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Product Management</Typography>
-            <Grid container spacing={3} sx={{ mt: 1 }}>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 5, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Premium Vendors
+            </Typography>
+            <Grid container spacing={4}>
                 {mockProducts.map((product) => (
                     <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-                        <DashboardCard sx={{ p: 0, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                            <Box sx={{ position: 'relative' }}>
-                                <CardMedia
-                                    component="img"
-                                    height="200"
-                                    image={product.image}
-                                    alt={product.name}
-                                />
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        position: 'absolute',
-                                        top: 12,
-                                        right: 12,
-                                        bgcolor: 'rgba(255,255,255,0.9)',
-                                        backdropFilter: 'blur(4px)',
-                                        fontWeight: 800,
-                                        color: 'primary.main',
-                                        borderRadius: 1.5,
-                                        px: 1,
-                                        py: 0.5
-                                    }}
-                                >
-                                    {product.category}
-                                </Typography>
-                            </Box>
-
-                            <Box sx={{ p: 2, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                                    <Typography variant="body1" sx={{ fontWeight: 800, color: 'text.primary', lineHeight: 1.2 }}>
-                                        {product.name}
-                                    </Typography>
-                                    <IconButton size="small" sx={{ color: 'error.light', p: 0.5 }}>
-                                        <FavoriteIcon fontSize="small" />
-                                    </IconButton>
-                                </Box>
-
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1.5 }}>
-                                    <Rating value={product.rating} precision={0.1} size="small" readOnly />
-                                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-                                        ({product.reviews})
-                                    </Typography>
-                                </Box>
-
-                                <Typography variant="h6" sx={{ color: 'secondary.main', fontWeight: 800, mb: 2 }}>
-                                    {product.price}
-                                </Typography>
-
-                                <Box sx={{ mt: 'auto', display: 'flex', gap: 1 }}>
-                                    <Button
-                                        fullWidth
-                                        variant="contained"
-                                        size="small"
-                                        startIcon={<CartIcon />}
-                                        onClick={() => handleAddToCart(product)}
-                                        sx={{
-                                            borderRadius: 2,
-                                            textTransform: 'none',
-                                            fontWeight: 700,
-                                            bgcolor: 'primary.main',
-                                            boxShadow: 'none',
-                                            '&:hover': { bgcolor: 'primary.dark', boxShadow: 'none' }
-                                        }}
-                                    >
-                                        Quick Book
-                                    </Button>
-                                </Box>
-                            </Box>
-                        </DashboardCard>
+                        <Product
+                            id={product.id}
+                            title={product.name}
+                            subtitle={product.category}
+                            price={product.price}
+                            image={product.image}
+                            badge={product.badge}
+                            onAction={(e) => {
+                                e.stopPropagation();
+                                handleAddToCart(product);
+                            }}
+                        />
                     </Grid>
                 ))}
             </Grid>

@@ -54,7 +54,7 @@ const UsersPage = () => {
                     return (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <Box>
-                                <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary' }}>{user.name}</Typography>
+                                <Typography sx={{ fontSize: '13px', fontWeight: 800, color: 'text.primary' }}>{user.name}</Typography>
                             </Box>
                         </Box>
                     );
@@ -64,7 +64,7 @@ const UsersPage = () => {
                 accessorKey: 'email',
                 header: 'Email',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                    <Typography sx={{ fontSize: '12px', color: 'text.secondary', fontWeight: 500 }}>
                         {cell.getValue() as string}
                     </Typography>
                 )
@@ -76,7 +76,7 @@ const UsersPage = () => {
                 muiTableBodyCellProps: { align: 'center' as const },
                 Cell: ({ cell }: any) => (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>{cell.getValue() as string}</Typography>
+                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: 'text.primary' }}>{cell.getValue() as string}</Typography>
                     </Box>
                 )
             },
@@ -90,12 +90,12 @@ const UsersPage = () => {
                     return (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, justifyContent: 'center' }}>
                             <Typography 
-                                variant="caption" 
                                 sx={{ 
                                     fontWeight: 900, 
                                     color: `${theme.palette[getStatusColor(status as any) as 'success' | 'warning' | 'error' | 'info'].main}`, 
+                                    fontSize: '10px',
                                     textTransform: 'uppercase', 
-                                    fontSize: '0.65rem' 
+                                    letterSpacing: '0.05em'
                                 }}
                             >
                                 {status}
@@ -108,7 +108,7 @@ const UsersPage = () => {
                 accessorKey: 'lastSeen',
                 header: 'Recent Activity',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500 }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontSize: '11px', color: 'text.secondary', fontWeight: 500 }}>{cell.getValue() as string}</Typography>
                 )
             },
             {

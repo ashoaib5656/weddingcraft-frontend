@@ -130,15 +130,13 @@ const StaffDashboard: React.FC = () => {
         <Grid item xs={12} md={8}>
           <DashboardCard sx={{ height: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-              <Typography variant="h6" sx={{ fontWeight: 800 }}>Operation Board</Typography>
-              <Typography 
-                variant="caption" 
-                sx={{ 
-                  fontWeight: 900, 
-                  color: 'success.main', 
-                  textTransform: 'uppercase', 
-                  fontSize: '0.65rem' 
-                }}
+              <Typography variant="h5" sx={{ fontWeight: 900, color: 'text.primary' }}>Operation Board</Typography>
+              <Typography                  variant="overline" 
+                  sx={{ 
+                    fontWeight: 900, 
+                    color: 'success.main', 
+                    fontSize: '0.75rem' 
+                  }}
               >
                 3 Active
               </Typography>
@@ -196,7 +194,7 @@ const StaffDashboard: React.FC = () => {
         <Grid item xs={12} md={4}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <DashboardCard sx={{ bgcolor: '#0f172a', color: 'white' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 3 }}>Attendance Hub</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900, mb: 3, color: 'text.primary' }}>Action Hub</Typography>
               <Stack spacing={2}>
                 {actionCards.map((card, index) => (
                   <Button key={index} fullWidth sx={{
@@ -222,7 +220,7 @@ const StaffDashboard: React.FC = () => {
                       <card.icon sx={{ fontSize: 20 }} />
                     </Box>
                     <Box sx={{ flexGrow: 1, textAlign: 'left' }}>
-                      <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{card.title}</Typography>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{card.title}</Typography>
                       <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>{card.desc}</Typography>
                     </Box>
                     <Typography 

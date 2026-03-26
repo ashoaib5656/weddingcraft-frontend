@@ -35,7 +35,7 @@ const Managers = () => {
                     return (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <Box>
-                                <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{manager.name}</Typography>
+                                <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>{manager.name}</Typography>
                             </Box>
                         </Box>
                     );
@@ -46,11 +46,10 @@ const Managers = () => {
                 header: 'Email',
                 Cell: ({ cell }: any) => (
                     <Typography 
-                        variant="caption" 
                         sx={{ 
                             color: 'text.secondary', 
                             fontWeight: 600,
-                            fontSize: '0.85rem'
+                            fontSize: '12px'
                         }}
                     >
                         {cell.getValue() as string}
@@ -61,14 +60,14 @@ const Managers = () => {
                 accessorKey: 'department',
                 header: 'Department',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontWeight: 600, fontSize: '12px', color: 'text.primary' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
                 accessorKey: 'joined',
                 header: 'Joined Date',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontWeight: 700, color: 'text.secondary', fontSize: '11px' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
@@ -76,12 +75,12 @@ const Managers = () => {
                 header: 'Status',
                 Cell: ({ cell }: any) => (
                     <Typography 
-                        variant="caption" 
                         sx={{ 
                             fontWeight: 900, 
                             color: `${theme.palette[cell.getValue() === 'Active' ? 'success' : 'warning'].main}`, 
-                            textTransform: 'uppercase', 
-                            fontSize: '0.65rem' 
+                            fontSize: '10px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
                         }}
                     >
                         {cell.getValue() as string}

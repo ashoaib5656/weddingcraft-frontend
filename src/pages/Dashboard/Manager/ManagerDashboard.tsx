@@ -140,7 +140,7 @@ const ManagerDashboard: React.FC = () => {
         <Grid item xs={12} md={6}>
           <DashboardCard sx={{ height: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-              <Typography variant="h6" sx={{ fontWeight: 800 }}>Active Personnel</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900, color: 'text.primary' }}>Active Personnel</Typography>
               <Button variant="text" sx={{ color: theme.palette.secondary.main, fontWeight: 700 }}>View All Staff</Button>
             </Box>
             <Stack spacing={2}>
@@ -156,7 +156,7 @@ const ManagerDashboard: React.FC = () => {
                     <Box sx={{ display: 'flex', gap: 2 }}>
                       <Avatar src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${member.name}`} />
                       <Box>
-                        <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{member.name}</Typography>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{member.name}</Typography>
                         <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>{member.role}</Typography>
                       </Box>
                     </Box>
@@ -189,7 +189,7 @@ const ManagerDashboard: React.FC = () => {
         {/* Event Pipeline */}
         <Grid item xs={12} md={6}>
           <DashboardCard sx={{ height: '100%' }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 4 }}>Event Pipeline</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 900, mb: 3, color: 'text.primary' }}>Upcoming Schedule</Typography>
             <Stack spacing={2}>
               {upcomingEvents.map((event, index) => (
                 <Box key={index} sx={{

@@ -104,7 +104,14 @@ const ClientDashboard: React.FC = () => {
 
   return (
     <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Client Dashboard</Typography>
+        <Typography variant="h4" sx={{ 
+          fontWeight: 900, 
+          mb: 4, 
+          background: `linear-gradient(45deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          display: 'inline-block'
+        }}>Client Dashboard</Typography>
       {/* Hero Header Section */}
       <DashboardCard
         sx={{
@@ -122,7 +129,7 @@ const ClientDashboard: React.FC = () => {
                 Wedding Journey
               </Typography>
             </Box>
-            <Typography variant="h3" sx={{ fontWeight: 800, mb: 2, color: 'text.primary' }}>
+            <Typography variant="h3" sx={{ fontWeight: 900, mb: 2, color: 'text.primary' }}>
               {weddingDetails.bride} & {weddingDetails.groom}
             </Typography>
             <Box sx={{ display: 'flex', gap: 3, mb: 3, flexWrap: 'wrap' }}>
@@ -138,7 +145,7 @@ const ClientDashboard: React.FC = () => {
 
             <Box sx={{ maxWidth: 400 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary' }}>Planning Progress</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary' }}>Planning Progress</Typography>
                 <Typography variant="caption" sx={{ fontWeight: 800, color: theme.palette.secondary.main }}>{weddingDetails.progress}%</Typography>
               </Box>
               <LinearProgress
@@ -188,7 +195,7 @@ const ClientDashboard: React.FC = () => {
         <Grid item xs={12}>
           <DashboardCard sx={{ p: 0, overflow: 'hidden' }}>
             <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800 }}>Financial Overview</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900, mb: 3, color: 'text.primary' }}>Budget Overview</Typography>
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <Typography 
                   variant="caption" 
@@ -262,7 +269,7 @@ const ClientDashboard: React.FC = () => {
         <Grid item xs={12} md={8}>
           <DashboardCard sx={{ height: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-              <Typography variant="h6" sx={{ fontWeight: 800 }}>Curated Vendors</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900 }}>Booked Vendors</Typography>
               <Button variant="text" sx={{ color: theme.palette.secondary.main, fontWeight: 700 }}>Manage All</Button>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -347,7 +354,7 @@ const ClientDashboard: React.FC = () => {
                       <card.icon sx={{ fontSize: 20 }} />
                     </Box>
                     <Box sx={{ flexGrow: 1, textAlign: 'left' }}>
-                      <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{card.title}</Typography>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{card.title}</Typography>
                       <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>{card.desc}</Typography>
                     </Box>
                     {card.count && (
@@ -372,7 +379,7 @@ const ClientDashboard: React.FC = () => {
               <Avatar sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.1), color: theme.palette.secondary.main, width: 60, height: 60 }}>
                 <CakeIcon sx={{ fontSize: 32 }} />
               </Avatar>
-              <Typography variant="h6" sx={{ fontWeight: 800 }}>Keep Planning!</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 900, mb: 3, color: 'text.primary' }}>Planning Tools</Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
                 You've confirmed 68% of your wedding essentials. Almost there!
               </Typography>

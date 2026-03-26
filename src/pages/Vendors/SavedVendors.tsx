@@ -2,53 +2,78 @@ import {
     Box,
     Typography,
     Grid,
-    CardMedia,
-    Button,
-    Rating,
-    IconButton
+    IconButton,
+    Button
 } from '@mui/material';
 import {
     Delete as DeleteIcon,
     Store as StoreIcon
 } from '@mui/icons-material';
-import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
+import Product from '../../components/Product/Product';
+import { alpha, useTheme } from '@mui/material/styles';
 
 const mockSavedVendors = [
-    { id: '1', name: 'Royal Heritage Banquet', category: 'Venue', rating: 4.8, image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=800' },
-    { id: '3', name: 'Cinematic Visuals (4K)', category: 'Photography', rating: 4.7, image: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800' },
+    { 
+        id: '1', 
+        name: 'Royal Heritage Banquet', 
+        category: 'Venue', 
+        rating: 4.8, 
+        image: '/assets/products/minimal_product_showcase_4k_1774508739394.png' 
+    },
+    { 
+        id: '3', 
+        name: 'Cinematic Visuals (4K)', 
+        category: 'Photography', 
+        rating: 4.7, 
+        image: '/assets/products/lifestyle_product_elegant_4k_1774508758859.png' 
+    },
 ];
 
 const SavedVendorsPage = () => {
+    const theme = useTheme();
 
     return (
         <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Saved Vendors listing</Typography>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 5, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Saved Vendors listing
+            </Typography>
             {mockSavedVendors.length > 0 ? (
-                <Grid container spacing={3}>
+                <Grid container spacing={4}>
                     {mockSavedVendors.map((vendor) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} key={vendor.id}>
-                            <DashboardCard sx={{ p: 0, overflow: 'hidden' }}>
-                                <CardMedia
-                                    component="img"
-                                    height="160"
-                                    image={vendor.image}
-                                    alt={vendor.name}
-                                />
-                                <Box sx={{ p: 2 }}>
-                                    <Typography variant="body1" sx={{ fontWeight: 800, mb: 0.5 }}>{vendor.name}</Typography>
-                                    <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', fontWeight: 600, mb: 1 }}>
-                                        {vendor.category}
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 2 }}>
-                                        <Rating value={vendor.rating} size="small" readOnly precision={0.1} />
-                                        <Typography variant="caption" sx={{ fontWeight: 700 }}>{vendor.rating}</Typography>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', gap: 1 }}>
-                                        <Button variant="contained" fullWidth size="small" sx={{ borderRadius: 2 }}>Book Now</Button>
-                                        <IconButton size="small" color="error"><DeleteIcon fontSize="small" /></IconButton>
-                                    </Box>
-                                </Box>
-                            </DashboardCard>
+                            <Product
+                                id={vendor.id}
+                                title={vendor.name}
+                                subtitle={vendor.category}
+                                image={vendor.image}
+                                rating={vendor.rating}
+                                actionLabel="Book Now"
+                                onAction={() => console.log('Booking', vendor.name)}
+                                secondaryAction={
+                                    <IconButton 
+                                        size="small" 
+                                        sx={{ 
+                                            color: 'error.main',
+                                            bgcolor: alpha(theme.palette.error.main, 0.05),
+                                            borderRadius: '12px',
+                                            '&:hover': { bgcolor: alpha(theme.palette.error.main, 0.1) }
+                                        }}
+                                    >
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                }
+                            />
                         </Grid>
                     ))}
                 </Grid>

@@ -50,7 +50,7 @@ const RequestsPage = () => {
                 accessorKey: 'id',
                 header: 'Request ID',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontSize: '11px', color: 'text.secondary', fontWeight: 600 }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
@@ -60,7 +60,7 @@ const RequestsPage = () => {
                     const request = row.original;
                     return (
                         <Box>
-                            <Typography sx={{ fontWeight: 500, fontSize: '0.9rem' }}>{request.subject}</Typography>
+                            <Typography sx={{ fontSize: '13px', fontWeight: 700, color: 'text.primary' }}>{request.subject}</Typography>
                         </Box>
                     );
                 }
@@ -70,7 +70,7 @@ const RequestsPage = () => {
                 accessorFn: (row: any) => currentRole === 'client' ? row.category : row.sender,
                 header: currentRole === 'client' ? 'Category' : 'Client Name',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                    <Typography sx={{ fontSize: '12px', fontWeight: 600, color: 'text.primary' }}>
                         {cell.getValue() as string}
                     </Typography>
                 )
@@ -79,7 +79,7 @@ const RequestsPage = () => {
                 accessorKey: 'date',
                 header: 'Date',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontSize: '11px', fontWeight: 700, color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
@@ -87,12 +87,12 @@ const RequestsPage = () => {
                 header: 'Type',
                 Cell: ({ cell }: any) => (
                     <Typography
-                        variant="caption"
                         sx={{
                             fontWeight: 900,
                             color: 'primary.main',
+                            fontSize: '10px',
                             textTransform: 'uppercase',
-                            fontSize: '0.65rem'
+                            letterSpacing: '0.05em'
                         }}
                     >
                         {cell.getValue() as string}
@@ -104,12 +104,12 @@ const RequestsPage = () => {
                 header: 'Status',
                 Cell: ({ cell }: any) => (
                     <Typography 
-                        variant="caption" 
                         sx={{ 
                             fontWeight: 900, 
                             color: `${theme.palette[getStatusColor(cell.getValue() as string) as 'success' | 'warning' | 'error' | 'info'].main}`, 
-                            textTransform: 'uppercase', 
-                            fontSize: '0.65rem' 
+                            fontSize: '10px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
                         }}
                     >
                         {cell.getValue() as string}
@@ -166,7 +166,20 @@ const RequestsPage = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Requests listing</Typography>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 4, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Requests Management
+            </Typography>
             <DashboardCard sx={{ mt: 3, p: 0, overflow: 'hidden' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, pt: 1, bgcolor: alpha(theme.palette.primary.main, 0.02) }}>
                     <Tabs
@@ -182,20 +195,31 @@ const RequestsPage = () => {
                     </Tabs>
                 </Box>
 
-                <Box sx={{ p: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2, borderBottom: `1px solid ${theme.dashboard?.glassBorder || alpha(theme.palette.divider, 0.1)}` }}>
-                    <Box sx={{ display: 'flex', gap: 1.5 }}>
-                        {currentRole === 'client' && <Button variant="contained" size="small" sx={{ borderRadius: '10px' }}>New Request</Button>}
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <TableHeaderToolbar 
-                            table={table} 
-                            isSmall 
-                            ExcelData={{
-                                data: mockRequests,
-                                fileName: 'Requests_Export'
-                            }}
-                        />
-                    </Box>
+                <Box sx={{ p: '14px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'wrap', gap: 2, borderBottom: `1px solid ${theme.dashboard?.glassBorder || alpha(theme.palette.divider, 0.1)}` }}>
+                    <TableHeaderToolbar 
+                        table={table} 
+                        isSmall 
+                        ExcelData={{
+                            data: mockRequests,
+                            fileName: 'Requests_Export'
+                        }}
+                        actionButton={
+                            currentRole === 'client' && (
+                                <Button 
+                                    variant="contained" 
+                                    size="small" 
+                                    sx={{ 
+                                        borderRadius: '10px',
+                                        textTransform: 'none',
+                                        fontWeight: 700,
+                                        px: 2
+                                    }}
+                                >
+                                    New Request
+                                </Button>
+                            )
+                        }
+                    />
                 </Box>
 
                 <TableComponent table={table} />

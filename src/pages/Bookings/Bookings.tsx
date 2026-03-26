@@ -52,11 +52,10 @@ const BookingsPage = () => {
                 header: 'Booking ID',
                 Cell: ({ cell }: any) => (
                     <Typography 
-                        variant="caption" 
                         sx={{ 
                             color: 'text.secondary', 
-                            fontWeight: 700,
-                            fontSize: '0.85rem'
+                            fontWeight: 600,
+                            fontSize: '11px'
                         }}
                     >
                         {cell.getValue() as string}
@@ -70,9 +69,9 @@ const BookingsPage = () => {
                     const booking = row.original;
                     return (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Box>
-                                <Typography sx={{ fontWeight: 700, fontSize: '0.9rem' }}>{booking.title}</Typography>
-                            </Box>
+                        <Box>
+                            <Typography sx={{ fontWeight: 700, fontSize: '13px', color: 'text.primary' }}>{booking.title}</Typography>
+                        </Box>
                         </Box>
                     );
                 }
@@ -82,7 +81,7 @@ const BookingsPage = () => {
                 accessorFn: (row: any) => currentRole === 'vendor' ? row.client : row.vendor,
                 header: currentRole === 'vendor' ? 'Client' : 'Vendor',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                    <Typography sx={{ fontSize: '12px', fontWeight: 600, color: 'text.primary' }}>
                         {cell.getValue() as string}
                     </Typography>
                 )
@@ -91,14 +90,14 @@ const BookingsPage = () => {
                 accessorKey: 'date',
                 header: 'Date',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="caption" sx={{ fontWeight: 700 }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontSize: '11px', fontWeight: 700, color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
                 accessorKey: 'amount',
                 header: 'Amount',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '0.85rem', fontWeight: 700 }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>{cell.getValue() as string}</Typography>
                 )
             },
             {
@@ -106,12 +105,12 @@ const BookingsPage = () => {
                 header: 'Status',
                 Cell: ({ cell }: any) => (
                     <Typography 
-                        variant="caption" 
                         sx={{ 
                             fontWeight: 900, 
                             color: `${theme.palette[getStatusColor(cell.getValue() as string) as 'success' | 'warning' | 'error' | 'info'].main}`, 
-                            textTransform: 'uppercase', 
-                            fontSize: '0.65rem' 
+                            fontSize: '10px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em'
                         }}
                     >
                         {cell.getValue() as string}
@@ -160,7 +159,20 @@ const BookingsPage = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, mb: 3 }}>Bookings listing</Typography>            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3, gap: 1 }}>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    fontWeight: 900, 
+                    mb: 4, 
+                    letterSpacing: '-0.02em',
+                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'inline-block'
+                }}
+            >
+                Bookings Management
+            </Typography>            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3, gap: 1 }}>
                 <Button
                     startIcon={<ListIcon />}
                     variant={viewMode === 'list' ? 'contained' : 'outlined'}

@@ -13,14 +13,21 @@ const TableComponent = ({ table }: any) => {
               {headerGroup.headers.map((header: any) => (
                 <TableCell
                   sx={{
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    letterSpacing: '0.5px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
                     color: theme.palette.primary.contrastText || '#ffff',
                     borderLeft: `0.6px solid ${theme.dashboard?.glassBorder || '#ecf0f5'}`,
+                    py: 1,
+                    px: 2,
                     minWidth: '150px',
                     '& .MuiCheckbox-root': {
                       color: 'rgba(255, 255, 255, 0.7)',
+                      p: 0.5,
+                      '& .MuiSvgIcon-root': {
+                        fontSize: '18px'
+                      }
                     },
                     '& .MuiCheckbox-root.Mui-checked': {
                       color: '#ffffff',
@@ -43,7 +50,19 @@ const TableComponent = ({ table }: any) => {
             <TableRow key={row.id} selected={row.getIsSelected()}>
               {row.getVisibleCells().map((cell: any) => (
                 <TableCell
-                  style={{ fontSize: '10px', padding: '3px', border: `1px solid ${theme.dashboard?.glassBorder || '#ecf0f5'}` }}
+                  sx={{ 
+                    fontSize: '12px', 
+                    fontWeight: 500,
+                    padding: '6px 14px', 
+                    border: `1px solid ${theme.dashboard?.glassBorder || '#ecf0f5'}`,
+                    color: 'text.primary',
+                    '& .MuiCheckbox-root': {
+                      p: 0.5,
+                      '& .MuiSvgIcon-root': {
+                        fontSize: '18px'
+                      }
+                    }
+                  }}
                   align="center"
                   variant="body"
                   key={cell.id}

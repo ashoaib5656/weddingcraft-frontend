@@ -1,13 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
     Box,
     Typography,
     IconButton,
     Button,
     alpha,
-    useTheme,
-    Tabs,
-    Tab
+    useTheme
 } from '@mui/material';
 import {
     MoreVert as MoreIcon
@@ -30,7 +28,6 @@ const mockRequests = [
 const RequestsPage = () => {
     const theme = useTheme();
     const { role } = useAuth();
-    const [tabValue, setTabValue] = useState(0);
 
     const currentRole = role?.toLowerCase() || 'client';
 
@@ -135,11 +132,7 @@ const RequestsPage = () => {
         [currentRole]
     );
 
-    const filteredRequests = useMemo(() => {
-        if (tabValue === 1) return mockRequests.filter(r => r.type === 'Inquiry');
-        if (tabValue === 2) return mockRequests.filter(r => r.type === 'Booking');
-        return mockRequests;
-    }, [tabValue]);
+    const filteredRequests = useMemo(() => mockRequests, []);
 
     const table = useMaterialReactTable({
         muiTopToolbarProps: { sx: { p: '14px' } },
@@ -181,20 +174,6 @@ const RequestsPage = () => {
                 Requests Management
             </Typography>
             <DashboardCard sx={{ mt: 3, p: 0, overflow: 'hidden' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2, pt: 1, bgcolor: alpha(theme.palette.primary.main, 0.02) }}>
-                    <Tabs
-                        value={tabValue}
-                        onChange={(_, newValue) => setTabValue(newValue)}
-                        sx={{
-                            '& .MuiTab-root': { fontWeight: 700, textTransform: 'none', fontSize: '0.95rem' }
-                        }}
-                    >
-                        <Tab label="All Requests" />
-                        <Tab label="Inquiries" />
-                        <Tab label="Bookings" />
-                    </Tabs>
-                </Box>
-
                 <Box sx={{ p: '14px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'wrap', gap: 2, borderBottom: `1px solid ${theme.dashboard?.glassBorder || alpha(theme.palette.divider, 0.1)}` }}>
                     <TableHeaderToolbar 
                         table={table} 

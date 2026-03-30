@@ -9,7 +9,7 @@ import {
     Button,
     Chip
 } from '@mui/material';
-import { ShoppingCart as CartIcon, Star as StarIcon } from '@mui/icons-material';
+import { Star as StarIcon } from '@mui/icons-material';
 
 /**
  * Interface for Product component props

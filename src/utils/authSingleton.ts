@@ -1,7 +1,7 @@
-
 let accessToken: string | null = null;
 let role: string | null = null;
 let userName: string | null = null;
+let email: string | null = null;
 
 export const authStore = {
   getAccessToken: (): string | null => accessToken,
@@ -11,5 +11,7 @@ export const authStore = {
   getRole: () => role,
   setRole: (r: string | null) => { role = r; },
   getUserName: () => userName,
-  setUserName: (name: string | null) => { userName = name; }
+  setUserName: (name: string | null) => { userName = name; },
+  getEmail: () => email,
+  setEmail: (e: string | null) => { email = e; }
 };

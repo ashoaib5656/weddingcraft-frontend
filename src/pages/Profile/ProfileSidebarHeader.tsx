@@ -6,17 +6,20 @@ import {
     IconButton,
     Divider,
     alpha,
-    useTheme
+    useTheme,
+    Button
 } from "@mui/material";
 import {
     CameraAlt as CameraIcon,
     Email as EmailIcon,
     LocationOn as PinIcon,
     VerifiedUser as ShieldCheckIcon,
-    CalendarMonth as CalendarIcon
+    CalendarMonth as CalendarIcon,
+    Logout as LogoutIcon
 } from "@mui/icons-material";
 import { getInitials } from "../../utils/userUtils";
 import DashboardCard from "../../components/Dashboard/DashboardCard/DashboardCard";
+import { useAuth } from "../../contexts/Auth/useAuth";
 
 interface InfoItemProps {
     icon: React.ReactNode;
@@ -55,6 +58,15 @@ interface ProfileSidebarHeaderProps {
 
 const ProfileSidebarHeader: React.FC<ProfileSidebarHeaderProps> = ({ userName, role }) => {
     const theme = useTheme();
+    const { logout } = useAuth();
+
+    const onLogout = async () => {
+        try {
+            await logout();
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
 
     return (
         <DashboardCard noPadding sx={{ height: '100%', overflow: 'hidden' }}>
@@ -110,6 +122,29 @@ const ProfileSidebarHeader: React.FC<ProfileSidebarHeaderProps> = ({ userName, r
                         <InfoItem icon={<ShieldCheckIcon fontSize="small" />} label="Status" value="Verified Account" colorType="success" />
                         <InfoItem icon={<CalendarIcon fontSize="small" />} label="Joined" value="January 12, 2024" />
                     </Box>
+
+                    <Divider sx={{ my: 4, mx: -3 }} />
+
+                    {/* Logout Action */}
+                    <Button
+                        variant="outlined"
+                        fullWidth
+                        startIcon={<LogoutIcon />}
+                        onClick={onLogout}
+                        sx={{
+                            py: 1.5,
+                            borderRadius: 3,
+                            fontWeight: 700,
+                            color: theme.palette.error.main,
+                            borderColor: alpha(theme.palette.error.main, 0.3),
+                            '&:hover': {
+                                bgcolor: alpha(theme.palette.error.main, 0.05),
+                                borderColor: theme.palette.error.main,
+                            },
+                        }}
+                    >
+                        Sign Out
+                    </Button>
                 </Box>
             </Box>
         </DashboardCard>

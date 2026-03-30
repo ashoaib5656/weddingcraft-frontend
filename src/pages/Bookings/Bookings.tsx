@@ -5,21 +5,19 @@ import {
     IconButton,
     Button,
     alpha,
-    useTheme,
-    Grid,
+    useTheme
 } from '@mui/material';
 import {
     CalendarMonth as CalendarIcon,
     List as ListIcon,
-    MoreVert as MoreVertIcon,
-    LocationOn as LocationIcon,
-    Person as PersonIcon
+    MoreVert as MoreVertIcon
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/Auth/useAuth';
 import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
+import PremiumCalendar from '../../components/Calendar/PremiumCalendar';
 
 // Mock data for bookings
 const mockBookings = [
@@ -159,36 +157,40 @@ const BookingsPage = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography 
-                variant="h4" 
-                sx={{ 
-                    fontWeight: 900, 
-                    mb: 4, 
-                    letterSpacing: '-0.02em',
-                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    display: 'inline-block'
-                }}
-            >
-                Bookings Management
-            </Typography>            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3, gap: 1 }}>
-                <Button
-                    startIcon={<ListIcon />}
-                    variant={viewMode === 'list' ? 'contained' : 'outlined'}
-                    onClick={() => setViewMode('list')}
-                    size="small"
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+                <Typography 
+                    variant="h4" 
+                    sx={{ 
+                        fontWeight: 900, 
+                        letterSpacing: '-0.02em',
+                        background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        display: 'inline-block'
+                    }}
                 >
-                    List View
-                </Button>
-                <Button
-                    startIcon={<CalendarIcon />}
-                    variant={viewMode === 'calendar' ? 'contained' : 'outlined'}
-                    onClick={() => setViewMode('calendar')}
-                    size="small"
-                >
-                    Calendar
-                </Button>
+                    Bookings Management
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                        startIcon={<ListIcon />}
+                        variant={viewMode === 'list' ? 'contained' : 'outlined'}
+                        onClick={() => setViewMode('list')}
+                        size="small"
+                        sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 700 }}
+                    >
+                        List View
+                    </Button>
+                    <Button
+                        startIcon={<CalendarIcon />}
+                        variant={viewMode === 'calendar' ? 'contained' : 'outlined'}
+                        onClick={() => setViewMode('calendar')}
+                        size="small"
+                        sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 700 }}
+                    >
+                        Calendar
+                    </Button>
+                </Box>
             </Box>
 
             {viewMode === 'list' ? (
@@ -207,56 +209,10 @@ const BookingsPage = () => {
                     <TableBottomToolbar table={table} />
                 </DashboardCard>
             ) : (
-                <Grid container spacing={3}>
-                    {[1, 2, 3, 4].map(i => (
-                        <Grid item xs={12} md={6} lg={4} key={i}>
-                            <DashboardCard sx={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
-                                <Box sx={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    width: 4,
-                                    height: '100%',
-                                    bgcolor: theme.palette.primary.main
-                                }} />
-                                <Typography variant="h6" sx={{ fontWeight: 800, mb: 1, fontSize: '1rem' }}>
-                                    {mockBookings[i - 1]?.title || 'Upcoming Event'}
-                                </Typography>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                                    <CalendarIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                                    <Typography variant="caption" sx={{ fontWeight: 600 }}>{mockBookings[i - 1]?.date || 'TBD'}</Typography>
-                                </Box>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                                    <LocationOnIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                                    <Typography variant="caption" sx={{ fontWeight: 600 }}>Mumbai Palace, Worli</Typography>
-                                </Box>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <PersonIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                                    <Typography variant="caption" sx={{ fontWeight: 600 }}>{mockBookings[i - 1]?.client || 'Guest'}</Typography>
-                                </Box>
-                                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography 
-                                        variant="caption" 
-                                        sx={{ 
-                                            fontWeight: 900, 
-                                            color: 'success.main', 
-                                            textTransform: 'uppercase', 
-                                            fontSize: '0.65rem' 
-                                        }}
-                                    >
-                                        Confirmed
-                                    </Typography>
-                                    <Button size="small" sx={{ fontSize: '0.7rem', fontWeight: 700 }}>View Details</Button>
-                                </Box>
-                            </DashboardCard>
-                        </Grid>
-                    ))}
-                </Grid>
+                <PremiumCalendar bookings={mockBookings as any} />
             )}
         </Box>
     );
 };
-
-const LocationOnIcon = ({ sx, ...props }: any) => <LocationIcon sx={sx} {...props} />;
 
 export default BookingsPage;

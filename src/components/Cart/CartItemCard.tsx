@@ -3,7 +3,6 @@ import {
     Box,
     Typography,
     IconButton,
-    Button,
     Card,
     CardMedia,
     alpha,
@@ -20,7 +19,6 @@ export interface CartItemProps {
     name: string;
     description: string;
     price: string | number;
-    numericPrice: number;
     image: string;
     quantity: number;
     category?: string;
@@ -37,7 +35,6 @@ const CartItemCard: React.FC<CartItemProps> = ({
     name,
     description,
     price,
-    numericPrice,
     image,
     quantity,
     category,

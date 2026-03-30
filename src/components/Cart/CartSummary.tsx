@@ -24,7 +24,6 @@ export interface CartSummaryProps {
 const CartSummary: React.FC<CartSummaryProps> = ({
     subtotal,
     tax = 0,
-    shipping = 0,
     total,
     onCheckout,
     disabled = false

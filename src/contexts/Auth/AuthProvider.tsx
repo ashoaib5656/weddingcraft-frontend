@@ -9,6 +9,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const [accessToken, setAccessTokenState] = useState<string | null>(localStorage.getItem("authToken"));
     const [role, setRoleState] = useState<string | null>(localStorage.getItem("userRole"));
     const [userName, setUserNameState] = useState<string | null>(localStorage.getItem("userName"));
+    const [email, setEmailState] = useState<string | null>(localStorage.getItem("userEmail"));
 
     const setAccessToken = useCallback((t: string | null) => {
         setAccessTokenState(t);
@@ -31,17 +32,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         else localStorage.removeItem("userName");
     }, []);
 
+    const setEmail = useCallback((e: string | null) => {
+        setEmailState(e);
+        authStore.setEmail(e);
+        if (e) localStorage.setItem("userEmail", e);
+        else localStorage.removeItem("userEmail");
+    }, []);
+
     useEffect(() => {
         authStore.setAccessToken(accessToken);
         authStore.setRole(role);
         authStore.setUserName(userName);
-    }, [accessToken, role, userName]);
+        authStore.setEmail(email);
+    }, [accessToken, role, userName, email]);
 
     const login = useCallback(
         async (email: string, password: string) => {
             const response = await AUTH_SERVICE.login({ email, password });
             if (response.ok) {
-                // Handle response where data might be at top level or nested in 'data'
                 const authData = response.data || response;
                 const token = authData.accessToken ?? null;
                 const role = authData.role ?? null;
@@ -50,10 +58,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 setAccessToken(token);
                 setRole(role);
                 setUserName(name);
+                setEmail(email); // Store the email used for login
             }
             return response;
         },
-        [setAccessToken, setRole, setUserName]
+        [setAccessToken, setRole, setUserName, setEmail]
     );
 
     const logout = useCallback(async () => {
@@ -65,7 +74,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setAccessToken(null);
         setRole(null);
         setUserName(null);
-    }, [setAccessToken, setRole, setUserName]);
+        setEmail(null);
+    }, [setAccessToken, setRole, setUserName, setEmail]);
 
     const register = useCallback(
         async (email: string, password: string, phone: string) => {
@@ -74,10 +84,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 setAccessToken(response.data?.accessToken ?? null);
                 setRole(response.data?.role ?? null);
                 setUserName(response.data?.name ?? response.data?.role ?? null);
+                setEmail(email);
             }
             return response;
         },
-        [setAccessToken, setRole, setUserName]
+        [setAccessToken, setRole, setUserName, setEmail]
     );
 
     return (
@@ -86,9 +97,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 accessToken,
                 role,
                 userName,
+                email,
                 setAccessToken,
                 setRole,
                 setUserName,
+                setEmail,
                 login,
                 logout,
                 register,

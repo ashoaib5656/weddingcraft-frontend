@@ -15,9 +15,90 @@ import {
     ArrowDownward as ArrowDownIcon
 } from '@mui/icons-material';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
+import Chart from 'react-apexcharts';
 
 const AnalyticsPage = () => {
     const theme = useTheme();
+
+    const chartOptions: any = {
+        chart: {
+            type: 'area',
+            toolbar: { show: false },
+            fontFamily: theme.typography.fontFamily,
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800,
+            },
+            sparkline: { enabled: false }
+        },
+        dataLabels: { enabled: false },
+        stroke: {
+            curve: 'smooth',
+            width: 3,
+            colors: [theme.palette.primary.main]
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [20, 100],
+                colorStops: [
+                    { offset: 0, color: theme.palette.primary.main, opacity: 0.4 },
+                    { offset: 100, color: theme.palette.primary.main, opacity: 0.05 }
+                ]
+            }
+        },
+        grid: {
+            borderColor: alpha(theme.palette.divider, 0.1),
+            strokeDashArray: 4,
+            padding: { top: 10, right: 20, bottom: 0, left: 10 }
+        },
+        xaxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            axisBorder: { show: false },
+            axisTicks: { show: false },
+            labels: {
+                style: {
+                    colors: theme.palette.text.secondary,
+                    fontWeight: 600,
+                    fontSize: '10px'
+                }
+            }
+        },
+        yaxis: {
+            labels: {
+                style: {
+                    colors: theme.palette.text.secondary,
+                    fontWeight: 600,
+                    fontSize: '10px'
+                },
+                formatter: (val: number) => `${val}%`
+            }
+        },
+        tooltip: {
+            theme: theme.palette.mode,
+            x: { show: true },
+            y: {
+                formatter: (val: number) => `${val}% Growth`
+            },
+            marker: { show: true }
+        },
+        markers: {
+            size: 5,
+            colors: [theme.palette.primary.main],
+            strokeColors: theme.palette.background.paper,
+            strokeWidth: 2,
+            hover: { size: 7 }
+        }
+    };
+
+    const chartSeries = [{
+        name: 'Revenue Growth',
+        data: [60, 45, 75, 50, 90, 85]
+    }];
 
     const stats = [
         { label: 'Total Revenue', value: '₹12,45,000', change: '+12.5%', trend: 'up', icon: <MoneyIcon />, color: '#22c55e' },
@@ -91,45 +172,23 @@ const AnalyticsPage = () => {
             <Grid container spacing={3}>
                 <Grid item xs={12} lg={8}>
                     <DashboardCard sx={{ height: 400 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-                            <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>Revenue Growth (Last 6 Months)</Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                            <Typography sx={{ fontWeight: 800, fontSize: '14px', color: 'text.primary' }}>Revenue Growth (Last 6 Months)</Typography>
                             <Box sx={{ display: 'flex', gap: 2 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                     <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: 'primary.main' }} />
-                                    <Typography sx={{ fontWeight: 600, fontSize: '11px', color: 'text.secondary' }}>Revenue</Typography>
+                                    <Typography sx={{ fontWeight: 600, fontSize: '11px', color: 'text.secondary' }}>Growth %</Typography>
                                 </Box>
                             </Box>
                         </Box>
 
-                        {/* Visual placeholder for chart */}
-                        <Box sx={{ height: 280, display: 'flex', alignItems: 'flex-end', gap: 2, px: 2 }}>
-                            {[60, 45, 75, 50, 90, 85].map((height, i) => (
-                                <Box key={i} sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-                                    <Box sx={{
-                                        width: '100%',
-                                        height: `${height}%`,
-                                        bgcolor: alpha(theme.palette.primary.main, 0.2),
-                                        borderRadius: '8px 8px 0 0',
-                                        position: 'relative',
-                                        transition: '0.3s',
-                                        '&:hover': { bgcolor: 'primary.main' }
-                                    }}>
-                                        <Box sx={{
-                                            position: 'absolute',
-                                            bottom: 0,
-                                            left: 0,
-                                            width: '100%',
-                                            height: '30%',
-                                            bgcolor: 'primary.main',
-                                            borderRadius: i === 0 || i === 5 ? '8px 8px 0 0' : 0,
-                                            opacity: 0.8
-                                        }} />
-                                    </Box>
-                                    <Typography sx={{ fontWeight: 800, color: 'text.secondary', fontSize: '10px', textTransform: 'uppercase' }}>
-                                        {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'][i]}
-                                    </Typography>
-                                </Box>
-                            ))}
+                        <Box sx={{ height: 300, width: '100%', mt: 2 }}>
+                            <Chart
+                                options={chartOptions}
+                                series={chartSeries}
+                                type="area"
+                                height="100%"
+                            />
                         </Box>
                     </DashboardCard>
                 </Grid>

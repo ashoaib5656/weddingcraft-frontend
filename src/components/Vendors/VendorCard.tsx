@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import { 
     LocationOn as LocationIcon, 
-    ArrowForward as ArrowIcon,
     Stars as StarsIcon,
     CheckCircle as CheckIcon,
     ShoppingCart as CartIcon,
@@ -27,10 +26,9 @@ import CateringDialog from './CateringDialog';
 
 interface VendorCardProps {
     vendor: Vendor;
-    actions?: React.ReactNode;
 }
 
-const VendorCard: React.FC<VendorCardProps> = ({ vendor, actions }) => {
+const VendorCard: React.FC<VendorCardProps> = ({ vendor }) => {
     const theme = useTheme();
     const navigate = useNavigate();
     const { addToCart, isItemInCart } = useCart();

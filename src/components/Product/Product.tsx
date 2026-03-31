@@ -11,38 +11,21 @@ import {
 } from '@mui/material';
 import { Star as StarIcon } from '@mui/icons-material';
 
-/**
- * Interface for Product component props
- */
 export interface ProductProps {
-    /** Product ID */
     id: string;
-    /** Product name/title */
     title: string;
-    /** Short description or category */
     subtitle: string;
-    /** Formatted price string (optional) */
     price?: string;
-    /** Image URL */
     image: string;
-    /** Optional badge text (e.g., "Popular", "New") */
     badge?: string;
-    /** Optional rating */
     rating?: number;
-    /** Optional action button label (default: "Reserve") */
     actionLabel?: string;
-    /** Callback when card is clicked */
     onClick?: () => void;
-    /** Callback when book/buy button is clicked */
     onAction?: (e: React.MouseEvent) => void;
-    /** Optional secondary action (e.g., delete button) */
     secondaryAction?: React.ReactNode;
 }
 
-/**
- * Premium Minimalist Product Card Component
- * Optimized for MUI v5 and a high-end SaaS/Marketplace aesthetic.
- */
+
 const Product: React.FC<ProductProps> = ({
     title,
     subtitle,
@@ -82,10 +65,9 @@ const Product: React.FC<ProductProps> = ({
                 }
             }}
         >
-            {/* Image Section - 16:9 Aspect Ratio */}
             <Box sx={{ 
                 position: 'relative', 
-                pt: '56.25%', // 16:9 aspect ratio
+                pt: '56.25%', 
                 width: '100%',
                 overflow: 'hidden',
                 borderRadius: '16px',

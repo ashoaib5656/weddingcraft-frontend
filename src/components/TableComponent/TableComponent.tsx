@@ -5,7 +5,7 @@ const TableComponent = ({ table }: any) => {
   const theme = useTheme();
 
   return (
-    <TableContainer sx={{ overflow: 'visible' }}>
+    <TableContainer sx={{ overflowX: 'auto', maxWidth: '100%', WebkitOverflowScrolling: 'touch' }}>
       <Table>
         <TableHead style={{ background: theme.palette.primary.main }}>
           {table.getHeaderGroups().map((headerGroup: any) => (
@@ -14,14 +14,14 @@ const TableComponent = ({ table }: any) => {
                 <TableCell
                   sx={{
                     fontSize: '11px',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     textTransform: 'uppercase',
                     letterSpacing: '0.05em',
                     color: theme.palette.primary.contrastText || '#ffff',
                     borderLeft: `0.6px solid ${theme.dashboard?.glassBorder || '#ecf0f5'}`,
                     py: 1,
-                    px: 2,
-                    minWidth: '150px',
+                    px: 1,
+                    minWidth: { xs: '100px', md: '150px' },
                     '& .MuiCheckbox-root': {
                       color: 'rgba(255, 255, 255, 0.7)',
                       p: 0.5,
@@ -51,11 +51,13 @@ const TableComponent = ({ table }: any) => {
               {row.getVisibleCells().map((cell: any) => (
                 <TableCell
                   sx={{ 
-                    fontSize: '12px', 
+                    fontSize: { xs: '11px', md: '13px' }, 
                     fontWeight: 500,
-                    padding: '6px 14px', 
+                    padding: '8px 14px', 
                     border: `1px solid ${theme.dashboard?.glassBorder || '#ecf0f5'}`,
                     color: 'text.primary',
+                    whiteSpace: 'normal',
+                    wordBreak: 'break-word',
                     '& .MuiCheckbox-root': {
                       p: 0.5,
                       '& .MuiSvgIcon-root': {

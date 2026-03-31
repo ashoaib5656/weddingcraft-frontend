@@ -35,6 +35,8 @@ import ProtectedRoute from "./contexts/Auth/requiresRole";
 import PublicRoute from "./contexts/Auth/PublicRoute";
 import { UserRole } from "./Types/auth.types";
 import BillsPage from "./pages/Bills/Bills";
+import PremiumVendors from "./pages/Vendors/PremiumVendors";
+import VendorDetails from "./pages/Vendors/VendorDetails";
 
 export const router = createBrowserRouter([
     {
@@ -135,7 +137,8 @@ export const router = createBrowserRouter([
                 path: "client",
                 element: <ProtectedRoute allowedRoles={[UserRole.CLIENT]} />,
                 children: [
-                    { path: "vendors", element: <Products /> },
+                    { path: "vendors", element: <PremiumVendors /> },
+                    { path: "vendors/:id", element: <VendorDetails /> },
                     { path: "requests", element: <Requests /> },
                     { path: "bookings", element: <Bookings /> },
                     { path: "saved", element: <SavedVendors /> },
@@ -145,6 +148,10 @@ export const router = createBrowserRouter([
             {
                 path: "products",
                 element: <Products />,
+            },
+            {
+                path: "products/:id",
+                element: <VendorDetails />,
             },
             {
                 path: "profile",

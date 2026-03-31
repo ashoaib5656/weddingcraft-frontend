@@ -1,11 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
     Box,
     Typography,
     IconButton,
     Button,
     alpha,
-    useTheme
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
 import {
     MoreVert as MoreIcon
@@ -27,6 +28,7 @@ const mockRequests = [
 
 const RequestsPage = () => {
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { role } = useAuth();
 
     const currentRole = role?.toLowerCase() || 'client';
@@ -134,6 +136,9 @@ const RequestsPage = () => {
 
     const filteredRequests = useMemo(() => mockRequests, []);
 
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [showGlobalFilter, setShowGlobalFilter] = useState(false);
+
     const table = useMaterialReactTable({
         muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
@@ -144,16 +149,23 @@ const RequestsPage = () => {
         enablePagination: true,
         enableRowSelection: true,
         enableGlobalFilter: true,
-        initialState: {
-            pagination: { pageSize: 10, pageIndex: 0 },
-            showGlobalFilter: false,
-        },
+        onGlobalFilterChange: setGlobalFilter,
+        onShowGlobalFilterChange: setShowGlobalFilter,
         muiTablePaperProps: {
             elevation: 0,
             sx: {
                 borderRadius: '0',
                 border: 'none',
             },
+        },
+        state: {
+            globalFilter,
+            showGlobalFilter,
+            columnVisibility: {
+                id: !isMobile,
+                date: !isMobile,
+                type: !isMobile,
+            }
         },
     });
 
@@ -165,6 +177,7 @@ const RequestsPage = () => {
                     fontWeight: 900, 
                     mb: 4, 
                     letterSpacing: '-0.02em',
+                    fontSize: { xs: '1.5rem', md: '2.125rem' },
                     background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',

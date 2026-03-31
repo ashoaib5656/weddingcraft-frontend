@@ -10,6 +10,8 @@ import { router } from './router';
 import { Provider } from 'react-redux';
 import { store } from './store';
 
+import { CartProvider } from './contexts/CartContext';
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
@@ -17,7 +19,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <CssBaseline />
         <AuthProvider>
           <SnackbarProvider>
-            <RouterProvider router={router} />
+            <CartProvider>
+              <RouterProvider router={router} />
+            </CartProvider>
           </SnackbarProvider>
         </AuthProvider>
       </ThemeProvider>

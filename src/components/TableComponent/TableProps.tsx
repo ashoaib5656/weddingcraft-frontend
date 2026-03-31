@@ -1,9 +1,9 @@
-import { Box, Button, Tooltip, useTheme, alpha } from '@mui/material';
+import { Box, Button, Tooltip, useTheme, alpha, IconButton } from '@mui/material';
+import { Search as SearchIcon } from '@mui/icons-material';
 import {
   type MRT_RowData,
   type MRT_TableInstance,
-  MRT_GlobalFilterTextField,
-  MRT_ToggleGlobalFilterButton,
+  MRT_GlobalFilterTextField
 } from 'material-react-table';
 import CustomPagination from './CustomPagination';
 import { handleDownloadExcel } from '../../utils/ExcelUploads';
@@ -131,8 +131,14 @@ export const TableHeaderToolbar = ({ table, ExcelData, actionButton }: props) =>
             }} 
           />
         </Box>
-        <MRT_ToggleGlobalFilterButton 
-          table={table} 
+        <IconButton 
+          onClick={() => {
+            const isShowing = !!table.getState().showGlobalFilter;
+            table.setShowGlobalFilter(!isShowing);
+            if (isShowing) {
+              table.setGlobalFilter('');
+            }
+          }}
           sx={{ 
             p: 0, 
             width: '32px', 
@@ -142,9 +148,14 @@ export const TableHeaderToolbar = ({ table, ExcelData, actionButton }: props) =>
             '&:hover': { 
               backgroundColor: alpha(theme.palette.primary.main, 0.05),
               color: 'primary.dark' 
+            },
+            '& .MuiSvgIcon-root': {
+              fontSize: '20px'
             }
           }} 
-        />
+        >
+          <SearchIcon />
+        </IconButton>
       </Box>
 
       {ExcelData && (

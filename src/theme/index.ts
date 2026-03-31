@@ -52,18 +52,52 @@ let theme = createTheme({
     fontWeightRegular: 400,
     fontWeightMedium: 600,
     fontWeightBold: 700,
-    h1: { fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.2 },
-    h2: { fontSize: '2.125rem', fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.2 },
-    h3: { fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.3 },
-    h4: { fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.01em', lineHeight: 1.3 },
-    h5: { fontSize: '1.25rem', fontWeight: 800, lineHeight: 1.4 },
-    h6: { fontSize: '1.125rem', fontWeight: 800, lineHeight: 1.4 },
+    h1: { 
+      fontSize: '2.5rem', 
+      fontWeight: 800, 
+      letterSpacing: '-0.02em', 
+      lineHeight: 1.2,
+      '@media (max-width:600px)': { fontSize: '1.75rem', fontWeight: 700 } 
+    },
+    h2: { 
+      fontSize: '2.125rem', 
+      fontWeight: 800, 
+      letterSpacing: '-0.02em', 
+      lineHeight: 1.2,
+      '@media (max-width:600px)': { fontSize: '1.5rem', fontWeight: 700 }
+    },
+    h3: { 
+      fontSize: '1.75rem', 
+      fontWeight: 700, 
+      letterSpacing: '-0.02em', 
+      lineHeight: 1.3,
+      '@media (max-width:600px)': { fontSize: '1.25rem' }
+    },
+    h4: { 
+      fontSize: '1.5rem', 
+      fontWeight: 700, 
+      letterSpacing: '-0.01em', 
+      lineHeight: 1.3,
+      '@media (max-width:600px)': { fontSize: '1.125rem' }
+    },
+    h5: { 
+      fontSize: '1.25rem', 
+      fontWeight: 700, 
+      lineHeight: 1.4,
+      '@media (max-width:600px)': { fontSize: '1rem' }
+    },
+    h6: { 
+      fontSize: '1.125rem', 
+      fontWeight: 700, 
+      lineHeight: 1.4,
+      '@media (max-width:600px)': { fontSize: '0.95rem' }
+    },
     subtitle1: { fontSize: '1.125rem', fontWeight: 600, lineHeight: 1.5 },
     subtitle2: { fontSize: '1rem', fontWeight: 600, lineHeight: 1.5 },
     body1: { fontSize: '1rem', lineHeight: 1.5 },
     body2: { fontSize: '0.875rem', lineHeight: 1.57 },
     caption: { fontSize: '0.8125rem', lineHeight: 1.5, fontWeight: 500 }, // 13px
-    overline: { fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', lineHeight: 2.5 },
+    overline: { fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', lineHeight: 2.5 },
     button: { textTransform: 'none', fontWeight: 600, fontSize: '0.875rem' },
   },
   components: {

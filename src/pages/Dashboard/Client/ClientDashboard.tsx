@@ -105,7 +105,7 @@ const ClientDashboard: React.FC = () => {
   return (
     <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
         <Typography variant="h4" sx={{ 
-          fontWeight: 900, 
+          fontWeight: 800, 
           mb: 4, 
           background: `linear-gradient(45deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
           WebkitBackgroundClip: 'text',
@@ -125,11 +125,11 @@ const ClientDashboard: React.FC = () => {
           <Box sx={{ flexGrow: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
               <HeartIcon sx={{ color: theme.palette.secondary.main }} />
-              <Typography variant="caption" sx={{ fontWeight: 800, color: theme.palette.secondary.main, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              <Typography variant="caption" sx={{ fontWeight: 700, color: theme.palette.secondary.main, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                 Wedding Journey
               </Typography>
             </Box>
-            <Typography variant="h3" sx={{ fontWeight: 900, mb: 2, color: 'text.primary' }}>
+            <Typography variant="h3" sx={{ fontWeight: 800, mb: 2, color: 'text.primary' }}>
               {weddingDetails.bride} & {weddingDetails.groom}
             </Typography>
             <Box sx={{ display: 'flex', gap: 3, mb: 3, flexWrap: 'wrap' }}>
@@ -145,8 +145,8 @@ const ClientDashboard: React.FC = () => {
 
             <Box sx={{ maxWidth: 400 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary' }}>Planning Progress</Typography>
-                <Typography variant="caption" sx={{ fontWeight: 800, color: theme.palette.secondary.main }}>{weddingDetails.progress}%</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary' }}>Planning Progress</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 700, color: theme.palette.secondary.main }}>{weddingDetails.progress}%</Typography>
               </Box>
               <LinearProgress
                 variant="determinate"
@@ -173,7 +173,7 @@ const ClientDashboard: React.FC = () => {
             border: `1px solid ${theme.dashboard.glassBorder}`,
             minWidth: 160
           }}>
-            <Typography variant="h2" sx={{ fontWeight: 900, color: theme.palette.secondary.main, lineHeight: 1 }}>
+            <Typography variant="h2" sx={{ fontWeight: 800, color: theme.palette.secondary.main, lineHeight: 1 }}>
               {weddingDetails.daysLeft}
             </Typography>
             <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase' }}>
@@ -195,12 +195,12 @@ const ClientDashboard: React.FC = () => {
         <Grid item xs={12}>
           <DashboardCard sx={{ p: 0, overflow: 'hidden' }}>
             <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="h5" sx={{ fontWeight: 900, mb: 3, color: 'text.primary' }}>Budget Overview</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary' }}>Budget Overview</Typography>
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <Typography 
                   variant="caption" 
                   sx={{ 
-                    fontWeight: 900, 
+                    fontWeight: 700, 
                     color: theme.palette.secondary.main, 
                     textTransform: 'uppercase', 
                     fontSize: '0.65rem' 
@@ -211,7 +211,7 @@ const ClientDashboard: React.FC = () => {
                 <Typography 
                   variant="caption" 
                   sx={{ 
-                    fontWeight: 900, 
+                    fontWeight: 700, 
                     color: theme.palette.success.main, 
                     textTransform: 'uppercase', 
                     fontSize: '0.65rem' 
@@ -269,7 +269,7 @@ const ClientDashboard: React.FC = () => {
         <Grid item xs={12} md={8}>
           <DashboardCard sx={{ height: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-              <Typography variant="h5" sx={{ fontWeight: 900 }}>Booked Vendors</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 800 }}>Booked Vendors</Typography>
               <Button variant="text" sx={{ color: theme.palette.secondary.main, fontWeight: 700 }}>Manage All</Button>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -288,7 +288,7 @@ const ClientDashboard: React.FC = () => {
                   <Box sx={{ flexGrow: 1 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography sx={{ fontWeight: 700 }}>{vendor.name}</Typography>
-                      <Typography sx={{ fontWeight: 800, color: theme.palette.success.main }}>{vendor.amount}</Typography>
+                      <Typography sx={{ fontWeight: 700, color: theme.palette.success.main }}>{vendor.amount}</Typography>
                     </Box>
                     <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
                       {vendor.category} • {vendor.date}
@@ -297,7 +297,7 @@ const ClientDashboard: React.FC = () => {
                   <Typography 
                     variant="caption" 
                     sx={{ 
-                      fontWeight: 900, 
+                      fontWeight: 700, 
                       color: 'success.main', 
                       textTransform: 'uppercase', 
                       fontSize: '0.65rem',
@@ -318,7 +318,7 @@ const ClientDashboard: React.FC = () => {
               <Typography 
           variant="h4" 
           sx={{ 
-            fontWeight: 900, 
+            fontWeight: 800, 
             mb: 4, 
             letterSpacing: '-0.02em',
             background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
@@ -361,7 +361,7 @@ const ClientDashboard: React.FC = () => {
                       <Typography 
                         variant="caption" 
                         sx={{ 
-                          fontWeight: 900, 
+                          fontWeight: 700, 
                           color: 'primary.main', 
                           textTransform: 'uppercase', 
                           fontSize: '0.65rem' 
@@ -379,7 +379,7 @@ const ClientDashboard: React.FC = () => {
               <Avatar sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.1), color: theme.palette.secondary.main, width: 60, height: 60 }}>
                 <CakeIcon sx={{ fontSize: 32 }} />
               </Avatar>
-              <Typography variant="h5" sx={{ fontWeight: 900, mb: 3, color: 'text.primary' }}>Planning Tools</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 800, mb: 2 }}>Planning Tools</Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
                 You've confirmed 68% of your wedding essentials. Almost there!
               </Typography>

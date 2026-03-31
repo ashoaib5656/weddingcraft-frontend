@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
     Box,
     Typography,
@@ -92,7 +92,7 @@ const VendorsPage = () => {
                 Cell: ({ cell }: any) => (
                     <Typography 
                         sx={{ 
-                            fontWeight: 900, 
+                            fontWeight: 700, 
                             color: `${theme.palette[getStatusColor(cell.getValue() as string) as 'success' | 'warning' | 'error' | 'info'].main}`, 
                             fontSize: '10px',
                             textTransform: 'uppercase',
@@ -122,6 +122,9 @@ const VendorsPage = () => {
         [theme]
     );
 
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [showGlobalFilter, setShowGlobalFilter] = useState(false);
+
     const table = useMaterialReactTable({
         muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
@@ -132,9 +135,14 @@ const VendorsPage = () => {
         enablePagination: true,
         enableRowSelection: true,
         enableGlobalFilter: true,
+        onGlobalFilterChange: setGlobalFilter,
+        onShowGlobalFilterChange: setShowGlobalFilter,
         initialState: {
             pagination: { pageSize: 10, pageIndex: 0 },
-            showGlobalFilter: false,
+        },
+        state: {
+            globalFilter,
+            showGlobalFilter,
         },
         muiTablePaperProps: {
             elevation: 0,
@@ -150,7 +158,7 @@ const VendorsPage = () => {
             <Typography 
                 variant="h4" 
                 sx={{ 
-                    fontWeight: 900, 
+                    fontWeight: 800, 
                     mb: 4, 
                     letterSpacing: '-0.02em',
                     background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,

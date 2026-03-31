@@ -7,13 +7,14 @@ import {
   Image as ImageIcon,
   Mail as EmailIcon,
 } from '@mui/icons-material';
-import { Box, Grid, Typography, Button, Avatar, Stack, useTheme, alpha } from '@mui/material';
+import { Box, Grid, Typography, Button, Avatar, Stack, useTheme, alpha, useMediaQuery } from '@mui/material';
 import DashboardStats from "../../../components/Dashboard/DashboardStats/DashboardStats";
 import DashboardCard from "../../../components/Dashboard/DashboardCard/DashboardCard";
 import Chart from "react-apexcharts";
 
 const VendorDashboard: React.FC = () => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const stats = [
     {
       label: 'Bookings Reach',
@@ -97,9 +98,10 @@ const VendorDashboard: React.FC = () => {
         <Typography 
           variant="h4" 
           sx={{ 
-            fontWeight: 900, 
+            fontWeight: 800, 
             mb: 4, 
             letterSpacing: '-0.02em',
+            fontSize: { xs: '1.5rem', md: '2.125rem' },
             background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -119,11 +121,11 @@ const VendorDashboard: React.FC = () => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12}>
           <DashboardCard noPadding>
-            <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="h5" sx={{ fontWeight: 900, color: 'text.primary' }}>Monthly Success</Typography>
-              <Typography                  variant="overline" 
+            <Box sx={{ p: 3, borderBottom: `1px solid ${theme.dashboard.glassBorder}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary', fontSize: { xs: '1.2rem', md: '1.5rem' } }}>Monthly Success</Typography>
+              <Typography variant="overline" 
                   sx={{ 
-                    fontWeight: 900, 
+                    fontWeight: 700, 
                     color: theme.palette.secondary.main, 
                     fontSize: '0.75rem' 
                   }}
@@ -163,7 +165,7 @@ const VendorDashboard: React.FC = () => {
                   data: [12, 18, 15, 25, 32, 45]
                 }]}
                 type="area"
-                height={300}
+                height={isMobile ? 250 : 300}
               />
             </Box>
           </DashboardCard>
@@ -182,29 +184,33 @@ const VendorDashboard: React.FC = () => {
               {upcomingBookings.map((booking, index) => (
                 <Box key={index} sx={{
                   display: 'flex',
-                  alignItems: 'center',
+                  alignItems: { xs: 'flex-start', sm: 'center' },
+                  flexDirection: { xs: 'column', sm: 'row' },
                   p: 2,
                   borderRadius: '16px',
                   border: `1px solid ${theme.dashboard.glassBorder}`,
-                  background: 'rgba(255,255,255,0.4)'
+                  background: 'rgba(255,255,255,0.4)',
+                  gap: { xs: 2, sm: 0 }
                 }}>
-                  <Avatar sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.1), color: theme.palette.secondary.main, mr: 2 }}>
-                    <PackageIcon />
-                  </Avatar>
-                  <Box sx={{ flexGrow: 1 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography sx={{ fontWeight: 700 }}>{booking.client}</Typography>
-                      <Typography sx={{ fontWeight: 800, color: theme.palette.success.main }}>{booking.amount}</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                    <Avatar sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.1), color: theme.palette.secondary.main, mr: 2 }}>
+                      <PackageIcon />
+                    </Avatar>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography sx={{ fontWeight: 700 }}>{booking.client}</Typography>
+                        <Typography sx={{ fontWeight: 800, color: theme.palette.success.main }}>{booking.amount}</Typography>
+                      </Box>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                        {booking.event} • {booking.type}
+                      </Typography>
                     </Box>
-                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-                      {booking.event} • {booking.type}
-                    </Typography>
                   </Box>
-                  <Box sx={{ ml: 2, textAlign: 'right' }}>
+                  <Box sx={{ ml: { xs: 0, sm: 2 }, textAlign: { xs: 'left', sm: 'right' }, width: { xs: '100%', sm: 'auto' }, pl: { xs: 7, sm: 0 } }}>
                     <Typography 
                       variant="caption" 
                       sx={{ 
-                        fontWeight: 900, 
+                        fontWeight: 700, 
                         color: booking.status === 'confirmed' ? 'success.main' : 'warning.main', 
                         textTransform: 'uppercase', 
                         fontSize: '0.65rem' 
@@ -259,7 +265,7 @@ const VendorDashboard: React.FC = () => {
                       <Typography 
                         variant="caption" 
                         sx={{ 
-                          fontWeight: 900, 
+                          fontWeight: 700, 
                           color: 'primary.main', 
                           textTransform: 'uppercase', 
                           fontSize: '0.65rem' 

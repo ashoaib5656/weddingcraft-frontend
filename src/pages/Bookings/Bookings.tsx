@@ -5,7 +5,8 @@ import {
     IconButton,
     Button,
     alpha,
-    useTheme
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
 import {
     CalendarMonth as CalendarIcon,
@@ -29,6 +30,7 @@ const mockBookings = [
 
 const BookingsPage = () => {
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { role } = useAuth();
     const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
 
@@ -132,6 +134,9 @@ const BookingsPage = () => {
         [currentRole, theme]
     );
 
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [showGlobalFilter, setShowGlobalFilter] = useState(false);
+
     const table = useMaterialReactTable({
         muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
@@ -142,10 +147,8 @@ const BookingsPage = () => {
         enablePagination: true,
         enableRowSelection: true,
         enableGlobalFilter: true,
-        initialState: {
-            pagination: { pageSize: 10, pageIndex: 0 },
-            showGlobalFilter: false,
-        },
+        onGlobalFilterChange: setGlobalFilter,
+        onShowGlobalFilterChange: setShowGlobalFilter,
         muiTablePaperProps: {
             elevation: 0,
             sx: {
@@ -153,16 +156,25 @@ const BookingsPage = () => {
                 border: 'none',
             },
         },
+        state: {
+            globalFilter,
+            showGlobalFilter,
+            columnVisibility: {
+                id: !isMobile,
+                date: !isMobile,
+            }
+        },
     });
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, flexWrap: 'wrap', gap: 2 }}>
                 <Typography 
                     variant="h4" 
                     sx={{ 
                         fontWeight: 900, 
                         letterSpacing: '-0.02em',
+                        fontSize: { xs: '1.5rem', md: '2.125rem' },
                         background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
@@ -171,7 +183,7 @@ const BookingsPage = () => {
                 >
                     Bookings Management
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 1 }}>
+                <Box sx={{ display: 'flex', gap: 1, width: { xs: '100%', sm: 'auto' }, justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
                     <Button
                         startIcon={<ListIcon />}
                         variant={viewMode === 'list' ? 'contained' : 'outlined'}

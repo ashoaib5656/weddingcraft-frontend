@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
     Box,
     Typography,
@@ -130,6 +130,9 @@ const UsersPage = () => {
         [theme]
     );
 
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [showGlobalFilter, setShowGlobalFilter] = useState(false);
+
     const table = useMaterialReactTable({
         muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
@@ -140,9 +143,14 @@ const UsersPage = () => {
         enablePagination: true,
         enableRowSelection: true,
         enableGlobalFilter: true,
+        onGlobalFilterChange: setGlobalFilter,
+        onShowGlobalFilterChange: setShowGlobalFilter,
         initialState: {
             pagination: { pageSize: 10, pageIndex: 0 },
-            showGlobalFilter: false,
+        },
+        state: {
+            globalFilter,
+            showGlobalFilter,
         },
         muiTablePaperProps: {
             elevation: 0,

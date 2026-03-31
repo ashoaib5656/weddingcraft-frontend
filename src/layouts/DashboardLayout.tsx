@@ -20,11 +20,10 @@ import {
   Notifications as BellIcon,
   ShoppingCart as CartIcon
 } from "@mui/icons-material";
-import { useSelector } from "react-redux";
-import { type RootState } from "../store";
-import { UserRole } from "../Types/auth.types";
 import Logo from "../components/Logo/Logo";
 import NotificationCenter from "../components/Notifications/NotificationCenter";
+import { useCart } from "../contexts/CartContext";
+import { UserRole } from "../Types/auth.types";
 
 const DashboardLayout = (): JSX.Element => {
   const theme = useTheme();
@@ -32,8 +31,8 @@ const DashboardLayout = (): JSX.Element => {
   const { sidebarOpen, toggleSidebar } = useDashboard();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const navigate = useNavigate();
-  const cartItems = useSelector((state: RootState) => state.cart.items);
-  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const { items } = useCart();
+  const cartCount = items.length;
 
 
   const handleProfileClick = () => {
@@ -161,10 +160,11 @@ const DashboardLayout = (): JSX.Element => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: { xs: 2, md: 3 },
+          p: { xs: 2.5, md: 3 },
           width: { lg: `calc(100% - ${currentSidebarWidth}px)` },
           mt: '70px', // Header height
           transition: theme.dashboard.transition,
+          overflowX: 'hidden', // Prevent horizontal overflow from children
         }}
       >
         <Outlet />

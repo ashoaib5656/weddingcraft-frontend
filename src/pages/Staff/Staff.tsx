@@ -1,11 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
     Box,
     Typography,
     IconButton,
     Button,
     alpha,
-    useTheme
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
 import {
     MoreVert as MoreVertIcon,
@@ -27,6 +28,7 @@ const mockStaff = [
 
 const Staff = () => {
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
@@ -123,6 +125,9 @@ const Staff = () => {
         [theme]
     );
 
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [showGlobalFilter, setShowGlobalFilter] = useState(false);
+
     const table = useMaterialReactTable({
         muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
@@ -133,16 +138,22 @@ const Staff = () => {
         enablePagination: true,
         enableRowSelection: true,
         enableGlobalFilter: true,
-        initialState: {
-            pagination: { pageSize: 10, pageIndex: 0 },
-            showGlobalFilter: false,
-        },
+        onGlobalFilterChange: setGlobalFilter,
+        onShowGlobalFilterChange: setShowGlobalFilter,
         muiTablePaperProps: {
             elevation: 0,
             sx: {
                 borderRadius: '0',
                 border: 'none',
             },
+        },
+        state: {
+            globalFilter,
+            showGlobalFilter,
+            columnVisibility: {
+                id: !isMobile,
+                contact: !isMobile,
+            }
         },
     });
 
@@ -154,6 +165,7 @@ const Staff = () => {
                     fontWeight: 900, 
                     mb: 4, 
                     letterSpacing: '-0.02em',
+                    fontSize: { xs: '1.5rem', md: '2.125rem' },
                     background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
@@ -167,7 +179,7 @@ const Staff = () => {
                 <Box sx={{ 
                     p: '14px', 
                     display: 'flex', 
-                    justifyContent: 'flex-end', 
+                    justifyContent: { xs: 'center', sm: 'flex-end' }, 
                     alignItems: 'center', 
                     flexWrap: 'wrap', 
                     gap: 2, 
@@ -193,7 +205,7 @@ const Staff = () => {
                                     px: 2
                                 }}
                             >
-                                Add Staff Member
+                                Add Staff
                             </Button>
                         }
                     />

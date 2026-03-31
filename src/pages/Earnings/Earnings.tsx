@@ -1,10 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
     Box,
     Typography,
     Grid,
     alpha,
     useTheme,
+    useMediaQuery,
     IconButton
 } from '@mui/material';
 import {
@@ -19,20 +20,21 @@ import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCar
 import TableComponent from '../../components/TableComponent/TableComponent';
 import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
 
+const stats = [
+    { label: 'Total Earnings', value: '₹4,85,000', change: '+15%', icon: <WalletIcon />, color: '#7c3aed' },
+    { label: 'Pending Payouts', value: '₹52,000', change: '3 Pending', icon: <TrendingUpIcon />, color: '#f59e0b' },
+    { label: 'Next Payout', value: '₹28,500', change: 'Jan 30', icon: <BankIcon />, color: '#0ea5e9' },
+];
+
+const transactions = [
+    { id: 'TXN-901', client: 'Priya Sharma', event: 'Wedding Venue', amount: '₹1,20,000', status: 'Paid', date: '2025-01-15' },
+    { id: 'TXN-902', client: 'Rahul Varma', event: 'Engagement', amount: '₹35,000', status: 'Pending', date: '2025-01-18' },
+    { id: 'TXN-903', client: 'Anita Roy', event: 'Birthday Decor', amount: '₹15,000', status: 'Processing', date: '2025-01-19' },
+];
+
 const EarningsPage = () => {
     const theme = useTheme();
-
-    const stats = [
-        { label: 'Total Earnings', value: '₹4,85,000', change: '+15%', icon: <WalletIcon />, color: '#7c3aed' },
-        { label: 'Pending Payouts', value: '₹52,000', change: '3 Pending', icon: <TrendingUpIcon />, color: '#f59e0b' },
-        { label: 'Next Payout', value: '₹28,500', change: 'Jan 30', icon: <BankIcon />, color: '#0ea5e9' },
-    ];
-
-    const transactions = [
-        { id: 'TXN-901', client: 'Priya Sharma', event: 'Wedding Venue', amount: '₹1,20,000', status: 'Paid', date: '2025-01-15' },
-        { id: 'TXN-902', client: 'Rahul Varma', event: 'Engagement', amount: '₹35,000', status: 'Pending', date: '2025-01-18' },
-        { id: 'TXN-903', client: 'Anita Roy', event: 'Birthday Decor', amount: '₹15,000', status: 'Processing', date: '2025-01-19' },
-    ];
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const columns = useMemo(
         () => [
@@ -44,18 +46,18 @@ const EarningsPage = () => {
                 )
             },
             {
-                id: 'clientEvent',
-                accessorFn: (row: any) => `${row.client} ${row.event}`,
-                header: 'Client & Event',
-                Cell: ({ row }: any) => {
-                    const txn = row.original;
-                    return (
-                        <Box>
-                            <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>{txn.client}</Typography>
-                            <Typography sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '11px' }}>{txn.event}</Typography>
-                        </Box>
-                    );
-                }
+                accessorKey: 'client',
+                header: 'Client',
+                Cell: ({ cell }: any) => (
+                    <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>{cell.getValue() as string}</Typography>
+                )
+            },
+            {
+                accessorKey: 'event',
+                header: 'Event',
+                Cell: ({ cell }: any) => (
+                    <Typography sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '11px' }}>{cell.getValue() as string}</Typography>
+                )
             },
             {
                 accessorKey: 'amount',
@@ -107,6 +109,9 @@ const EarningsPage = () => {
         [theme]
     );
 
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [showGlobalFilter, setShowGlobalFilter] = useState(false);
+
     const table = useMaterialReactTable({
         muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
@@ -117,16 +122,23 @@ const EarningsPage = () => {
         enablePagination: true,
         enableRowSelection: true,
         enableGlobalFilter: true,
-        initialState: {
-            pagination: { pageSize: 10, pageIndex: 0 },
-            showGlobalFilter: false,
-        },
+        onGlobalFilterChange: setGlobalFilter,
+        onShowGlobalFilterChange: setShowGlobalFilter,
         muiTablePaperProps: {
             elevation: 0,
             sx: {
                 borderRadius: '0',
                 border: 'none',
             },
+        },
+        state: {
+            globalFilter,
+            showGlobalFilter,
+            columnVisibility: {
+                id: !isMobile,
+                event: !isMobile,
+                date: !isMobile,
+            }
         },
     });
 
@@ -138,6 +150,7 @@ const EarningsPage = () => {
                     fontWeight: 900, 
                     mb: 4, 
                     letterSpacing: '-0.02em',
+                    fontSize: { xs: '1.5rem', md: '2.125rem' },
                     background: `linear-gradient(45deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',

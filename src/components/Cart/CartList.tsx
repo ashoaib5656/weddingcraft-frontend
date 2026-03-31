@@ -17,11 +17,10 @@ export interface CartListProps {
     items: CartItemProps[];
     subtotal: number;
     total: number;
-    onIncrement: (id: string) => void;
-    onDecrement: (id: string) => void;
     onRemove: (id: string, name: string) => void;
     onCheckout: () => void;
     onExplore: () => void;
+    // Removed onIncrement/onDecrement as they are no longer needed
 }
 
 /**
@@ -32,8 +31,6 @@ const CartList: React.FC<CartListProps> = ({
     items,
     subtotal,
     total,
-    onIncrement,
-    onDecrement,
     onRemove,
     onCheckout,
     onExplore
@@ -120,8 +117,6 @@ const CartList: React.FC<CartListProps> = ({
                             <CartItemCard 
                                 key={item.id}
                                 {...item}
-                                onIncrement={() => onIncrement(item.id)}
-                                onDecrement={() => onDecrement(item.id)}
                                 onRemove={() => onRemove(item.id, item.name)}
                             />
                         ))}
@@ -132,6 +127,7 @@ const CartList: React.FC<CartListProps> = ({
                 <Grid item xs={12} lg={4}>
                     <CartSummary 
                         subtotal={subtotal}
+                        itemCount={items.length}
                         total={total}
                         onCheckout={onCheckout}
                         disabled={items.length === 0}

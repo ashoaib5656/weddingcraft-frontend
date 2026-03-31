@@ -11,6 +11,7 @@ import { ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 
 export interface CartSummaryProps {
     subtotal: number;
+    itemCount: number; // Added to show total number of items
     tax?: number;
     shipping?: number;
     total: number;
@@ -23,6 +24,7 @@ export interface CartSummaryProps {
  */
 const CartSummary: React.FC<CartSummaryProps> = ({
     subtotal,
+    itemCount,
     tax = 0,
     total,
     onCheckout,
@@ -59,6 +61,11 @@ const CartSummary: React.FC<CartSummaryProps> = ({
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography sx={{ color: 'text.secondary', fontWeight: 500 }}>Items</Typography>
+                    <Typography sx={{ fontWeight: 600 }}>{itemCount} selections</Typography>
+                </Box>
+                
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography sx={{ color: 'text.secondary', fontWeight: 500 }}>Subtotal</Typography>
                     <Typography sx={{ fontWeight: 600 }}>₹{subtotal.toLocaleString()}</Typography>
                 </Box>
@@ -78,23 +85,32 @@ const CartSummary: React.FC<CartSummaryProps> = ({
 
             <Divider sx={{ my: 1, borderStyle: 'dotted' }} />
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mb: 2 }}>
-                <Box>
-                    <Typography sx={{ fontWeight: 700, fontSize: '0.95rem' }}>Total Amount</Typography>
-                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                        Including all platform taxes
+            <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography sx={{ fontWeight: 700, fontSize: '1.1rem' }}>Total Amount</Typography>
+                    <Typography 
+                        variant="h4" 
+                        sx={{ 
+                            fontWeight: 800, 
+                            color: 'primary.main', 
+                            letterSpacing: '-0.02em',
+                            fontSize: '1.75rem'
+                        }}
+                    >
+                        ₹{total.toLocaleString()}
                     </Typography>
                 </Box>
                 <Typography 
-                    variant="h4" 
+                    variant="caption" 
                     sx={{ 
-                        fontWeight: 800, 
-                        color: 'primary.main', 
-                        letterSpacing: '-0.02em',
-                        fontSize: '1.75rem'
+                        color: 'text.secondary', 
+                        fontWeight: 500, 
+                        display: 'block', 
+                        textAlign: 'right',
+                        mt: 0.5
                     }}
                 >
-                    ₹{total.toLocaleString()}
+                    Including all platform taxes
                 </Typography>
             </Box>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, List, ListItem, ListItemAvatar, Avatar, ListItemText, Badge, alpha, useTheme, InputBase, IconButton, Menu, MenuItem, ListItemIcon } from '@mui/material';
 import { Search, MoreVertical, Filter, CheckCircle2, MessageSquare, UserCheck, ShieldAlert } from 'lucide-react';
-import { useChatStore, type Conversation } from '../../store/chatStore';
+import { useChatStore } from '../../store/chatStore';
 
 const ConversationList: React.FC = () => {
     const theme = useTheme();

@@ -3,7 +3,8 @@ import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useChatStore, type ChatMessage } from '../store/chatStore';
 import { authStore } from '../utils/authSingleton';
 
-const HUB_URL = (import.meta.env.VITE_API_BASE || "http://localhost:5000") + "/hubs/chat";
+const API_BASE = (import.meta.env.VITE_API_URL as string) ?? 'http://localhost:32226';
+const HUB_URL = `${API_BASE}/hubs/chat`;
 
 export const useChat = () => {
     const { 

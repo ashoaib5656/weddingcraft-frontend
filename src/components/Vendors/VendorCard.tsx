@@ -128,7 +128,7 @@ const VendorCard: React.FC<VendorCardProps> = ({ vendor, actions }) => {
                             Starting At
                         </Typography>
                         <Typography variant="subtitle2" sx={{ color: 'white', fontWeight: 900, fontSize: '0.9rem' }}>
-                            {vendor.priceRange}
+                            {vendor.priceRange.replace('$', '₹')}
                         </Typography>
                     </Box>
 
@@ -180,12 +180,28 @@ const VendorCard: React.FC<VendorCardProps> = ({ vendor, actions }) => {
                         <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5, color: 'text.primary', lineHeight: 1.2 }}>
                             {vendor.name}
                         </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
                             <LocationIcon sx={{ fontSize: 14, color: 'text.secondary' }} />
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
                                 {vendor.location}
                             </Typography>
                         </Box>
+                        <Typography 
+                            variant="body2" 
+                            sx={{ 
+                                color: 'text.secondary', 
+                                fontSize: '0.75rem', 
+                                fontWeight: 500,
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden',
+                                lineHeight: 1.5,
+                                minHeight: '2.25rem'
+                            }}
+                        >
+                            {vendor.description}
+                        </Typography>
                     </Box>
 
                     {/* Services Section */}

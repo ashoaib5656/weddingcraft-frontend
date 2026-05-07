@@ -11,45 +11,11 @@ import {
 } from "@mui/material";
 import {
     CameraAlt as CameraIcon,
-    Email as EmailIcon,
-    LocationOn as PinIcon,
     VerifiedUser as ShieldCheckIcon,
-    CalendarMonth as CalendarIcon,
     Logout as LogoutIcon
 } from "@mui/icons-material";
 import { getInitials } from "../../utils/userUtils";
-import DashboardCard from "../../components/Dashboard/DashboardCard/DashboardCard";
 import { useAuth } from "../../contexts/Auth/useAuth";
-
-interface InfoItemProps {
-    icon: React.ReactNode;
-    label: string;
-    value: string;
-    colorType?: string;
-}
-
-const InfoItem: React.FC<InfoItemProps> = ({ icon, label, value, colorType = 'primary' }) => {
-    const theme = useTheme();
-    const mainColor = (theme.palette as unknown as Record<string, { main: string }>)[colorType]?.main || theme.palette.primary.main;
-
-    return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box sx={{
-                p: 1,
-                borderRadius: 2,
-                bgcolor: alpha(mainColor, 0.1),
-                color: mainColor,
-                display: 'flex'
-            }}>
-                {icon}
-            </Box>
-            <Box>
-                <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', fontWeight: 600, lineHeight: 1 }}>{label}</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary' }}>{value}</Typography>
-            </Box>
-        </Box>
-    );
-};
 
 interface ProfileSidebarHeaderProps {
     userName: string | null;
@@ -69,23 +35,20 @@ const ProfileSidebarHeader: React.FC<ProfileSidebarHeaderProps> = ({ userName, r
     };
 
     return (
-        <DashboardCard noPadding sx={{ height: '100%', overflow: 'hidden' }}>
-            <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                {/* Profile Info Section */}
-                <Box sx={{ px: 3, pb: 4, textAlign: 'center', mt: 2, position: 'relative', zIndex: 1, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                    {/* Large Avatar */}
-                    <Box sx={{ position: 'relative', display: 'inline-block', mb: 3, alignSelf: 'center' }}>
+        <Box sx={{ p: { xs: 2, md: 0 } }}>
+            <Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', md: 'flex-start' }, textAlign: { xs: 'center', md: 'left' } }}>
+                    <Box sx={{ position: 'relative', mb: 2 }}>
                         <Avatar
                             sx={{
-                                width: 140,
-                                height: 140,
-                                fontSize: '3rem',
+                                width: 90,
+                                height: 90,
+                                fontSize: '2.2rem',
                                 fontWeight: 800,
-                                background: theme.palette.background.paper,
-                                color: theme.palette.primary.main,
-                                border: `8px solid ${theme.palette.background.paper}`,
-                                boxShadow: '0 10px 40px -10px rgba(0,0,0,0.3)',
-                                borderRadius: 6
+                                bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                color: 'primary.main',
+                                borderRadius: '18px',
+                                border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
                             }}
                         >
                             {getInitials(userName || role || "")}
@@ -94,60 +57,69 @@ const ProfileSidebarHeader: React.FC<ProfileSidebarHeaderProps> = ({ userName, r
                             size="small"
                             sx={{
                                 position: 'absolute',
-                                bottom: 8,
-                                right: 8,
-                                bgcolor: theme.palette.primary.main,
-                                color: 'white',
-                                boxShadow: theme.shadows[4],
-                                border: `2px solid ${theme.palette.background.paper}`,
-                                '&:hover': { bgcolor: theme.palette.primary.dark },
-                                transition: '0.2s'
+                                bottom: -8,
+                                right: -8,
+                                bgcolor: 'background.paper',
+                                color: 'text.primary',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                border: `1px solid ${theme.palette.divider}`,
+                                '&:hover': { bgcolor: 'grey.50' }
                             }}
                         >
-                            <CameraIcon sx={{ fontSize: 15 }} />
+                            <CameraIcon sx={{ fontSize: 14 }} />
                         </IconButton>
                     </Box>
 
-                    <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary', mb: 3 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 900, color: 'text.primary', mb: 0.5, letterSpacing: '-0.02em' }}>
                         {userName}
                     </Typography>
-
-                    <Divider sx={{ mb: 4, mx: -3 }} />
-
-
-                    {/* Detailed Info List */}
-                    <Box sx={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <InfoItem icon={<EmailIcon fontSize="small" />} label="Email" value="admin@wedspot.com" />
-                        <InfoItem icon={<PinIcon fontSize="small" />} label="Location" value="Mumbai, India" />
-                        <InfoItem icon={<ShieldCheckIcon fontSize="small" />} label="Status" value="Verified Account" colorType="success" />
-                        <InfoItem icon={<CalendarIcon fontSize="small" />} label="Joined" value="January 12, 2024" />
+                    
+                    <Box sx={{ 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        gap: 1,
+                        px: 1.2, 
+                        py: 0.4, 
+                        bgcolor: alpha(theme.palette.primary.main, 0.08), 
+                        color: 'primary.main', 
+                        borderRadius: '6px',
+                        mb: 3
+                    }}>
+                        <ShieldCheckIcon sx={{ fontSize: 12 }} />
+                        <Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.65rem' }}>
+                            {role}
+                        </Typography>
                     </Box>
-
-                    <Divider sx={{ my: 4, mx: -3 }} />
-
-                    {/* Logout Action */}
-                    <Button
-                        variant="outlined"
-                        fullWidth
-                        startIcon={<LogoutIcon />}
-                        onClick={onLogout}
-                        sx={{
-                            py: 1.5,
-                            borderRadius: 3,
-                            fontWeight: 700,
-                            color: theme.palette.error.main,
-                            borderColor: alpha(theme.palette.error.main, 0.3),
-                            '&:hover': {
-                                bgcolor: alpha(theme.palette.error.main, 0.05),
-                                borderColor: theme.palette.error.main,
-                            },
-                        }}
-                    >
-                        Sign Out
-                    </Button>
                 </Box>
+
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Box>
+                        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', mb: 0.2 }}>Member Since</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary' }}>January 12, 2024</Typography>
+                    </Box>
+                </Box>
+
+                <Divider sx={{ my: 3, borderColor: alpha(theme.palette.divider, 0.5) }} />
+
+                <Button
+                    fullWidth
+                    variant="text"
+                    startIcon={<LogoutIcon sx={{ fontSize: 18 }} />}
+                    onClick={onLogout}
+                    sx={{ 
+                        justifyContent: 'flex-start',
+                        color: 'text.secondary',
+                        fontWeight: 600,
+                        py: 1,
+                        fontSize: '0.875rem',
+                        textTransform: 'none',
+                        '&:hover': { color: 'error.main', bgcolor: alpha(theme.palette.error.main, 0.05) }
+                    }}
+                >
+                    Sign Out Account
+                </Button>
             </Box>
-        </DashboardCard>
+        </Box>
     );
 };
 

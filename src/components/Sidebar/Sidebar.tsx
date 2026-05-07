@@ -30,10 +30,10 @@ const Sidebar = (): JSX.Element => {
       window.location.pathname.includes('/manager') ? 'manager' :
         window.location.pathname.includes('/vendor') ? 'vendor' :
           window.location.pathname.includes('/staff') ? 'staff' :
-            'client');
+            'customer');
 
-  const sidebarWidth = 260;
-  const collapsedWidth = 72;
+  const sidebarWidth = 220;
+  const collapsedWidth = 64;
   const isExpanded = sidebarOpen || isHovered;
 
   const handleLogout = async () => {
@@ -42,7 +42,7 @@ const Sidebar = (): JSX.Element => {
   };
 
   const getMenuItems = () => {
-    const rolePath = currentRole === 'client' ? 'client' : currentRole;
+    const rolePath = currentRole === 'customer' ? 'customer' : currentRole;
 
     // Base menu items that appear for all roles
     const items: MenuItem[] = [
@@ -114,7 +114,7 @@ const Sidebar = (): JSX.Element => {
             py: 1.25,
             minHeight: 48,
             justifyContent: isExpanded ? 'initial' : 'center',
-            px: 2.5,
+            px: 2,
             color: 'error.main',
             '&:hover': { bgcolor: alpha(theme.palette.error.main, 0.08) }
           }}

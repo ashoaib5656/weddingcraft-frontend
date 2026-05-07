@@ -13,14 +13,15 @@ import {
     MessageSquare,
     Home,
     LogOut,
-    User
+    User,
+    Package
 } from "lucide-react";
 import { type ReactNode } from "react";
 
 export const icons: Record<string, ReactNode> = {
     Dashboard: <LayoutDashboard size={20} />,
     Users: <Users size={20} />,
-    Requests: <ClipboardList size={20} />,
+
     Bookings: <CalendarCheck size={20} />,
     Revenue: <ReceiptIndianRupee size={20} />,
     Analytics: <BarChart3 size={20} />,
@@ -35,5 +36,6 @@ export const icons: Record<string, ReactNode> = {
     Home: <Home size={20} />,
     Profile: <User size={20} />,
     Logout: <LogOut size={20} />,
-    File: <FileText size={20} />
+    File: <FileText size={20} />,
+    Inventory: <Package size={20} />
 };

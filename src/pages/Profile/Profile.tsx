@@ -1,62 +1,53 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     Box,
     Grid,
-    Fade
+    Paper,
+    alpha,
+    useTheme
 } from "@mui/material";
 import { useAuth } from "../../contexts/Auth/useAuth";
-import DashboardCard from "../../components/Dashboard/DashboardCard/DashboardCard";
-
-// Import reorganized components from final locations
 import ProfileSidebarHeader from "./ProfileSidebarHeader";
-import ProfileTopNav from "./ProfileTopNav";
 import GeneralSection from "./sections/GeneralSection";
-import SecuritySection from "./sections/SecuritySection";
-import NotificationsSection from "./sections/NotificationsSection";
 
 const Profile: React.FC = () => {
+    const theme = useTheme();
     const { role, userName } = useAuth();
-    const [activeTab, setActiveTab] = useState(0);
-
-    const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-        setActiveTab(newValue);
-    };
 
     return (
-        <Box sx={{ p: { xs: 2, md: 2 }, maxWidth: 1400, margin: '0 auto', animation: 'fadeIn 0.6s ease-out' }}>
-            <Grid container spacing={3} sx={{ alignItems: 'stretch' }}>
-                {/* Left Column: Full-Height Profile Overview */}
-                <Grid item xs={12} md={4} lg={3.5}>
-                    <ProfileSidebarHeader userName={userName} role={role} />
+        <Box sx={{ 
+            p: { xs: 1, md: 1.5 }, 
+            maxWidth: 1300, 
+            margin: '0 auto', 
+            minHeight: 'calc(100vh - 120px)'
+        }}>
+            <Grid container spacing={2}>
+                {/* Left Column: Sticky Profile Overview */}
+                <Grid item xs={12} md={3} lg={2.5}>
+                    <Box sx={{ position: { md: 'sticky' }, top: 70 }}>
+                        <ProfileSidebarHeader userName={userName} role={role} />
+                    </Box>
                 </Grid>
 
-                {/* Right Column: Content Area with Unified Navigation */}
-                <Grid item xs={12} md={8} lg={8.5}>
-                    <DashboardCard noPadding sx={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: 550 }}>
-                        {/* Integrated Top Navigation */}
-                        <Box sx={{ px: 1, pt: 1, borderBottom: 1, borderColor: 'divider' }}>
-                            <ProfileTopNav activeTab={activeTab} onTabChange={handleTabChange} />
-                        </Box>
-
+                {/* Right Column: Unified Settings Area */}
+                <Grid item xs={12} md={9} lg={9.5}>
+                    <Paper 
+                        elevation={0}
+                        sx={{ 
+                            borderRadius: '16px',
+                            border: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
+                            bgcolor: 'background.paper',
+                            boxShadow: '0 2px 12px -5px rgba(0,0,0,0.02)',
+                            overflow: 'hidden',
+                            display: 'flex', 
+                            flexDirection: 'column'
+                        }}
+                    >
                         {/* Content Display Area */}
-                        <Box sx={{ p: 4, flexGrow: 1 }}>
-                            <Fade in={activeTab === 0} timeout={1000}>
-                                <Box hidden={activeTab !== 0}>
-                                    <GeneralSection userName={userName} />
-                                </Box>
-                            </Fade>
-                            <Fade in={activeTab === 1} timeout={1000}>
-                                <Box hidden={activeTab !== 1}>
-                                    <SecuritySection />
-                                </Box>
-                            </Fade>
-                            <Fade in={activeTab === 2} timeout={1000}>
-                                <Box hidden={activeTab !== 2}>
-                                    <NotificationsSection />
-                                </Box>
-                            </Fade>
+                        <Box sx={{ p: { xs: 2, md: 3 }, flexGrow: 1 }}>
+                            <GeneralSection />
                         </Box>
-                    </DashboardCard>
+                    </Paper>
                 </Grid>
             </Grid>
         </Box>

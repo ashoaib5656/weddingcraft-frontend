@@ -20,29 +20,57 @@ import {
 import VendorCard from '../../components/Vendors/VendorCard';
 import type { Vendor } from '../../Types/vendor';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MOCK_VENDORS } from '../../constants/mockVendors';
-
-const ALL_VENDORS = MOCK_VENDORS;
+import PRODUCT_SERVICE from '../../api/services/product';
 
 const ITEMS_PER_PAGE = 6;
-
-const mockProducts: Vendor[] = ALL_VENDORS;
 
 const ProductsPage: React.FC = () => {
     const theme = useTheme();
     
     const [searchQuery, setSearchQuery] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [allProducts, setAllProducts] = useState<Vendor[]>([]);
     const [page, setPage] = useState(1);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setIsLoading(true);
+            try {
+                const response = await PRODUCT_SERVICE.GetAllProducts();
+                const data = response.data?.data || response.data || [];
+                const productsAsVendors = data.map((p: any) => ({
+                    id: p.id.toString(),
+                    name: p.name,
+                    sectorId: 'products',
+                    image: p.imageUrl || 'https://placehold.co/400x300',
+                    rating: 5.0,
+                    reviewCount: 0,
+                    location: 'Store',
+                    description: p.description || '',
+                    priceRange: `₹${p.price}`,
+                    isPremium: false,
+                    features: [],
+                    services: [],
+                    reviews: []
+                }));
+                setAllProducts(productsAsVendors);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchProducts();
+    }, []);
 
     // Filter Logic
     const filteredProducts = useMemo(() => {
-        return mockProducts.filter((product: Vendor) => {
-            const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                product.description.toLowerCase().includes(searchQuery.toLowerCase());
+        return allProducts.filter((product: Vendor) => {
+            const matchesSearch = (product.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+                                (product.description?.toLowerCase() || '').includes(searchQuery.toLowerCase());
             return matchesSearch;
         });
-    }, [searchQuery]);
+    }, [searchQuery, allProducts]);
 
     // Pagination Logic
     const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -56,10 +84,8 @@ const ProductsPage: React.FC = () => {
     }, [searchQuery]);
 
     const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-        setIsLoading(true);
         setPage(value);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        setTimeout(() => setIsLoading(false), 400);
     };
 
     return (

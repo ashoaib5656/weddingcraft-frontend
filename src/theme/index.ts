@@ -1,4 +1,4 @@
-import { createTheme, responsiveFontSizes } from '@mui/material/styles';
+import { createTheme, responsiveFontSizes, alpha } from '@mui/material/styles';
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -101,7 +101,34 @@ let theme = createTheme({
     button: { textTransform: 'none', fontWeight: 600, fontSize: '0.875rem' },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: (theme: any) => ({
+        body: {
+          scrollbarColor: `${alpha(theme.palette.primary.main, 0.2)} transparent`,
+          "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
+            backgroundColor: "transparent",
+            width: "8px",
+            height: "8px",
+          },
+          "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
+            borderRadius: 8,
+            backgroundColor: alpha(theme.palette.divider, 0.1),
+            minHeight: 24,
+            border: "2px solid transparent",
+            backgroundClip: "content-box",
+            transition: "background-color 0.2s ease-in-out",
+          },
+          "&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover": {
+            backgroundColor: alpha(theme.palette.primary.main, 0.2),
+          },
+          "&::-webkit-scrollbar-corner, & *::-webkit-scrollbar-corner": {
+            backgroundColor: "transparent",
+          },
+        },
+      }),
+    },
     MuiCard: {
+
       styleOverrides: {
         root: {
           borderRadius: 24, // var(--border-radius-xl) is 1.5rem = 24px
@@ -154,6 +181,40 @@ let theme = createTheme({
           }
         }
       ]
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 14,
+            '& fieldset': {
+              borderColor: 'rgba(226, 232, 240, 0.8)',
+              borderWidth: '1.5px',
+            },
+            '&:hover fieldset': {
+              borderColor: alpha('#7c3aed', 0.25),
+            },
+            '&.Mui-focused fieldset': {
+              borderWidth: '1.5px',
+              borderColor: '#7c3aed',
+              boxShadow: `0 0 0 4px ${alpha('#7c3aed', 0.1)}`,
+            },
+          },
+          '& .MuiInputLabel-root': {
+            fontWeight: 600,
+            fontSize: '0.95rem',
+            color: '#64748b',
+          }
+        }
+      }
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 24,
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+        }
+      }
     }
   }
 });

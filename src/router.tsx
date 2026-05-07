@@ -9,11 +9,10 @@ import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import NotFound from "./pages/NotFound/NotFound";
 import Users from "./pages/Users/Users";
 import Vendors from "./pages/Vendors/Vendors";
-import Requests from "./pages/Requests/Requests";
+
 import Bookings from "./pages/Bookings/Bookings";
 import Analytics from "./pages/Analytics/Analytics";
 import Earnings from "./pages/Earnings/Earnings";
-import SavedVendors from "./pages/Vendors/SavedVendors";
 import Revenue from "./pages/Revenue/Revenue";
 import Staff from "./pages/Staff/Staff";
 import Reports from "./pages/Reports/Reports";
@@ -21,12 +20,10 @@ import Tasks from "./pages/Tasks/Tasks";
 import AddUser from "./pages/Users/AddUser";
 import Products from "./pages/Products/Products";
 import AdminDashboard from "./pages/Dashboard/Admin/AdminDashboard";
-import AddVendor from "./pages/Vendors/AddVendor";
-import AddStaff from "./pages/Staff/AddStaff";
 import ManagerDashboard from "./pages/Dashboard/Manager/ManagerDashboard";
 import StaffDashboard from "./pages/Dashboard/Staff/StaffDashboard";
 import ClientDashboard from "./pages/Dashboard/Client/ClientDashboard";
-import AddRequest from "./pages/Requests/AddRequest";
+
 import VendorDashboard from "./pages/Dashboard/Vendor/VendorDashboard";
 import Profile from "./pages/Profile/Profile";
 import CartPage from "./pages/Cart/CartPage";
@@ -38,8 +35,10 @@ import ProtectedRoute from "./contexts/Auth/requiresRole";
 import PublicRoute from "./contexts/Auth/PublicRoute";
 import { UserRole } from "./Types/auth.types";
 import BillsPage from "./pages/Bills/Bills";
-import PremiumVendors from "./pages/Vendors/PremiumVendors";
 import VendorDetails from "./pages/Vendors/VendorDetails";
+import VendorServices from "./pages/Services/VendorServices";
+import AddService from "./pages/Services/AddService";
+import EditService from "./pages/Services/EditService";
 
 export const router = createBrowserRouter([
     {
@@ -85,7 +84,7 @@ export const router = createBrowserRouter([
                 children: [
                     { path: "users", element: <Users /> },
                     { path: "users/add", element: <AddUser /> },
-                    { path: "requests", element: <Requests /> },
+
                     { path: "bookings", element: <Bookings /> },
                     { path: "revenue", element: <Revenue /> },
                     { path: "analytics", element: <Analytics /> },
@@ -100,11 +99,11 @@ export const router = createBrowserRouter([
                 element: <ProtectedRoute allowedRoles={[UserRole.MANAGER]} />,
                 children: [
                     { path: "vendors", element: <Vendors /> },
-                    { path: "vendors/add", element: <AddVendor /> },
-                    { path: "requests", element: <Requests /> },
+                    { path: "vendors/add", element: <AddUser /> },
+
                     { path: "bookings", element: <Bookings /> },
                     { path: "staff", element: <Staff /> },
-                    { path: "staff/add", element: <AddStaff /> },
+                    { path: "staff/add", element: <AddUser /> },
                     { path: "reports", element: <Reports /> },
                 ]
             },
@@ -129,25 +128,26 @@ export const router = createBrowserRouter([
                 path: "vendor",
                 element: <ProtectedRoute allowedRoles={[UserRole.VENDOR]} />,
                 children: [
-                    { path: "requests", element: <Requests /> },
+
+                    { path: "services", element: <VendorServices /> },
+                    { path: "services/add", element: <AddService /> },
+                    { path: "services/edit/:id", element: <EditService /> },
                     { path: "bookings", element: <Bookings /> },
                     { path: "earnings", element: <Earnings /> },
                 ]
             },
             {
-                path: "client-dashboard",
+                path: "customer-dashboard",
                 element: <ProtectedRoute allowedRoles={[UserRole.CLIENT]}><ClientDashboard /></ProtectedRoute>
             },
             {
-                path: "client",
+                path: "customer",
                 element: <ProtectedRoute allowedRoles={[UserRole.CLIENT]} />,
                 children: [
-                    { path: "vendors", element: <PremiumVendors /> },
+                    { path: "vendors", element: <Vendors /> },
                     { path: "vendors/:id", element: <VendorDetails /> },
-                    { path: "requests", element: <Requests /> },
-                    { path: "requests/add", element: <AddRequest /> },
+
                     { path: "bookings", element: <Bookings /> },
-                    { path: "saved", element: <SavedVendors /> },
                     { path: "profile", element: <Profile /> },
                 ]
             },

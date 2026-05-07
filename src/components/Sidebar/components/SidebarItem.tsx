@@ -22,8 +22,8 @@ const StyledListItemButton = styled(ListItemButton)<{ component?: React.ElementT
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
     minHeight: 48,
-    paddingLeft: theme.spacing(2.5),
-    paddingRight: theme.spacing(2.5),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
     backgroundColor: 'transparent',
     transition: 'color 0.2s',
     '&:hover': {
@@ -51,7 +51,7 @@ const StyledListItemButton = styled(ListItemButton)<{ component?: React.ElementT
 const UnderlineWrapper = styled(Box)<{ $isActive: boolean; $isExpanded: boolean }>(({ theme, $isActive, $isExpanded }) => ({
     display: 'flex',
     alignItems: 'center',
-    gap: $isExpanded ? theme.spacing(2) : 0,
+    gap: $isExpanded ? theme.spacing(1.5) : 0,
     paddingBottom: theme.spacing(0.75),
     position: 'relative',
     '&::after': {

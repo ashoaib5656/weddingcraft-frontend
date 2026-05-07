@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -17,17 +17,30 @@ import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
+import USER_SERVICE, { User } from '../../api/services/users';
 
-// Mock data for clients
-const mockClients = [
-    { id: 'C001', name: 'Amitabh Bachchan', email: 'amitabh@legend.com', phone: '+91 99999 00001', activity: 'Viewed Venue "Royal Palace"', status: 'Active' },
-    { id: 'C002', name: 'Shah Rukh Khan', email: 'srk@king.com', phone: '+91 99999 00002', activity: 'Booked Photographer "Capture Moments"', status: 'Active' },
-    { id: 'C003', name: 'Deepika Padukone', email: 'deepika@star.com', phone: '+91 99999 00003', activity: 'Inquired about "Floral Dreams"', status: 'New' },
-    { id: 'C004', name: 'Ranbir Kapoor', email: 'ranbir@actor.com', phone: '+91 99999 00004', activity: 'Updated Profile', status: 'Inactive' },
-];
+
 
 const ClientsPage = () => {
     const theme = useTheme();
+
+    const [clients, setClients] = useState<User[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchClients = async () => {
+            try {
+                const response = await USER_SERVICE.GetAllUsers();
+                const allUsers = response.data?.data || response.data || [];
+                setClients(allUsers.filter((u: User) => u.role === 'Client' || u.role === 'Customer'));
+            } catch (error) {
+                console.error("Error fetching clients", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchClients();
+    }, []);
 
     const columns = useMemo(
         () => [
@@ -73,14 +86,14 @@ const ClientsPage = () => {
                 accessorKey: 'activity',
                 header: 'Recent Activity',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, color: 'text.secondary' }}>{cell.getValue() as string || 'Registered'}</Typography>
                 )
             },
             {
                 accessorKey: 'status',
                 header: 'Status',
                 Cell: ({ cell }: any) => {
-                    const status = cell.getValue() as string;
+                    const status = cell.getValue() as string || 'Active';
                     return (
                         <Typography
                             variant="caption"
@@ -121,7 +134,12 @@ const ClientsPage = () => {
     const table = useMaterialReactTable({
         muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
-        data: mockClients,
+        data: clients,
+        state: {
+            isLoading,
+            globalFilter,
+            showGlobalFilter,
+        },
         enableColumnActions: false,
         enableColumnFilters: true,
         enableSorting: true,
@@ -168,7 +186,7 @@ const ClientsPage = () => {
                             table={table} 
                             isSmall 
                             ExcelData={{
-                                data: mockClients,
+                                data: clients,
                                 fileName: 'Clients_Export'
                             }}
                         />

@@ -3,7 +3,7 @@ export const UserRole = {
     MANAGER: "Manager",
     STAFF: "Staff",
     VENDOR: "Vendor",
-    CLIENT: "Client",
+    CLIENT: "Customer",
 } as const;
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
@@ -17,17 +17,18 @@ export interface User {
     createdAt?: string;
 }
 
+export interface AuthPayload {
+    accessToken: string;
+    refreshToken: string;
+    role: UserRole;
+    name: string;
+    email: string;
+    expiresIn: number; // in seconds
+}
+
 export interface AuthResponse {
-    ok: boolean;
+    success: boolean;
     message: string;
-    accessToken?: string;
-    role?: UserRole | string;
-    name?: string;
-    data?: {
-        accessToken: string;
-        role: UserRole | string;
-        name: string;
-        email?: string;
-    };
+    data?: AuthPayload | null;
     error?: string | null;
 }

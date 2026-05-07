@@ -13,7 +13,8 @@ import {
   Avatar,
   Tooltip,
   alpha,
-  useTheme
+  useTheme,
+  Typography
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -46,13 +47,13 @@ const DashboardLayout = (): JSX.Element => {
     if (path.includes("/manager")) return "Manager";
     if (path.includes("/vendor")) return "Vendor";
     if (path.includes("/staff")) return "Staff";
-    if (path.includes("/client")) return "Client";
+    if (path.includes("/customer")) return "Customer";
     return "User";
   };
 
   const currentRole = getDetectedRole();
-  const sidebarWidthFull = 260;
-  const sidebarWidthCollapsed = 72;
+  const sidebarWidthFull = 220;
+  const sidebarWidthCollapsed = 64;
   const currentSidebarWidth = sidebarOpen ? sidebarWidthFull : sidebarWidthCollapsed;
 
   return (
@@ -72,6 +73,7 @@ const DashboardLayout = (): JSX.Element => {
           boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
           borderBottom: '1px solid',
           borderColor: 'divider',
+          borderRadius: 0,
         }}
       >
         <Toolbar sx={{ justifyContent: 'space-between', minHeight: 70 }}>
@@ -125,14 +127,9 @@ const DashboardLayout = (): JSX.Element => {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 1.5,
+                gap: 1,
                 cursor: 'pointer',
                 p: 0.5,
-                borderRadius: '50px',
-                transition: theme.dashboard.transition,
-                '&:hover': {
-                  bgcolor: alpha(theme.palette.text.primary, 0.04)
-                }
               }}
             >
               <Avatar
@@ -141,12 +138,16 @@ const DashboardLayout = (): JSX.Element => {
                   height: 40,
                   bgcolor: 'primary.main',
                   fontSize: '0.9rem',
-                  fontWeight: 700,
-                  boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.25)}`
+                  fontWeight: 700
                 }}
               >
                 {getInitials(userName || currentRole)}
               </Avatar>
+              <Box sx={{ display: { xs: 'none', sm: 'block' }, ml: 0.5 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 500, color: 'text.primary' }}>
+                  {userName || 'User'}
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Toolbar>

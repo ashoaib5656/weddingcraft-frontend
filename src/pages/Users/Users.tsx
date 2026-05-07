@@ -1,72 +1,73 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
     Box,
     Typography,
     IconButton,
     Button,
+    alpha,
     useTheme,
-    alpha
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText
 } from '@mui/material';
 import {
-    MoreVert as MoreIcon
+    MoreVert as MoreVertIcon,
+    Phone as PhoneIcon,
+    Delete as DeleteIcon,
+    Edit as EditIcon,
+    Add as AddIcon,
+    Visibility as ViewIcon
 } from '@mui/icons-material';
-import { useMaterialReactTable } from 'material-react-table';
-import { useNavigate } from 'react-router-dom';
+import { useMaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
+import { useNavigate } from 'react-router-dom';
+import USER_SERVICE, { type User } from '../../api/services/users';
 
-interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: 'Admin' | 'Manager' | 'Staff' | 'Vendor' | 'Client';
-    status: 'active' | 'pending' | 'suspended';
-    lastSeen: string;
-}
-
-const mockUsers: User[] = [
-    { id: '1', name: 'Kabir Verma', email: 'kabir@wedspot.com', role: 'Admin', status: 'active', lastSeen: 'Just now' },
-    { id: '2', name: 'Ananya Sharma', email: 'ananya@wedspot.com', role: 'Manager', status: 'active', lastSeen: '2 hours ago' },
-    { id: '3', name: 'Rahul Gupta', email: 'rahul@vendor.com', role: 'Vendor', status: 'pending', lastSeen: 'Yesterday' },
-    { id: '4', name: 'Sneha Reddy', email: 'sneha@client.com', role: 'Client', status: 'active', lastSeen: '5 hours ago' },
-    { id: '5', name: 'Vikram Singh', email: 'vikram@wedspot.com', role: 'Staff', status: 'suspended', lastSeen: '3 days ago' },
-];
-
-const UsersPage = () => {
+const Users = () => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const [users, setUsers] = useState<User[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const getStatusColor = (status: User['status']) => {
-        switch (status) {
-            case 'active': return 'success';
-            case 'pending': return 'warning';
-            case 'suspended': return 'error';
-            default: return 'default';
-        }
-    };
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                setIsLoading(true);
+                const response = await USER_SERVICE.GetAllUsers();
+                if (response.data.success) {
+                    setUsers(response.data.data);
+                }
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchUsers();
+    }, []);
 
-    const columns = useMemo(
+
+    const columns = useMemo<MRT_ColumnDef<User>[]>(
         () => [
             {
                 accessorKey: 'name',
-                header: 'User Profile',
-                Cell: ({ row }: any) => {
-                    const user = row.original;
-                    return (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Box>
-                                <Typography sx={{ fontSize: '13px', fontWeight: 800, color: 'text.primary' }}>{user.name}</Typography>
-                            </Box>
-                        </Box>
-                    );
-                }
+                header: 'Name',
+                size: 180,
+                Cell: ({ row }) => (
+                    <Typography sx={{ fontWeight: 600, fontSize: '13px', color: 'text.primary' }}>
+                        {row.original.name || 'N/A'}
+                    </Typography>
+                )
             },
             {
                 accessorKey: 'email',
                 header: 'Email',
-                Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '12px', color: 'text.secondary', fontWeight: 500 }}>
+                size: 200,
+                Cell: ({ cell }) => (
+                    <Typography sx={{ fontWeight: 600, fontSize: '12px', color: 'text.secondary' }}>
                         {cell.getValue() as string}
                     </Typography>
                 )
@@ -74,32 +75,36 @@ const UsersPage = () => {
             {
                 accessorKey: 'role',
                 header: 'Role',
-                muiTableHeadCellProps: { align: 'center' as const },
-                muiTableBodyCellProps: { align: 'center' as const },
-                Cell: ({ cell }: any) => (
+                size: 120,
+                Cell: ({ cell }) => (
+                    <Typography sx={{ fontWeight: 700, fontSize: '12px', color: 'text.secondary', textTransform: 'uppercase' }}>
+                        {cell.getValue() as string}
+                    </Typography>
+                )
+            },
+            {
+                accessorKey: 'phoneNumber',
+                header: 'Contact',
+                size: 180,
+                Cell: ({ cell }) => (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: 'text.primary' }}>{cell.getValue() as string}</Typography>
+                        <PhoneIcon sx={{ fontSize: 14, color: 'text.secondary' }} />
+                        <Typography sx={{ fontWeight: 500, fontSize: '13px', color: 'text.primary' }}>
+                            {(cell.getValue() as string) || 'Not Provided'}
+                        </Typography>
                     </Box>
                 )
             },
             {
                 accessorKey: 'status',
                 header: 'Status',
-                muiTableHeadCellProps: { align: 'center' as const },
-                muiTableBodyCellProps: { align: 'center' as const },
-                Cell: ({ cell }: any) => {
-                    const status = cell.getValue() as string;
+                size: 140,
+                Cell: ({ cell }) => {
+                    const status = (cell.getValue() as string) || 'Active';
+                    const isActive = status.toLowerCase() === 'active';
                     return (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, justifyContent: 'center' }}>
-                            <Typography 
-                                sx={{ 
-                                    fontWeight: 900, 
-                                    color: `${theme.palette[getStatusColor(status as any) as 'success' | 'warning' | 'error' | 'info'].main}`, 
-                                    fontSize: '10px',
-                                    textTransform: 'uppercase', 
-                                    letterSpacing: '0.05em'
-                                }}
-                            >
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Typography sx={{ fontWeight: 800, fontSize: '12px', color: isActive ? 'success.main' : 'error.main' }}>
                                 {status}
                             </Typography>
                         </Box>
@@ -107,114 +112,159 @@ const UsersPage = () => {
                 }
             },
             {
-                accessorKey: 'lastSeen',
-                header: 'Recent Activity',
-                Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '11px', color: 'text.secondary', fontWeight: 500 }}>{cell.getValue() as string}</Typography>
+                accessorKey: 'updatedBy',
+                header: 'Modified By',
+                size: 150,
+                Cell: ({ cell }) => (
+                    <Typography sx={{ fontWeight: 600, fontSize: '12px', color: 'text.secondary' }}>
+                        {(cell.getValue() as string) || 'Admin'}
+                    </Typography>
                 )
             },
             {
-                accessorKey: 'actions',
-                header: 'Actions',
-                muiTableHeadCellProps: { align: 'center' as const },
-                muiTableBodyCellProps: { align: 'center' as const },
-                enableColumnFilter: false,
-                enableSorting: false,
-                Cell: () => (
-                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <IconButton size="small">
-                            <MoreIcon fontSize="small" />
-                        </IconButton>
-                    </Box>
+                accessorKey: 'createdAt',
+                header: 'Modified On',
+                size: 150,
+                Cell: ({ row }) => (
+                    <Typography sx={{ fontWeight: 600, fontSize: '12px', color: 'text.secondary' }}>
+                        {row.original.createdAt ? new Date(row.original.createdAt).toLocaleDateString() : 'N/A'}
+                    </Typography>
                 )
+            },
+            {
+                id: 'actions',
+                header: 'Actions',
+                size: 80,
+                muiTableHeadCellProps: { align: 'right' as const },
+                muiTableBodyCellProps: { align: 'right' as const },
+                Cell: () => {
+                    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+                    const open = Boolean(anchorEl);
+                    
+                    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+                        setAnchorEl(event.currentTarget);
+                    };
+                    const handleClose = () => {
+                        setAnchorEl(null);
+                    };
+
+                    return (
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <IconButton 
+                                size="small" 
+                                onClick={handleClick}
+                                sx={{ 
+                                    bgcolor: open ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
+                                    color: open ? 'primary.main' : 'text.secondary'
+                                }}
+                            >
+                                <MoreVertIcon sx={{ fontSize: 20 }} />
+                            </IconButton>
+                            <Menu
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleClose}
+                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                PaperProps={{
+                                    elevation: 0,
+                                    sx: {
+                                        overflow: 'visible',
+                                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
+                                        mt: 1,
+                                        borderRadius: '10px',
+                                        minWidth: 140,
+                                        '& .MuiMenuItem-root': {
+                                            px: 1.5,
+                                            py: 0.6,
+                                            borderRadius: '6px',
+                                            mx: 0.8,
+                                            my: 0.2,
+                                            fontSize: '12px',
+                                            fontWeight: 600,
+                                            gap: 1,
+                                            '&:hover': {
+                                                bgcolor: alpha(theme.palette.primary.main, 0.05),
+                                                color: 'primary.main',
+                                                '& .MuiListItemIcon-root': {
+                                                    color: 'primary.main',
+                                                }
+                                            }
+                                        }
+                                    },
+                                }}
+                            >
+                                <MenuItem onClick={handleClose}>
+                                    <ListItemIcon sx={{ minWidth: 'auto !important' }}>
+                                        <ViewIcon sx={{ fontSize: 16 }} />
+                                    </ListItemIcon>
+                                    <ListItemText primaryTypographyProps={{ fontSize: '12px', fontWeight: 600 }}>View Details</ListItemText>
+                                </MenuItem>
+                                <MenuItem onClick={handleClose}>
+                                    <ListItemIcon sx={{ minWidth: 'auto !important' }}>
+                                        <EditIcon sx={{ fontSize: 16 }} />
+                                    </ListItemIcon>
+                                    <ListItemText primaryTypographyProps={{ fontSize: '12px', fontWeight: 600 }}>Edit User</ListItemText>
+                                </MenuItem>
+                                <MenuItem 
+                                    onClick={handleClose}
+                                    sx={{ 
+                                        '&:hover': { 
+                                            bgcolor: `${alpha(theme.palette.error.main, 0.05)} !important`,
+                                            color: 'error.main !important',
+                                            '& .MuiListItemIcon-root': { color: 'error.main' }
+                                        } 
+                                    }}
+                                >
+                                    <ListItemIcon sx={{ minWidth: 'auto !important' }}>
+                                        <DeleteIcon sx={{ fontSize: 16 }} />
+                                    </ListItemIcon>
+                                    <ListItemText primaryTypographyProps={{ fontSize: '12px', fontWeight: 600 }}>Delete</ListItemText>
+                                </MenuItem>
+                            </Menu>
+                        </Box>
+                    );
+                }
             }
         ],
         [theme]
     );
 
-    const [globalFilter, setGlobalFilter] = useState('');
-    const [showGlobalFilter, setShowGlobalFilter] = useState(false);
-
     const table = useMaterialReactTable({
-        muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
-        data: mockUsers,
+        data: users,
+        state: { isLoading },
         enableColumnActions: false,
-        enableColumnFilters: true,
-        enableSorting: true,
+        enableColumnFilters: false,
         enablePagination: true,
-        enableRowSelection: true,
         enableGlobalFilter: true,
-        onGlobalFilterChange: setGlobalFilter,
-        onShowGlobalFilterChange: setShowGlobalFilter,
-        initialState: {
-            pagination: { pageSize: 10, pageIndex: 0 },
-        },
-        state: {
-            globalFilter,
-            showGlobalFilter,
-        },
         muiTablePaperProps: {
             elevation: 0,
-            sx: {
-                borderRadius: '0',
-                border: 'none',
-            },
+            sx: { borderRadius: '12px', border: 'none', overflow: 'hidden' },
         },
     });
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography 
-                variant="h4" 
-                sx={{ 
-                    mb: 2, 
-                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    display: 'inline-block'
-                }}
-            >
-                User Management
-            </Typography>
-
-            <DashboardCard sx={{ mt: 1, p: 0, overflow: 'hidden' }}>
-                <Box sx={{ 
-                    p: '14px', 
-                    display: 'flex', 
-                    justifyContent: 'flex-end', 
-                    alignItems: 'center', 
-                    flexWrap: 'wrap', 
-                    gap: 2, 
-                    borderBottom: `1px solid ${theme.dashboard?.glassBorder || alpha(theme.palette.divider, 0.1)}` 
-                }}>
-                    <TableHeaderToolbar 
-                        table={table} 
-                        isSmall 
-                        ExcelData={{
-                            data: mockUsers,
-                            fileName: 'Users_Export'
-                        }}
-                        actionButton={
-                            <Button 
-                                variant="contained" 
-                                size="small" 
-                                onClick={() => navigate('add')}
-                                sx={{ 
-                                    borderRadius: '10px', 
-                                    bgcolor: theme.palette.primary.main,
-                                    height: '32px',
-                                    textTransform: 'none',
-                                    fontWeight: 700,
-                                    px: 2
-                                }}
-                            >
-                                Add
-                            </Button>
-                        }
-                    />
-                </Box>
-
+            <DashboardCard sx={{ p: 0, overflow: 'hidden', border: `1px solid ${alpha(theme.palette.divider, 0.1)}`, borderRadius: '12px' }}>
+                <TableHeaderToolbar 
+                    title="User Management"
+                    table={table} 
+                    ExcelData={{
+                        data: users,
+                        fileName: 'Users_Export'
+                    }}
+                    actionButton={
+                        <Button 
+                            variant="contained" 
+                            startIcon={<AddIcon />}
+                            onClick={() => navigate('/admin/users/add')}
+                            sx={{ borderRadius: '10px', fontWeight: 800, px: 2, py: 0.8, textTransform: 'none', boxShadow: 'none' }}
+                        >
+                            Create User
+                        </Button>
+                    }
+                />
                 <TableComponent table={table} />
                 <TableBottomToolbar table={table} />
             </DashboardCard>
@@ -222,4 +272,4 @@ const UsersPage = () => {
     );
 };
 
-export default UsersPage;
+export default Users;

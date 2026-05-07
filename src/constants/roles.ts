@@ -5,7 +5,7 @@ export const UserRole = {
     MANAGER: "Manager",
     STAFF: "Staff",
     VENDOR: "Vendor",
-    CLIENT: "Client",
+    CLIENT: "Customer",
 } as const;
 
 export const ROLE_DASHBOARD_MAP: Record<UserRoleType, string> = {
@@ -13,7 +13,7 @@ export const ROLE_DASHBOARD_MAP: Record<UserRoleType, string> = {
     [UserRole.MANAGER]: "/manager-dashboard",
     [UserRole.STAFF]: "/staff-dashboard",
     [UserRole.VENDOR]: "/vendor-dashboard",
-    [UserRole.CLIENT]: "/client-dashboard",
+    [UserRole.CLIENT]: "/customer-dashboard",
 };
 
 export const ROLE_LABELS: Record<UserRoleType, string> = {
@@ -21,7 +21,7 @@ export const ROLE_LABELS: Record<UserRoleType, string> = {
     [UserRole.MANAGER]: "Manager",
     [UserRole.STAFF]: "Staff Member",
     [UserRole.VENDOR]: "Vendor",
-    [UserRole.CLIENT]: "Client",
+    [UserRole.CLIENT]: "Customer",
 };
 
 export const ALL_ROLES = Object.values(UserRole);
@@ -35,7 +35,7 @@ export const getDashboardPath = (role: UserRoleType | string | null): string => 
         (r) => r.toLowerCase() === role.toLowerCase()
     );
 
-    return (normalizedRole ? ROLE_DASHBOARD_MAP[normalizedRole] : null) || "/client-dashboard";
+    return (normalizedRole ? ROLE_DASHBOARD_MAP[normalizedRole] : null) || "/customer-dashboard";
 };
 
 // Helper function to extract role from email (for mock authentication)

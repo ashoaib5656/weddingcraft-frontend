@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -16,30 +16,33 @@ import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
+import INVENTORY_SERVICE, { InventoryItem } from '../../api/services/inventory';
 
-interface InventoryItem {
-    id: string;
-    name: string;
-    category: 'decor' | 'catering' | 'technical' | 'safety';
-    stock: number;
-    unit: string;
-    status: 'available' | 'low' | 'out';
-    lastUpdated: string;
-}
 
-const mockInventory: InventoryItem[] = [
-    { id: '1', name: 'Premium Velvet Chair Covers', category: 'decor', stock: 450, unit: 'pcs', status: 'available', lastUpdated: '2024-03-20' },
-    { id: '2', name: 'Industrial Smoke Machines', category: 'technical', stock: 12, unit: 'units', status: 'available', lastUpdated: '2024-03-19' },
-    { id: '3', name: 'Silk Table Linens (Gold)', category: 'decor', stock: 15, unit: 'pcs', status: 'low', lastUpdated: '2024-03-21' },
-    { id: '4', name: 'Emergency Power Backup', category: 'safety', stock: 5, unit: 'units', status: 'available', lastUpdated: '2024-03-15' },
-    { id: '5', name: 'Organic Floral Centerpieces', category: 'decor', stock: 0, unit: 'pcs', status: 'out', lastUpdated: '2024-03-22' },
-];
 
 const InventoryPage = () => {
     const theme = useTheme();
 
-    const getStatusColor = (status: InventoryItem['status']) => {
-        switch (status) {
+    const [inventory, setInventory] = useState<InventoryItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchInventory = async () => {
+            try {
+                const response = await INVENTORY_SERVICE.GetAllInventoryItems();
+                setInventory(response.data?.data || response.data || []);
+            } catch (error) {
+                console.error("Error fetching inventory", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchInventory();
+    }, []);
+
+    const getStatusColor = (status?: string) => {
+        if (!status) return 'default';
+        switch (status.toLowerCase()) {
             case 'available': return 'success';
             case 'low': return 'warning';
             case 'out': return 'error';
@@ -104,7 +107,7 @@ const InventoryPage = () => {
                             fontSize: '0.65rem' 
                         }}
                     >
-                        {cell.getValue() as string}
+                        {cell.getValue() as string || 'Available'}
                     </Typography>
                 )
             },
@@ -112,7 +115,7 @@ const InventoryPage = () => {
                 accessorKey: 'lastUpdated',
                 header: 'Last Updated',
                 Cell: ({ cell }: any) => (
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>{cell.getValue() as string || 'N/A'}</Typography>
                 )
             },
             {
@@ -140,7 +143,12 @@ const InventoryPage = () => {
     const table = useMaterialReactTable({
         muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
-        data: mockInventory,
+        data: inventory,
+        state: {
+            isLoading,
+            globalFilter,
+            showGlobalFilter,
+        },
         enableColumnActions: false,
         enableColumnFilters: true,
         enableSorting: true,
@@ -194,7 +202,7 @@ const InventoryPage = () => {
                             table={table} 
                             isSmall 
                             ExcelData={{
-                                data: mockInventory,
+                                data: inventory,
                                 fileName: 'Inventory_Export'
                             }}
                         />

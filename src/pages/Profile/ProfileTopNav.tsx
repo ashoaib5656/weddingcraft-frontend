@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Tabs, Tab } from "@mui/material";
+import { Box, Typography, Tabs, Tab, useTheme, alpha } from "@mui/material";
 import {
     Person as PersonIcon,
     Lock as LockIcon,
@@ -12,10 +12,11 @@ interface ProfileTopNavProps {
 }
 
 const ProfileTopNav: React.FC<ProfileTopNavProps> = ({ activeTab, onTabChange }) => {
+    const theme = useTheme();
     const navItems = [
-        { label: 'General Info', icon: <PersonIcon /> },
-        { label: 'Security', icon: <LockIcon /> },
-        { label: 'Notifications', icon: <BellIcon /> },
+        { label: 'General Information', icon: <PersonIcon size={18} /> },
+        { label: 'Security & Privacy', icon: <LockIcon size={18} /> },
+        { label: 'Notifications', icon: <BellIcon size={18} /> },
     ];
 
     return (
@@ -23,21 +24,28 @@ const ProfileTopNav: React.FC<ProfileTopNavProps> = ({ activeTab, onTabChange })
             value={activeTab}
             onChange={onTabChange}
             sx={{
+                minHeight: 48,
                 '& .MuiTabs-indicator': {
-                    height: 3,
-                    borderRadius: '3px 3px 0 0',
+                    height: 2,
+                    borderRadius: 2,
                     bgcolor: 'primary.main'
                 },
                 '& .MuiTab-root': {
-                    minHeight: 55,
+                    minHeight: 48,
                     textTransform: 'none',
                     transition: '0.2s',
                     color: 'text.secondary',
-                    fontSize: '0.95rem',
-                    px: 4,
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    px: 3,
+                    mr: 2,
+                    '&:hover': {
+                        color: 'text.primary',
+                        bgcolor: alpha(theme.palette.text.primary, 0.03)
+                    },
                     '&.Mui-selected': {
                         color: 'primary.main',
-                        fontWeight: 800
+                        fontWeight: 700
                     }
                 }
             }}
@@ -47,9 +55,9 @@ const ProfileTopNav: React.FC<ProfileTopNavProps> = ({ activeTab, onTabChange })
                     disableRipple
                     key={i}
                     label={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                            {item.icon}
-                            <Typography variant="body2" sx={{ fontWeight: 'inherit' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            {/* Replaced Icon logic for simplicity */}
+                            <Typography variant="body2" sx={{ fontWeight: 'inherit', fontSize: 'inherit' }}>
                                 {item.label}
                             </Typography>
                         </Box>

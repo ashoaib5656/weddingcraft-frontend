@@ -6,63 +6,120 @@ import {
     TextField,
     InputAdornment,
     IconButton,
-    Button
+    Button,
+    alpha,
+    useTheme
 } from "@mui/material";
 import {
-    Lock as LockIcon,
     Visibility as EyeIcon,
     VisibilityOff as EyeOffIcon
 } from "@mui/icons-material";
 
 const SecuritySection: React.FC = () => {
-    const [showPass, setShowPass] = useState(false);
+    const theme = useTheme();
+    const [showCurrentPass, setShowCurrentPass] = useState(false);
+    const [showNewPass, setShowNewPass] = useState(false);
+    const [showConfirmPass, setShowConfirmPass] = useState(false);
 
     return (
         <Box>
-            <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>Password & Security</Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>Manage your security settings and password.</Typography>
+            <Box sx={{ mb: 2 }}>
+                <Typography variant="h5" sx={{ fontWeight: 900, color: 'text.primary', letterSpacing: '-0.03em', mb: 0.5 }}>
+                    Security & Privacy
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+                    Keep your account secure by updating your password regularly.
+                </Typography>
+            </Box>
 
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', ml: 0.5, mb: 1, display: 'block' }}>CURRENT PASSWORD</Typography>
                     <TextField
                         fullWidth
-                        type={showPass ? 'text' : 'password'}
-                        defaultValue="********"
+                        label="Current Password"
+                        type={showCurrentPass ? 'text' : 'password'}
+                        defaultValue="yourpassword123"
+                        size="small"
                         InputProps={{
-                            startAdornment: <InputAdornment position="start"><LockIcon fontSize="small" /></InputAdornment>,
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <IconButton onClick={() => setShowPass(!showPass)} size="small">
-                                        {showPass ? <EyeOffIcon fontSize="small" /> : <EyeIcon fontSize="small" />}
+                                    <IconButton 
+                                        onClick={() => setShowCurrentPass(!showCurrentPass)} 
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        size="small"
+                                    >
+                                        {showCurrentPass ? <EyeOffIcon fontSize="small" /> : <EyeIcon fontSize="small" />}
                                     </IconButton>
                                 </InputAdornment>
                             ),
-                            sx: { borderRadius: 3 }
+                            sx: { borderRadius: '10px', fontWeight: 500 }
                         }}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', ml: 0.5, mb: 1, display: 'block' }}>NEW PASSWORD</Typography>
                     <TextField
                         fullWidth
-                        type="password"
+                        label="New Password"
+                        type={showNewPass ? 'text' : 'password'}
                         placeholder="Min 12 characters"
-                        InputProps={{ sx: { borderRadius: 3, px: 1 } }}
+                        size="small"
+                        InputProps={{ 
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton 
+                                        onClick={() => setShowNewPass(!showNewPass)} 
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        size="small"
+                                    >
+                                        {showNewPass ? <EyeOffIcon fontSize="small" /> : <EyeIcon fontSize="small" />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                            sx: { borderRadius: '10px', fontWeight: 500 } 
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', ml: 0.5, mb: 1, display: 'block' }}>CONFIRM NEW PASSWORD</Typography>
                     <TextField
                         fullWidth
-                        type="password"
+                        label="Confirm New Password"
+                        type={showConfirmPass ? 'text' : 'password'}
                         placeholder="Repeat new password"
-                        InputProps={{ sx: { borderRadius: 3, px: 1 } }}
+                        size="small"
+                        InputProps={{ 
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton 
+                                        onClick={() => setShowConfirmPass(!showConfirmPass)} 
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        size="small"
+                                    >
+                                        {showConfirmPass ? <EyeOffIcon fontSize="small" /> : <EyeIcon fontSize="small" />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                            sx: { borderRadius: '10px', fontWeight: 500 } 
+                        }}
                     />
                 </Grid>
             </Grid>
-            <Box sx={{ mt: 5, display: 'flex', justifyContent: 'flex-end', mb: 5 }}>
-                <Button variant="contained" color="secondary" size="large" sx={{ borderRadius: 3, px: 6, py: 1.5, fontWeight: 800 }}>Update Password</Button>
+            
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+                <Button 
+                    variant="contained" 
+                    size="medium" 
+                    sx={{ 
+                        borderRadius: '10px', 
+                        px: 3, 
+                        py: 1, 
+                        fontWeight: 800,
+                        textTransform: 'none',
+                        boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.2)}`,
+                        minWidth: 150
+                    }}
+                >
+                    Update Password
+                </Button>
             </Box>
         </Box>
     );

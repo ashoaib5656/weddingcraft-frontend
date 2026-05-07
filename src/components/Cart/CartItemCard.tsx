@@ -42,7 +42,7 @@ const CartItemCard: React.FC<CartItemProps> = ({
     onRemove
 }) => {
     const theme = useTheme();
-    const formattedPrice = typeof price === 'number' ? `₹${price.toLocaleString()}` : price;
+    const formattedPrice = typeof price === 'number' ? `₹${price.toLocaleString()}` : price.toString().replace('$', '₹');
 
     // Standardize display values
     const vendorTitle = name || 'Premium Vendor';

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -14,6 +14,7 @@ import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
+import ORDER_SERVICE from '../../api/services/orders';
 
 interface Bill {
     id: string;
@@ -24,26 +25,40 @@ interface Bill {
     status: 'paid' | 'pending' | 'overdue';
 }
 
-const mockBills: Bill[] = [
-    { id: '1', invoiceNumber: 'INV-2024-001', client: 'Arjun & Sneha', amount: 450000, date: '2024-03-15', status: 'paid' },
-    { id: '2', invoiceNumber: 'INV-2024-002', client: 'Meera & Rohan', amount: 250000, date: '2024-03-18', status: 'pending' },
-    { id: '3', invoiceNumber: 'INV-2024-003', client: 'Priya & Vikram', amount: 680000, date: '2024-03-20', status: 'overdue' },
-    { id: '4', invoiceNumber: 'INV-2024-004', client: 'Amit & Ritu', amount: 125000, date: '2024-03-22', status: 'pending' },
-    { id: '5', invoiceNumber: 'INV-2024-001', client: 'Arjun & Sneha', amount: 450000, date: '2024-03-15', status: 'paid' },
-    { id: '6', invoiceNumber: 'INV-2024-002', client: 'Meera & Rohan', amount: 250000, date: '2024-03-18', status: 'pending' },
-    { id: '7', invoiceNumber: 'INV-2024-003', client: 'Priya & Vikram', amount: 680000, date: '2024-03-20', status: 'overdue' },
-    { id: '8', invoiceNumber: 'INV-2024-004', client: 'Amit & Ritu', amount: 125000, date: '2024-03-22', status: 'pending' },
-    { id: '9', invoiceNumber: 'INV-2024-001', client: 'Arjun & Sneha', amount: 450000, date: '2024-03-15', status: 'paid' },
-    { id: '10', invoiceNumber: 'INV-2024-002', client: 'Meera & Rohan', amount: 250000, date: '2024-03-18', status: 'pending' },
-    { id: '11', invoiceNumber: 'INV-2024-003', client: 'Priya & Vikram', amount: 680000, date: '2024-03-20', status: 'overdue' },
-    { id: '12', invoiceNumber: 'INV-2024-004', client: 'Amit & Ritu', amount: 125000, date: '2024-03-22', status: 'pending' },
-];
+
 
 const BillsPage = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const getStatusColor = (status: Bill['status']) => {
+    const [bills, setBills] = useState<Bill[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchBills = async () => {
+            try {
+                const response = await ORDER_SERVICE.GetAllOrders();
+                const orders = response.data?.data || response.data || [];
+                const mappedBills = orders.map((o: any) => ({
+                    id: o.id.toString(),
+                    invoiceNumber: `INV-2026-${o.id.toString().padStart(3, '0')}`,
+                    client: o.user?.name || 'Unknown Client',
+                    amount: o.totalAmount || 0,
+                    date: o.createdAt ? new Date(o.createdAt).toISOString().split('T')[0] : '2026-01-01',
+                    status: (o.status === 'Completed' || o.status === 'Confirmed') ? 'paid' : 'pending'
+                }));
+                setBills(mappedBills);
+            } catch (error) {
+                console.error("Error fetching bills", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchBills();
+    }, []);
+
+    const getStatusColor = (status?: string) => {
+        if (!status) return 'default';
         switch (status) {
             case 'paid': return 'success';
             case 'pending': return 'warning';
@@ -92,7 +107,9 @@ const BillsPage = () => {
                 accessorKey: 'date',
                 header: 'Due Date',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '11px' }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '11px' }}>
+                        {new Date(cell.getValue() as string).toLocaleDateString()}
+                    </Typography>
                 ),
             },
             {
@@ -108,7 +125,7 @@ const BillsPage = () => {
                             letterSpacing: '0.05em'
                         }}
                     >
-                        {cell.getValue() as string}
+                        {cell.getValue() as string || 'Pending'}
                     </Typography>
                 ),
             },
@@ -137,7 +154,16 @@ const BillsPage = () => {
     const table = useMaterialReactTable({
         muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
-        data: mockBills,
+        data: bills,
+        state: {
+            isLoading,
+            globalFilter,
+            showGlobalFilter,
+            columnVisibility: {
+                invoiceNumber: !isMobile,
+                date: !isMobile,
+            }
+        },
         enableColumnActions: false,
         enableColumnFilters: true,
         enableSorting: true,
@@ -155,14 +181,6 @@ const BillsPage = () => {
                 borderRadius: '0',
                 border: 'none',
             },
-        },
-        state: {
-            globalFilter,
-            showGlobalFilter,
-            columnVisibility: {
-                invoiceNumber: !isMobile,
-                date: !isMobile,
-            }
         },
     });
 
@@ -188,7 +206,7 @@ const BillsPage = () => {
                             table={table} 
                             isSmall 
                             ExcelData={{
-                                data: mockBills,
+                                data: bills,
                                 fileName: 'Bills_Export'
                             }}
                         />

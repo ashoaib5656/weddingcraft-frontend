@@ -65,7 +65,9 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
 
     try {
       const response = await AUTH_SERVICE.forgotPassword({ email });
-      if (response.ok) {
+      //console.log(response);
+      if (response && response.message) {
+        //console.log(response);
         setSuccess("OTP sent to your email successfully!");
         setTimeout(() => {
           setStep(1);
@@ -94,7 +96,8 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
 
     try {
       const response = await AUTH_SERVICE.verifyOtp({ email, otp });
-      if (response.ok) {
+      console.log(response);
+      if (response && response.message) {
         setSuccess("OTP verified successfully!");
         setTimeout(() => {
           setStep(2);
@@ -132,8 +135,9 @@ const ForgotPasswordPage: React.FC = (): JSX.Element => {
     setSuccess("");
 
     try {
-      const response = await AUTH_SERVICE.resetPassword({ email, password: newPassword });
-      if (response.ok) {
+      const response = await AUTH_SERVICE.resetPassword({ email, newPassword: newPassword });
+      console.log(response);
+      if (response && response.message) {
         setSuccess("Password reset successfully! Redirecting to login...");
         setTimeout(() => {
           navigate("/login");

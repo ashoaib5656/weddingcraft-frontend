@@ -47,6 +47,11 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({ table }) => {
     <Box
       className="custom-pagination-container"
       sx={{
+        '& .MuiToolbar-root': {
+          minHeight: '40px !important',
+          height: '40px !important',
+          padding: '0 16px !important'
+        },
         '& .MuiTablePagination-actions': {
           '& .MuiButtonBase-root': {
             width: '32px !important',

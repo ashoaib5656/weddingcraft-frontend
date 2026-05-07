@@ -16,14 +16,8 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    user: {
-        id: '1',
-        name: 'Admin User',
-        email: 'admin@weddingcraft.com',
-        role: 'admin',
-        dateFormat: 'DD/MM/YYYY'
-    }, // Providing mock user data for now as per project context
-    isAuthenticated: true,
+    user: null,
+    isAuthenticated: false,
     loading: false,
     error: null,
 };

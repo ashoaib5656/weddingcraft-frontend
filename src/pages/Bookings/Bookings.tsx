@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -6,136 +6,180 @@ import {
     Button,
     alpha,
     useTheme,
-    useMediaQuery
+    Avatar,
+    Tooltip,
+    Chip
 } from '@mui/material';
 import {
     CalendarMonth as CalendarIcon,
     List as ListIcon,
-    MoreVert as MoreVertIcon
+    Visibility as ViewIcon,
+    CheckCircle as ConfirmedIcon,
+    Schedule as PendingIcon,
+    Paid as PaidIcon
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/Auth/useAuth';
 import { useMaterialReactTable } from 'material-react-table';
-import { useNavigate } from 'react-router-dom';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
 import PremiumCalendar from '../../components/Calendar/PremiumCalendar';
+import ORDER_SERVICE, { type Order } from '../../api/services/orders';
 
-// Mock data for bookings
-const mockBookings = [
-    { id: 'BK-5001', title: 'Sharma & Varma Wedding', client: 'Priya Sharma', vendor: 'Royal Banquet Hall', date: '2025-02-15', amount: '₹1,50,000', status: 'Confirmed' },
-    { id: 'BK-5002', title: 'Engagement Ceremony', client: 'Rahul Varma', vendor: 'Capture Moments', date: '2025-03-02', amount: '₹45,000', status: 'Pending Payment' },
-    { id: 'BK-5003', title: 'Corporate Annual Meet', client: 'Tech Corp', vendor: 'Gourmet Treats', date: '2025-01-20', amount: '₹80,000', status: 'Completed' },
-    { id: 'BK-5004', title: 'Birthday Bash', client: 'Anita Roy', vendor: 'Elite Sounds', date: '2025-04-10', amount: '₹25,000', status: 'Confirmed' },
-];
+interface MappedBooking {
+    id: string;
+    title: string;
+    client: string;
+    clientAvatar?: string;
+    vendor: string;
+    date: string;
+    amount: number;
+    status: string;
+}
 
 const BookingsPage = () => {
     const theme = useTheme();
-    const navigate = useNavigate();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { role } = useAuth();
     const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+    const [bookings, setBookings] = useState<MappedBooking[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const currentRole = role?.toLowerCase() || 'client';
 
-    const handleDateClick = (_date: any) => {
-        if (currentRole === 'client') {
-            navigate('/client/vendors');
-        }
-    };
+    useEffect(() => {
+        const fetchBookings = async () => {
+            try {
+                const response = await ORDER_SERVICE.GetAllOrders();
+                const orders = response.data.data;
+                const mappedBookings: MappedBooking[] = orders.map((o: Order) => ({
+                    id: o.id.toString(),
+                    title: o.title || `Booking #${o.id}`,
+                    client: o.user?.name || 'Unknown Client',
+                    clientAvatar: `https://ui-avatars.com/api/?name=${o.user?.name || 'U'}&background=random`,
+                    vendor: 'System Vendor',
+                    date: o.createdAt ? new Date(o.createdAt).toISOString() : new Date().toISOString(),
+                    amount: o.totalAmount || 0,
+                    status: o.status || 'Pending'
+                }));
+                setBookings(mappedBookings);
+            } catch (error) {
+                console.error("Error fetching bookings", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchBookings();
+    }, []);
 
-    const getStatusColor = (status: string) => {
-        switch (status.toLowerCase()) {
-            case 'confirmed': return 'success';
-            case 'pending payment': return 'warning';
-            case 'completed': return 'info';
-            default: return 'default';
-        }
+    const getStatusConfig = (status: string) => {
+        const s = status?.toLowerCase() || 'pending';
+        if (s.includes('confirm')) return { color: 'success', icon: <ConfirmedIcon sx={{ fontSize: 14 }} />, label: 'Confirmed' };
+        if (s.includes('pend')) return { color: 'warning', icon: <PendingIcon sx={{ fontSize: 14 }} />, label: 'Pending' };
+        if (s.includes('complet')) return { color: 'info', icon: <PaidIcon sx={{ fontSize: 14 }} />, label: 'Completed' };
+        return { color: 'default', icon: null, label: status || 'Pending' };
     };
 
     const columns = useMemo(
         () => [
             {
                 accessorKey: 'id',
-                header: 'Booking ID',
-                Cell: ({ cell }: any) => (
-                    <Typography 
-                        sx={{ 
-                            color: 'text.secondary', 
-                            fontWeight: 600,
-                            fontSize: '11px'
-                        }}
-                    >
-                        {cell.getValue() as string}
-                    </Typography>
-                )
-            },
-            {
-                accessorKey: 'title',
-                header: 'Booking Details',
-                Cell: ({ row }: any) => {
-                    const booking = row.original;
+                header: 'ID',
+                size: 80,
+                Cell: ({ cell }: any) => {
+                    const id = cell.getValue();
                     return (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Box>
-                            <Typography sx={{ fontWeight: 700, fontSize: '13px', color: 'text.primary' }}>{booking.title}</Typography>
-                        </Box>
-                        </Box>
+                        <Typography sx={{ color: 'text.disabled', fontWeight: 800, fontSize: '11px' }}>
+                            #{id ? id.slice(-4) : 'N/A'}
+                        </Typography>
                     );
                 }
             },
             {
-                id: 'clientOrVendor',
-                accessorFn: (row: any) => currentRole === 'vendor' ? row.client : row.vendor,
-                header: currentRole === 'vendor' ? 'Client' : 'Vendor',
-                Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '12px', fontWeight: 600, color: 'text.primary' }}>
-                        {cell.getValue() as string}
-                    </Typography>
+                accessorKey: 'title',
+                header: 'Event / Booking',
+                size: 250,
+                Cell: ({ row }: any) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Box sx={{ 
+                            width: 32, height: 32, borderRadius: '10px', 
+                            bgcolor: alpha(theme.palette.primary.main, 0.1),
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: 'primary.main'
+                        }}>
+                            <CalendarIcon sx={{ fontSize: 18 }} />
+                        </Box>
+                        <Typography sx={{ fontWeight: 600, fontSize: '14px' }}>{row.original.title}</Typography>
+                    </Box>
+                )
+            },
+            {
+                accessorKey: 'client',
+                header: currentRole === 'vendor' ? 'Client Name' : 'Vendor',
+                Cell: ({ row }: any) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Avatar src={row.original.clientAvatar} sx={{ width: 28, height: 28, border: `2px solid ${alpha(theme.palette.primary.main, 0.2)}` }} />
+                        <Typography sx={{ fontWeight: 500, fontSize: '13px' }}>{row.original.client}</Typography>
+                    </Box>
                 )
             },
             {
                 accessorKey: 'date',
-                header: 'Date',
+                header: 'Booking Date',
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontSize: '11px', fontWeight: 700, color: 'text.secondary' }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontWeight: 500, fontSize: '13px', color: 'text.secondary' }}>
+                        {cell.getValue() ? new Date(cell.getValue()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                    </Typography>
                 )
             },
             {
                 accessorKey: 'amount',
-                header: 'Amount',
+                header: 'Total Value',
+                muiTableHeadCellProps: { align: 'right' as const },
+                muiTableBodyCellProps: { align: 'right' as const },
                 Cell: ({ cell }: any) => (
-                    <Typography sx={{ fontWeight: 800, fontSize: '13px', color: 'text.primary' }}>{cell.getValue() as string}</Typography>
+                    <Typography sx={{ fontWeight: 900, color: 'primary.main', fontSize: '15px' }}>
+                        ₹{cell.getValue()?.toLocaleString() || '0'}
+                    </Typography>
                 )
             },
             {
                 accessorKey: 'status',
                 header: 'Status',
-                Cell: ({ cell }: any) => (
-                    <Typography 
-                        sx={{ 
-                            fontWeight: 900, 
-                            color: `${theme.palette[getStatusColor(cell.getValue() as string) as 'success' | 'warning' | 'error' | 'info'].main}`, 
-                            fontSize: '10px',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em'
-                        }}
-                    >
-                        {cell.getValue() as string}
-                    </Typography>
-                )
+                Cell: ({ cell }: any) => {
+                    const config = getStatusConfig(cell.getValue());
+                    return (
+                        <Chip 
+                            label={config.label}
+                            size="small"
+                            sx={{ 
+                                fontWeight: 800, 
+                                fontSize: '10px', 
+                                height: 24,
+                                borderRadius: '8px',
+                                textTransform: 'uppercase',
+                                bgcolor: alpha(
+                                    (theme.palette as any)[config.color === 'default' ? 'grey' : config.color]?.main || theme.palette.primary.main, 
+                                    0.1
+                                ),
+                                color: (theme.palette as any)[config.color === 'default' ? 'grey' : config.color]?.main || theme.palette.primary.main,
+                                '& .MuiChip-icon': {
+                                    color: 'inherit'
+                                }
+                            }}
+                        />
+                    );
+                }
             },
             {
-                accessorKey: 'actions',
-                header: 'Actions',
-                muiTableHeadCellProps: { align: 'center' as const },
-                muiTableBodyCellProps: { align: 'center' as const },
-                enableColumnFilter: false,
-                enableSorting: false,
+                id: 'actions',
+                header: '',
+                size: 50,
                 Cell: () => (
-                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <IconButton size="small"><MoreVertIcon fontSize="small" /></IconButton>
-                    </Box>
+                    <Tooltip title="View Details">
+                        <IconButton size="small" sx={{ bgcolor: alpha(theme.palette.divider, 0.05) }}>
+                            <ViewIcon sx={{ fontSize: 18 }} />
+                        </IconButton>
+                    </Tooltip>
                 )
             }
         ],
@@ -146,92 +190,71 @@ const BookingsPage = () => {
     const [showGlobalFilter, setShowGlobalFilter] = useState(false);
 
     const table = useMaterialReactTable({
-        muiTopToolbarProps: { sx: { p: '14px' } },
         columns,
-        data: mockBookings,
+        data: bookings,
+        state: {
+            isLoading,
+            globalFilter,
+            showGlobalFilter,
+        },
         enableColumnActions: false,
         enableColumnFilters: true,
         enableSorting: true,
         enablePagination: true,
-        enableRowSelection: true,
         enableGlobalFilter: true,
         onGlobalFilterChange: setGlobalFilter,
         onShowGlobalFilterChange: setShowGlobalFilter,
         muiTablePaperProps: {
             elevation: 0,
-            sx: {
-                borderRadius: '0',
-                border: 'none',
-            },
-        },
-        state: {
-            globalFilter,
-            showGlobalFilter,
-            columnVisibility: {
-                id: !isMobile,
-                date: !isMobile,
-            }
+            sx: { borderRadius: '12px', border: 'none', overflow: 'hidden' },
         },
     });
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, flexWrap: 'wrap', gap: 2 }}>
-                <Typography 
-                    variant="h4" 
-                    sx={{ 
-                        mb: 2, 
-                        background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        display: 'inline-block'
+            <DashboardCard sx={{ p: 0, overflow: 'hidden', border: `1px solid ${alpha(theme.palette.divider, 0.1)}`, borderRadius: '12px' }}>
+                <TableHeaderToolbar 
+                    title="Bookings & Events"
+                    table={table} 
+                    ExcelData={{
+                        data: bookings,
+                        fileName: 'Bookings_Export'
                     }}
-                >
-                    Bookings Management
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1, width: { xs: '100%', sm: 'auto' }, justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
-                    <Button
-                        startIcon={<ListIcon />}
-                        variant={viewMode === 'list' ? 'contained' : 'outlined'}
-                        onClick={() => setViewMode('list')}
-                        size="small"
-                        sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 700 }}
-                    >
-                        List View
-                    </Button>
-                    <Button
-                        startIcon={<CalendarIcon />}
-                        variant={viewMode === 'calendar' ? 'contained' : 'outlined'}
-                        onClick={() => setViewMode('calendar')}
-                        size="small"
-                        sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 700 }}
-                    >
-                        Calendar
-                    </Button>
-                </Box>
-            </Box>
-
-            {viewMode === 'list' ? (
-                <DashboardCard sx={{ p: 0, overflow: 'hidden' }}>
-                    <Box sx={{ p: '14px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: `1px solid ${theme.dashboard?.glassBorder || alpha(theme.palette.divider, 0.1)}` }}>
-                        <TableHeaderToolbar 
-                            table={table} 
-                            isSmall 
-                            ExcelData={{
-                                data: mockBookings,
-                                fileName: 'Bookings_Report'
-                            }}
-                        />
-                    </Box>
-                    <TableComponent table={table} />
-                    <TableBottomToolbar table={table} />
-                </DashboardCard>
-            ) : (
-                <PremiumCalendar 
-                    bookings={mockBookings as any} 
-                    onDateClick={handleDateClick}
+                    actionButton={
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Button 
+                                variant={viewMode === 'list' ? 'contained' : 'outlined'}
+                                onClick={() => setViewMode('list')}
+                                startIcon={<ListIcon />}
+                                size="small"
+                                sx={{ borderRadius: '10px', fontWeight: 800, textTransform: 'none', boxShadow: 'none' }}
+                            >
+                                List
+                            </Button>
+                            <Button 
+                                variant={viewMode === 'calendar' ? 'contained' : 'outlined'}
+                                onClick={() => setViewMode('calendar')}
+                                startIcon={<CalendarIcon />}
+                                size="small"
+                                sx={{ borderRadius: '10px', fontWeight: 800, textTransform: 'none', boxShadow: 'none' }}
+                            >
+                                Calendar
+                            </Button>
+                        </Box>
+                    }
                 />
-            )}
+                {viewMode === 'list' ? (
+                    <>
+                        <TableComponent table={table} />
+                        <TableBottomToolbar table={table} />
+                    </>
+                ) : (
+                    <PremiumCalendar 
+                        bookings={bookings as any} 
+                        onDateClick={() => {}}
+                    />
+                )}
+            </DashboardCard>
         </Box>
     );
 };

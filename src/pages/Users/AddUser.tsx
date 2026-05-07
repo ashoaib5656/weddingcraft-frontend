@@ -5,7 +5,6 @@ import {
     Grid,
     MenuItem,
     TextField,
-    useTheme,
     FormControlLabel,
     Switch,
     Breadcrumbs,
@@ -22,6 +21,7 @@ import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCar
 import InputField from '../../components/Form/InputField';
 import FormButton from '../../components/Form/FormButton';
 import { useSnackbar } from '../../contexts/SnackbarContext';
+import { useAuth } from '../../contexts/Auth/useAuth';
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -30,12 +30,61 @@ const schema = yup.object().shape({
     role: yup.string().required('Role is required'),
     password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
     status: yup.boolean().default(true),
-});
+    // Vendor specific fields (Conditional)
+    category: yup.string().when('role', {
+        is: 'Vendor',
+        then: (schema) => schema.required('Category is required'),
+        otherwise: (schema) => schema.optional()
+    }),
+    contactPerson: yup.string().when('role', {
+        is: 'Vendor',
+        then: (schema) => schema.required('Contact Person is required'),
+        otherwise: (schema) => schema.optional()
+    }),
+    phone: yup.string().when('role', {
+        is: (val: string) => ['Vendor', 'Staff'].includes(val),
+        then: (schema) => schema.required('Phone Number is required'),
+        otherwise: (schema) => schema.optional()
+    }),
+    location: yup.string().when('role', {
+        is: 'Vendor',
+        then: (schema) => schema.required('Location is required'),
+        otherwise: (schema) => schema.optional()
+    }),
+    staffPosition: yup.string().when('role', {
+        is: 'Staff',
+        then: (schema) => schema.required('Staff Position is required'),
+        otherwise: (schema) => schema.optional()
+    }),
+    staffStatus: yup.string().optional(),
+}, [['role', 'category'], ['role', 'contactPerson'], ['role', 'phone'], ['role', 'location'], ['role', 'staffPosition']]);
 
+//const roles = ['Admin', 'Manager', 'Staff', 'Vendor', 'Client'];
 const roles = ['Admin', 'Manager', 'Staff', 'Vendor', 'Client'];
 
+const categories = [
+    'Venue', 
+    'Photography', 
+    'Decoration', 
+    'Catering', 
+    'Music/DJ', 
+    'Makeup Artist', 
+    'Videography', 
+    'Choreographer',
+    'Invitation Cards'
+];
+
+const staffPositions = [
+    'Wedding Coordinator', 
+    'Support Specialist', 
+    'Venue Liaison', 
+    'Vendor Relations', 
+    'Operations Lead'
+];
+
+const staffStatuses = ['Available', 'Busy', 'On Leave'];
+
 const AddUser = () => {
-    const theme = useTheme();
     const navigate = useNavigate();
     const { success } = useSnackbar();
     const [loading, setLoading] = useState(false);
@@ -43,48 +92,53 @@ const AddUser = () => {
     const {
         control,
         handleSubmit,
+        watch,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(schema as any),
         defaultValues: {
             name: '',
             email: '',
             role: '',
             password: '',
             status: true,
+            category: '',
+            contactPerson: '',
+            phone: '',
+            location: '',
+            staffPosition: '',
+            staffStatus: 'Available',
         },
     });
 
+    const { role: currentUserRole } = useAuth();
+    const selectedRole = watch('role');
+
     const onSubmit = async (data: any) => {
         setLoading(true);
-        console.log('Submitting User Data:', data);
+        console.log('Submitting Unified User Data:', data);
         
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1500));
         
         setLoading(false);
-        success('User added successfully!');
-        navigate('/admin/users');
+        success(`${data.role} added successfully!`);
+        
+        // Dynamic redirection based on context
+        if (data.role === 'Vendor' || currentUserRole?.toLowerCase() === 'manager') {
+            navigate('/manager/vendors');
+        } else if (data.role === 'Staff') {
+            navigate('/manager/staff');
+        } else {
+            navigate('/admin/users');
+        }
     };
 
     return (
         <Box sx={{ p: 0 }}>
-            {/* Header: Title on Left, Breadcrumbs on Right */}
-            <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-                <Typography 
-                    variant="h4" 
-                    sx={{ 
-                        fontWeight: 800, 
-                        background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                    }}
-                >
-                    Add User
-                </Typography>
-
+            <Box sx={{ mb: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                 <Breadcrumbs 
-                    separator={<NavigateNextIcon fontSize="small" />} 
+                    separator={<NavigateNextIcon sx={{ fontSize: 16, color: 'text.disabled' }} />} 
                     aria-label="breadcrumb"
                 >
                     <Link
@@ -95,23 +149,22 @@ const AddUser = () => {
                             e.preventDefault();
                             navigate('/admin/users');
                         }}
-                        sx={{ fontSize: '0.85rem', fontWeight: 500 }}
+                        sx={{ fontSize: '0.9rem', fontWeight: 600, color: 'text.secondary' }}
                     >
                         Users
                     </Link>
-                    <Typography color="text.primary" sx={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                    <Typography color="primary" sx={{ fontSize: '1rem', fontWeight: 800 }}>
                         Add User
                     </Typography>
                 </Breadcrumbs>
             </Box>
 
-            <DashboardCard sx={{ p: 2 }}>
+            <DashboardCard sx={{ p: 2.5, borderRadius: '12px' }}>
                 <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-                    <Grid container spacing={2}>
-                        {/* User Information Section title */}
+                    <Grid container spacing={2.5}>
                         <Grid item xs={12}>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1, color: 'text.primary' }}>
-                                Personal Details
+                            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1, color: 'primary.main' }}>
+                                Account Information
                             </Typography>
                         </Grid>
 
@@ -125,7 +178,7 @@ const AddUser = () => {
                                         label="Full Name *"
                                         placeholder="Enter user's full name"
                                         error={!!errors.name}
-                                        helperText={errors.name?.message}
+                                        helperText={errors.name?.message as string}
                                         InputProps={{ sx: { height: '42px' } }}
                                     />
                                 )}
@@ -142,7 +195,7 @@ const AddUser = () => {
                                         label="Email Address *"
                                         placeholder="example@wedspot.com"
                                         error={!!errors.email}
-                                        helperText={errors.email?.message}
+                                        helperText={errors.email?.message as string}
                                         InputProps={{ sx: { height: '42px' } }}
                                     />
                                 )}
@@ -174,7 +227,7 @@ const AddUser = () => {
                                             fullWidth
                                             size="small"
                                             error={!!errors.role}
-                                            helperText={errors.role?.message}
+                                            helperText={errors.role?.message as string}
                                             InputProps={{
                                                 sx: { 
                                                     borderRadius: '10px',
@@ -205,7 +258,7 @@ const AddUser = () => {
                                         type="password"
                                         placeholder="Min 6 characters"
                                         error={!!errors.password}
-                                        helperText={errors.password?.message}
+                                        helperText={errors.password?.message as string}
                                         InputProps={{ sx: { height: '42px' } }}
                                     />
                                 )}
@@ -236,6 +289,231 @@ const AddUser = () => {
                                 />
                             </Box>
                         </Grid>
+
+                        {/* Vendor Specific Information */}
+                        {selectedRole === 'Vendor' && (
+                            <>
+                                <Grid item xs={12} sx={{ mt: 2 }}>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1, color: 'primary.main' }}>
+                                        Business Information
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item xs={12} md={4}>
+                                    <Box>
+                                        <Typography
+                                            component="label"
+                                            sx={{
+                                                fontSize: "0.875rem",
+                                                fontWeight: 600,
+                                                color: "#334155",
+                                                mb: 0.75,
+                                                display: "block",
+                                                fontFamily: "'Inter', sans-serif",
+                                            }}
+                                        >
+                                            Category *
+                                        </Typography>
+                                        <Controller
+                                            name="category"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <TextField
+                                                    {...field}
+                                                    select
+                                                    fullWidth
+                                                    size="small"
+                                                    error={!!errors.category}
+                                                    helperText={errors.category?.message as string}
+                                                    InputProps={{
+                                                        sx: { 
+                                                            borderRadius: '10px',
+                                                            height: '42px',
+                                                            bgcolor: '#f8fafc'
+                                                        }
+                                                    }}
+                                                >
+                                                    {categories.map((cat) => (
+                                                        <MenuItem key={cat} value={cat}>
+                                                            {cat}
+                                                        </MenuItem>
+                                                    ))}
+                                                </TextField>
+                                            )}
+                                        />
+                                    </Box>
+                                </Grid>
+
+                                <Grid item xs={12} md={4}>
+                                    <Controller
+                                        name="contactPerson"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <InputField
+                                                {...field}
+                                                label="Contact Person *"
+                                                placeholder="Business manager name"
+                                                error={!!errors.contactPerson}
+                                                helperText={errors.contactPerson?.message as string}
+                                                InputProps={{ sx: { height: '42px' } }}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={4}>
+                                    <Controller
+                                        name="phone"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <InputField
+                                                {...field}
+                                                label="Business Phone *"
+                                                placeholder="+91 XXXXX XXXXX"
+                                                error={!!errors.phone}
+                                                helperText={errors.phone?.message as string}
+                                                InputProps={{ sx: { height: '42px' } }}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={8}>
+                                    <Controller
+                                        name="location"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <InputField
+                                                {...field}
+                                                label="Business Location *"
+                                                placeholder="Enter full address or city"
+                                                error={!!errors.location}
+                                                helperText={errors.location?.message as string}
+                                                InputProps={{ sx: { height: '42px' } }}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+                            </>
+                        )}
+
+                        {/* Staff Specific Information */}
+                        {selectedRole === 'Staff' && (
+                            <>
+                                <Grid item xs={12} sx={{ mt: 2 }}>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1, color: 'primary.main' }}>
+                                        Staff Information
+                                    </Typography>
+                                </Grid>
+
+                                <Grid item xs={12} md={4}>
+                                    <Box>
+                                        <Typography
+                                            component="label"
+                                            sx={{
+                                                fontSize: "0.875rem",
+                                                fontWeight: 600,
+                                                color: "#334155",
+                                                mb: 0.75,
+                                                display: "block",
+                                                fontFamily: "'Inter', sans-serif",
+                                            }}
+                                        >
+                                            Staff Position *
+                                        </Typography>
+                                        <Controller
+                                            name="staffPosition"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <TextField
+                                                    {...field}
+                                                    select
+                                                    fullWidth
+                                                    size="small"
+                                                    error={!!errors.staffPosition}
+                                                    helperText={errors.staffPosition?.message as string}
+                                                    InputProps={{
+                                                        sx: { 
+                                                            borderRadius: '10px',
+                                                            height: '42px',
+                                                            bgcolor: '#f8fafc'
+                                                        }
+                                                    }}
+                                                >
+                                                    {staffPositions.map((pos) => (
+                                                        <MenuItem key={pos} value={pos}>
+                                                            {pos}
+                                                        </MenuItem>
+                                                    ))}
+                                                </TextField>
+                                            )}
+                                        />
+                                    </Box>
+                                </Grid>
+
+                                <Grid item xs={12} md={4}>
+                                    <Box>
+                                        <Typography
+                                            component="label"
+                                            sx={{
+                                                fontSize: "0.875rem",
+                                                fontWeight: 600,
+                                                color: "#334155",
+                                                mb: 0.75,
+                                                display: "block",
+                                                fontFamily: "'Inter', sans-serif",
+                                            }}
+                                        >
+                                            Current Status
+                                        </Typography>
+                                        <Controller
+                                            name="staffStatus"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <TextField
+                                                    {...field}
+                                                    select
+                                                    fullWidth
+                                                    size="small"
+                                                    error={!!errors.staffStatus}
+                                                    helperText={errors.staffStatus?.message as string}
+                                                    InputProps={{
+                                                        sx: { 
+                                                            borderRadius: '10px',
+                                                            height: '42px',
+                                                            bgcolor: '#f8fafc'
+                                                        }
+                                                    }}
+                                                >
+                                                    {staffStatuses.map((status) => (
+                                                        <MenuItem key={status} value={status}>
+                                                            {status}
+                                                        </MenuItem>
+                                                    ))}
+                                                </TextField>
+                                            )}
+                                        />
+                                    </Box>
+                                </Grid>
+
+                                <Grid item xs={12} md={4}>
+                                    <Controller
+                                        name="phone"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <InputField
+                                                {...field}
+                                                label="Phone Number *"
+                                                placeholder="+91 XXXXX XXXXX"
+                                                error={!!errors.phone}
+                                                helperText={errors.phone?.message as string}
+                                                InputProps={{ sx: { height: '42px' } }}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+                            </>
+                        )}
 
                         <Grid item xs={12} sx={{ mt: 2 }}>
                             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>

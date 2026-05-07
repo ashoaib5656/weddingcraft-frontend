@@ -1,10 +1,10 @@
-import React from 'react';
 import { 
     Box, 
     Tabs, 
     Tab, 
     alpha, 
-    useTheme
+    useTheme,
+    Container
 } from '@mui/material';
 import type { VendorSector } from '../../Types/vendor';
 
@@ -24,57 +24,57 @@ const SectorNavigation: React.FC<SectorNavigationProps> = ({ sectors, activeSect
     return (
         <Box sx={{ 
             width: '100%', 
-            mb: 6,
+            mb: 4,
             position: 'sticky',
             top: 0,
             zIndex: 10,
-            bgcolor: alpha(theme.palette.background.default, 0.8),
-            backdropFilter: 'blur(10px)',
-            py: 2,
-            borderBottom: `1px solid ${alpha(theme.palette.divider, 0.05)}`
+            bgcolor: 'background.paper',
+            borderBottom: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
         }}>
-            <Tabs
-                value={activeSectorId}
-                onChange={handleChange}
-                variant="scrollable"
-                scrollButtons="auto"
-                allowScrollButtonsMobile
-                sx={{
-                    '& .MuiTabs-indicator': {
-                        height: 4,
-                        borderRadius: '4px 4px 0 0',
-                        backgroundColor: 'primary.main',
-                        background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                    },
-                    '& .MuiTab-root': {
-                        textTransform: 'none',
-                        minWidth: 100,
-                        fontWeight: 700,
-                        fontSize: '0.9rem',
-                        marginRight: 2,
-                        color: 'text.secondary',
-                        transition: 'all 0.3s ease',
-                        '&.Mui-selected': {
-                            color: 'primary.main',
+            <Container maxWidth="xl" sx={{ px: { xs: 2, md: 3 } }}>
+                <Tabs
+                    value={activeSectorId}
+                    onChange={handleChange}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    allowScrollButtonsMobile
+                    sx={{
+                        minHeight: '48px',
+                        '& .MuiTabs-indicator': {
+                            height: 3,
+                            borderRadius: '4px 4px 0 0',
+                            backgroundColor: 'primary.main',
                         },
-                        '&:hover': {
-                            color: 'primary.main',
-                            bgcolor: alpha(theme.palette.primary.main, 0.03),
-                            borderRadius: 2
-                        }
-                    },
-                }}
-            >
-                <Tab label="All Sectors" value="all" />
-                {sectors.map((sector) => (
-                    <Tab 
-                        key={sector.id} 
-                        label={sector.name} 
-                        value={sector.id} 
-                        iconPosition="start"
-                    />
-                ))}
-            </Tabs>
+                        '& .MuiTab-root': {
+                            textTransform: 'none',
+                            minHeight: '48px',
+                            minWidth: 80,
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            marginRight: 1,
+                            color: 'text.secondary',
+                            transition: 'all 0.2s ease',
+                            '&.Mui-selected': {
+                                color: 'primary.main',
+                            },
+                            '&:hover': {
+                                color: 'primary.main',
+                                bgcolor: alpha(theme.palette.primary.main, 0.02),
+                            }
+                        },
+                    }}
+                >
+                    <Tab label="All Sectors" value="all" />
+                    {sectors.map((sector) => (
+                        <Tab 
+                            key={sector.id} 
+                            label={sector.name} 
+                            value={sector.id} 
+                        />
+                    ))}
+                </Tabs>
+            </Container>
         </Box>
     );
 };

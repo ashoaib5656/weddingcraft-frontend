@@ -113,18 +113,6 @@ const ManagerDashboard: React.FC = () => {
 
   return (
     <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-        <Typography 
-          variant="h4" 
-          sx={{ 
-            mb: 2, 
-            background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            display: 'inline-block'
-          }}
-        >
-          Operations Management
-        </Typography>
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {stats.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>

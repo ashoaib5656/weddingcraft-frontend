@@ -17,9 +17,7 @@ import {
 } from '@mui/material';
 import { 
     CalendarMonth as CalendarIcon,
-    ShoppingCart as CartIcon,
     CheckCircle as CheckIcon,
-    Restaurant as FoodIcon,
     NavigateNext as NavigateNextIcon,
     ChatBubbleOutline as MessageIcon,
     AccessTime as TimeIcon,
@@ -36,8 +34,6 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import USER_SERVICE from '../../api/services/users';
-import { useCart } from '../../contexts/CartContext';
-import CateringDialog from '../../components/Vendors/CateringDialog';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 import { type Vendor as BaseVendor } from '../../Types/vendor';
 
@@ -48,12 +44,13 @@ interface Vendor extends BaseVendor {
 }
 
 
+import BookingFlow from '../../components/Bookings/BookingFlow';
+
 const VendorDetails: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const theme = useTheme();
-    const { addToCart, isItemInCart } = useCart();
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isBookingOpen, setIsBookingOpen] = useState(false);
     const [vendor, setVendor] = useState<Vendor | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -103,45 +100,32 @@ const VendorDetails: React.FC = () => {
         );
     }
 
-    const isCatering = vendor.sectorId.toLowerCase() === 'catering';
-    const isInCart = isItemInCart(vendor.id);
-
     const handleBookingAction = () => {
-        if (isCatering) {
-            setIsDialogOpen(true);
-        } else {
-            addToCart(vendor, 1);
-        }
-    };
-
-    const handleCateringAdd = (quantity: number) => {
-        addToCart(vendor, quantity);
+        setIsBookingOpen(true);
     };
 
     const BookingButton = ({ fullWidth = false, size = "large" as any }) => (
         <Button 
-            variant={(isInCart && !isCatering) ? "outlined" : "contained"}
+            variant="contained"
             color="primary"
             size={size}
             fullWidth={fullWidth}
             onClick={handleBookingAction}
-            startIcon={(isInCart && !isCatering) ? <CheckIcon /> : (isCatering ? <FoodIcon /> : <CartIcon />)}
+            startIcon={<CalendarIcon />}
             sx={{ 
                 borderRadius: '12px', 
                 textTransform: 'none', 
-                fontWeight: 800, 
+                fontWeight: 900, 
                 px: 3,
                 height: 54,
                 fontSize: '1rem',
-                boxShadow: (isInCart && !isCatering) ? 'none' : `0 10px 25px ${alpha(theme.palette.primary.main, 0.25)}`,
-                borderWidth: 2,
+                boxShadow: `0 10px 25px ${alpha(theme.palette.primary.main, 0.25)}`,
                 '&:hover': { 
-                    borderWidth: 2,
-                    boxShadow: (isInCart && !isCatering) ? 'none' : `0 12px 30px ${alpha(theme.palette.primary.main, 0.35)}`,
+                    boxShadow: `0 12px 30px ${alpha(theme.palette.primary.main, 0.35)}`,
                 }
             }}
         >
-            {isCatering ? 'Reserve Now' : (isInCart ? 'Already Booked' : 'Book Now')}
+            Request Booking
         </Button>
     );
 
@@ -202,7 +186,15 @@ const VendorDetails: React.FC = () => {
                         >
                             Marketplace
                         </Link>
-                        <Typography color="text.secondary" sx={{ fontSize: '0.85rem', fontWeight: 600 }}>Vendors</Typography>
+                        <Link
+                            underline="hover"
+                            color="inherit"
+                            href="/customer/vendors"
+                            onClick={(e) => { e.preventDefault(); navigate('/customer/vendors'); }}
+                            sx={{ fontSize: '0.85rem', fontWeight: 600, color: 'text.secondary' }}
+                        >
+                            Vendors
+                        </Link>
                         <Typography color="primary" sx={{ fontSize: '0.85rem', fontWeight: 800 }}>Service</Typography>
                     </Breadcrumbs>
                 </Box>
@@ -410,11 +402,10 @@ const VendorDetails: React.FC = () => {
                 </Grid>
             </Container>
 
-            {/* Catering Dialog */}
-            <CateringDialog 
-                open={isDialogOpen} 
-                onClose={() => setIsDialogOpen(false)} 
-                onAdd={handleCateringAdd}
+            {/* Booking Flow Dialog */}
+            <BookingFlow 
+                open={isBookingOpen} 
+                onClose={() => setIsBookingOpen(false)} 
                 vendor={vendor} 
             />
         </Box>

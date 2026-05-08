@@ -23,9 +23,11 @@ import AdminDashboard from "./pages/Dashboard/Admin/AdminDashboard";
 import ManagerDashboard from "./pages/Dashboard/Manager/ManagerDashboard";
 import StaffDashboard from "./pages/Dashboard/Staff/StaffDashboard";
 import ClientDashboard from "./pages/Dashboard/Client/ClientDashboard";
+import BookingDashboard from "./pages/Dashboard/Client/BookingDashboard";
+import VendorBookingDashboard from "./pages/Dashboard/Vendor/VendorBookingDashboard";
 
-import VendorDashboard from "./pages/Dashboard/Vendor/VendorDashboard";
 import Profile from "./pages/Profile/Profile";
+import VendorCalendar from "./pages/Dashboard/Vendor/VendorCalendar";
 import CartPage from "./pages/Cart/CartPage";
 import MainLayout from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
@@ -132,7 +134,8 @@ export const router = createBrowserRouter([
                     { path: "services", element: <VendorServices /> },
                     { path: "services/add", element: <AddService /> },
                     { path: "services/edit/:id", element: <EditService /> },
-                    { path: "bookings", element: <Bookings /> },
+                    { path: "bookings", element: <VendorBookingDashboard /> },
+                    { path: "calendar", element: <VendorCalendar /> },
                     { path: "earnings", element: <Earnings /> },
                 ]
             },
@@ -147,7 +150,7 @@ export const router = createBrowserRouter([
                     { path: "vendors", element: <Vendors /> },
                     { path: "vendors/:id", element: <VendorDetails /> },
 
-                    { path: "bookings", element: <Bookings /> },
+                    { path: "bookings", element: <BookingDashboard /> },
                     { path: "profile", element: <Profile /> },
                 ]
             },

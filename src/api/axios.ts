@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { tokenStorage } from '../utils/tokenStorage';
 
-const API_BASE = (import.meta.env.VITE_API_URL as string) ?? 'http://localhost:32226';
+export const API_BASE = (import.meta.env.VITE_API_URL as string) ?? 'http://localhost:32226';
 const api = axios.create({ baseURL: `${API_BASE}/api` });
 
 // Request Interceptor

@@ -10,20 +10,27 @@ import { router } from './router';
 import { Provider } from 'react-redux';
 import { store } from './store';
 
+import { NotificationProvider } from './contexts/NotificationContext';
 import { CartProvider } from './contexts/CartContext';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <AuthProvider>
-          <SnackbarProvider>
-            <CartProvider>
-              <RouterProvider router={router} />
-            </CartProvider>
-          </SnackbarProvider>
-        </AuthProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <CssBaseline />
+          <AuthProvider>
+            <SnackbarProvider>
+              <NotificationProvider>
+                <CartProvider>
+                  <RouterProvider router={router} />
+                </CartProvider>
+              </NotificationProvider>
+            </SnackbarProvider>
+          </AuthProvider>
+        </LocalizationProvider>
       </ThemeProvider>
     </Provider>
   </React.StrictMode>

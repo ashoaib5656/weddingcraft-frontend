@@ -14,7 +14,8 @@ import {
     Home,
     LogOut,
     User,
-    Package
+    Package,
+    Calendar
 } from "lucide-react";
 import { type ReactNode } from "react";
 
@@ -37,5 +38,6 @@ export const icons: Record<string, ReactNode> = {
     Profile: <User size={20} />,
     Logout: <LogOut size={20} />,
     File: <FileText size={20} />,
-    Inventory: <Package size={20} />
+    Inventory: <Package size={20} />,
+    Calendar: <Calendar size={20} />
 };

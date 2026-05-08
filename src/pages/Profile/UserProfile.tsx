@@ -34,7 +34,7 @@ import {
   Email as EmailIcon,
   CalendarMonth as CalendarIcon
 } from "@mui/icons-material";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/Auth/useAuth";
 import { getInitials } from "../../utils/userUtils";
 import DashboardCard from "../../components/Dashboard/DashboardCard/DashboardCard";
 

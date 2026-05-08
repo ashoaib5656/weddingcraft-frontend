@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/Auth/useAuth";
 import { UserRole } from "../../Types/auth.types";
 import { getDashboardPath } from "../../constants/roles";
 import { Box, CircularProgress } from "@mui/material";

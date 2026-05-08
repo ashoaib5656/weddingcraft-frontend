@@ -37,6 +37,10 @@ const endpoints = {
     Reports: "/reports",
     Contact: "/contact",
     AdminLogs: "/adminlogs",
+
+    // Bookings
+    Bookings: "/bookings",
+    VendorBookings: "/vendor/bookings",
 }
 
 export default endpoints

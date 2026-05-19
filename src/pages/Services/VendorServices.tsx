@@ -104,7 +104,7 @@ const VendorServices = () => {
             const matchesSearch = (service.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
                                 (service.description?.toLowerCase() || '').includes(searchQuery.toLowerCase());
             
-            const category = (service as any).category || 'Other';
+            const category = service.category || 'Other';
             const matchesCategory = activeTab === 0 || category.toLowerCase() === CATEGORIES[activeTab].toLowerCase();
             
             return matchesSearch && matchesCategory;
@@ -223,7 +223,7 @@ const VendorServices = () => {
                 <Grid container spacing={3}>
                     {[1, 2, 3, 4].map((i) => (
                         <Grid item xs={12} sm={6} lg={4} key={i}>
-                            <Skeleton variant="rectangular" height={240} sx={{ borderRadius: '24px', mb: 2 }} />
+                            <Skeleton variant="rectangular" height={240} sx={{ borderRadius: 'inherit', mb: 2 }} />
                             <Skeleton width="60%" height={30} sx={{ mb: 1 }} />
                             <Skeleton width="40%" height={20} />
                         </Grid>
@@ -235,7 +235,6 @@ const VendorServices = () => {
                         <Grid item xs={12} sm={6} lg={4} key={service.id}>
                             <Card 
                                 sx={{ 
-                                    borderRadius: '12px', 
                                     border: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
                                     boxShadow: 'none',
                                     overflow: 'hidden',
@@ -295,9 +294,9 @@ const VendorServices = () => {
                                     {/* Top Badges */}
                                     <Box sx={{ position: 'absolute', top: 16, left: 16, display: 'flex', gap: 1 }}>
                                         <Chip 
-                                            label={(service as any).category || 'Other'} 
+                                            label={service.category || 'Other'} 
                                             size="small"
-                                            icon={getCategoryIcon((service as any).category)}
+                                            icon={getCategoryIcon(service.category || 'Other')}
                                             sx={{ 
                                                 bgcolor: 'rgba(255,255,255,0.9)', 
                                                 backdropFilter: 'blur(8px)',
@@ -369,7 +368,7 @@ const VendorServices = () => {
                     ))}
                 </Grid>
             ) : (
-                <Box sx={{ textAlign: 'center', py: 12, bgcolor: alpha(theme.palette.divider, 0.03), borderRadius: '32px', border: `2px dashed ${alpha(theme.palette.divider, 0.1)}` }}>
+                <Box sx={{ textAlign: 'center', py: 12, bgcolor: alpha(theme.palette.divider, 0.03), borderRadius: '16px', border: `2px dashed ${alpha(theme.palette.divider, 0.1)}` }}>
                     <Box sx={{ display: 'inline-flex', p: 3, borderRadius: '50%', bgcolor: alpha(theme.palette.primary.main, 0.05), mb: 3 }}>
                         <Filter size={40} color={theme.palette.primary.main} />
                     </Box>

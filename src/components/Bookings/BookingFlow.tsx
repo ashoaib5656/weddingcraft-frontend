@@ -4,9 +4,6 @@ import {
     Dialog,
     DialogContent,
     Typography,
-    Stepper,
-    Step,
-    StepLabel,
     Button,
     Grid,
     TextField,
@@ -23,13 +20,12 @@ import {
     Event as EventIcon,
     LocationOn as LocationIcon,
     People as PeopleIcon,
-    Notes as NotesIcon,
+    AccessTime as TimeIcon,
     CheckCircle as SuccessIcon,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm, Controller } from 'react-hook-form';
 import InputField from '../Form/InputField';
-import FormButton from '../Form/FormButton';
 import BOOKING_SERVICE from '../../api/services/bookings';
 import AVAILABILITY_SERVICE from '../../api/services/availability';
 import { useSnackbar } from '../../contexts/SnackbarContext';
@@ -62,7 +58,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ open, onClose, vendor }) => {
         setIsLoadingAvailability(true);
         try {
             const response = await AVAILABILITY_SERVICE.getVendorAvailability(vendor.id);
-            const dates = response.data.data.map(a => dayjs(a.blockedDate).format('YYYY-MM-DD'));
+            const dates = response.data.data.map((a: any) => dayjs(a.blockedDate).format('YYYY-MM-DD'));
             setBlockedDates(dates);
         } catch (err) {
             console.error("Failed to fetch vendor availability", err);
@@ -116,55 +112,72 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ open, onClose, vendor }) => {
             case 0:
                 return (
                     <Grid container spacing={3}>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary', ml: 1, mb: 1, display: 'block' }}>
+                                EVENT DATE
+                            </Typography>
                             <Controller
                                 name="eventDate"
                                 control={control}
                                 rules={{ required: 'Date is required' }}
                                 render={({ field: { onChange, value } }) => (
                                     <DatePicker
-                                        label="Event Date"
                                         value={value ? dayjs(value) : null}
                                         onChange={(date) => onChange(date?.format('YYYY-MM-DD'))}
                                         shouldDisableDate={(date) => 
                                             blockedDates.includes(date.format('YYYY-MM-DD')) || date.isBefore(dayjs(), 'day')
                                         }
-                                        slotProps={{
-                                            textField: {
-                                                fullWidth: true,
-                                                error: !!errors.eventDate,
-                                                helperText: (errors.eventDate?.message as string) || (isLoadingAvailability ? 'Checking availability...' : ''),
-                                                InputProps: {
-                                                    startAdornment: <InputAdornment position="start"><EventIcon sx={{ color: 'primary.main' }} /></InputAdornment>,
-                                                    endAdornment: isLoadingAvailability && <InputAdornment position="end"><CircularProgress size={20} /></InputAdornment>
-                                                },
-                                                sx: { 
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                fullWidth
+                                                error={!!errors.eventDate}
+                                                helperText={(errors.eventDate?.message as string) || (isLoadingAvailability ? 'Checking availability...' : '')}
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <EventIcon sx={{ color: 'primary.main', fontSize: 20 }} />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                                sx={{ 
                                                     '& .MuiOutlinedInput-root': { 
-                                                        borderRadius: '12px',
-                                                        bgcolor: '#f8fafc'
+                                                        borderRadius: '16px',
+                                                        bgcolor: '#f8fafc',
+                                                        border: '1px solid #e2e8f0',
+                                                        '&:hover': { border: `1px solid ${theme.palette.primary.main}` }
                                                     } 
-                                                }
-                                            }
-                                        }}
+                                                }}
+                                            />
+                                        )}
                                     />
                                 )}
                             />
                         </Grid>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary', ml: 1, mb: 1, display: 'block' }}>
+                                PREFERRED TIME
+                            </Typography>
                             <Controller
                                 name="eventTime"
                                 control={control}
                                 render={({ field }) => (
                                     <InputField
                                         {...field}
-                                        label="Preferred Time"
                                         type="time"
-                                        InputLabelProps={{ shrink: true }}
+                                        InputProps={{ 
+                                            startAdornment: <InputAdornment position="start"><TimeIcon sx={{ color: 'primary.main', fontSize: 20 }} /></InputAdornment>,
+                                            sx: { borderRadius: '16px', bgcolor: '#f8fafc', border: '1px solid #e2e8f0' }
+                                        }}
                                     />
                                 )}
                             />
                         </Grid>
                         <Grid item xs={12}>
+                            <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary', ml: 1, mb: 1, display: 'block' }}>
+                                EVENT LOCATION
+                            </Typography>
                             <Controller
                                 name="location"
                                 control={control}
@@ -172,11 +185,13 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ open, onClose, vendor }) => {
                                 render={({ field }) => (
                                     <InputField
                                         {...field}
-                                        label="Event Location / Venue Address"
                                         placeholder="Enter the full address or city"
                                         error={!!errors.location}
                                         helperText={errors.location?.message as string}
-                                        InputProps={{ startAdornment: <InputAdornment position="start"><LocationIcon sx={{ color: 'primary.main' }} /></InputAdornment> }}
+                                        InputProps={{ 
+                                            startAdornment: <InputAdornment position="start"><LocationIcon sx={{ color: 'primary.main', fontSize: 20 }} /></InputAdornment>,
+                                            sx: { borderRadius: '16px', bgcolor: '#f8fafc', border: '1px solid #e2e8f0' }
+                                        }}
                                     />
                                 )}
                             />
@@ -186,33 +201,46 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ open, onClose, vendor }) => {
             case 1:
                 return (
                     <Grid container spacing={3}>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12}>
+                            <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary', ml: 1, mb: 1, display: 'block' }}>
+                                ESTIMATED GUESTS
+                            </Typography>
                             <Controller
                                 name="guestCount"
                                 control={control}
                                 render={({ field }) => (
                                     <InputField
                                         {...field}
-                                        label="Estimated Guest Count"
                                         type="number"
-                                        InputProps={{ startAdornment: <InputAdornment position="start"><PeopleIcon sx={{ color: 'primary.main' }} /></InputAdornment> }}
+                                        InputProps={{ 
+                                            startAdornment: <InputAdornment position="start"><PeopleIcon sx={{ color: 'primary.main', fontSize: 20 }} /></InputAdornment>,
+                                            sx: { borderRadius: '16px', bgcolor: '#f8fafc', border: '1px solid #e2e8f0' }
+                                        }}
                                     />
                                 )}
                             />
                         </Grid>
                         <Grid item xs={12}>
+                            <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary', ml: 1, mb: 1, display: 'block' }}>
+                                SPECIFIC REQUIREMENTS
+                            </Typography>
                             <Controller
                                 name="requirements"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
                                         {...field}
-                                        label="Specific Requirements"
                                         multiline
-                                        rows={4}
+                                        rows={3}
                                         fullWidth
                                         placeholder="Tell us about your theme, specific preferences, or any custom needs..."
-                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px', bgcolor: '#f8fafc' } }}
+                                        sx={{ 
+                                            '& .MuiOutlinedInput-root': { 
+                                                borderRadius: '16px', 
+                                                bgcolor: '#f8fafc',
+                                                border: '1px solid #e2e8f0'
+                                            } 
+                                        }}
                                     />
                                 )}
                             />
@@ -223,22 +251,26 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ open, onClose, vendor }) => {
                 return (
                     <Box sx={{ 
                         p: 3, 
-                        borderRadius: '20px', 
-                        bgcolor: alpha(theme.palette.primary.main, 0.04), 
-                        border: `1px dashed ${alpha(theme.palette.primary.main, 0.2)}`,
-                        mt: 1
+                        borderRadius: '24px', 
+                        bgcolor: alpha(theme.palette.primary.main, 0.03), 
+                        border: `2px solid ${alpha(theme.palette.primary.main, 0.08)}`,
                     }}>
-                        <Typography variant="h6" sx={{ fontWeight: 800, mb: 3, color: 'primary.main' }}>Request Summary</Typography>
-                        <Stack spacing={2}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 900, mb: 3, color: 'primary.main', display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <SuccessIcon sx={{ fontSize: 20 }} /> Request Summary
+                        </Typography>
+                        <Stack spacing={2.5}>
                             {[
-                                { label: 'Vendor', value: vendor?.name || 'Not Selected' },
-                                { label: 'Date & Time', value: `${formData.eventDate || '---'} at ${formData.eventTime || '---'}` },
-                                { label: 'Location', value: formData.location || '---' },
-                                { label: 'Estimated Guests', value: formData.guestCount || '---' },
+                                { label: 'Vendor', value: vendor?.name || 'Not Selected', icon: <PeopleIcon sx={{ fontSize: 18 }} /> },
+                                { label: 'Event Date', value: formData.eventDate || '---', icon: <EventIcon sx={{ fontSize: 18 }} /> },
+                                { label: 'Preferred Time', value: formData.eventTime || '---', icon: <TimeIcon sx={{ fontSize: 18 }} /> },
+                                { label: 'Location', value: formData.location || '---', icon: <LocationIcon sx={{ fontSize: 18 }} /> },
                             ].map((item, idx) => (
                                 <Box key={idx} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography sx={{ color: 'text.secondary', fontWeight: 600 }}>{item.label}</Typography>
-                                    <Typography sx={{ fontWeight: 700, color: 'text.primary', textAlign: 'right' }}>{item.value}</Typography>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.secondary' }}>
+                                        {item.icon}
+                                        <Typography variant="body2" sx={{ fontWeight: 700 }}>{item.label}</Typography>
+                                    </Box>
+                                    <Typography variant="body2" sx={{ fontWeight: 800, color: 'text.primary', textAlign: 'right' }}>{item.value}</Typography>
                                 </Box>
                             ))}
                         </Stack>
@@ -271,30 +303,53 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ open, onClose, vendor }) => {
         <Dialog 
             open={open} 
             onClose={onClose} 
-            maxWidth="md" 
+            maxWidth="sm" 
             fullWidth 
-            PaperProps={{ sx: { borderRadius: '24px', p: 0, overflow: 'hidden' } }}
+            PaperProps={{ 
+                sx: { 
+                    borderRadius: '28px', 
+                    p: 0, 
+                    overflow: 'hidden',
+                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+                } 
+            }}
         >
-            <Box sx={{ p: 4, bgcolor: 'primary.main', color: 'white', position: 'relative' }}>
-                <Typography variant="h4" sx={{ fontWeight: 900, mb: 0.5 }}>Reserve Your Date</Typography>
-                <Typography sx={{ opacity: 0.9, fontSize: '1rem', fontWeight: 600 }}>
-                    Booking with <span style={{ textDecoration: 'underline' }}>{vendor?.name}</span>
-                </Typography>
-                <IconButton onClick={onClose} sx={{ position: 'absolute', top: 24, right: 24, color: 'white', '&:hover': { bgcolor: alpha('#fff', 0.1) } }}>
-                    <CloseIcon />
+            <Box sx={{ 
+                p: 4, 
+                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+                color: 'white', 
+                position: 'relative' 
+            }}>
+                <Stack spacing={0.5}>
+                    <Typography variant="h5" sx={{ fontWeight: 900, letterSpacing: '-0.02em' }}>
+                        Reserve Your Date
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, opacity: 0.9 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                            Booking with
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 800, textDecoration: 'underline', textUnderlineOffset: '4px' }}>
+                            {vendor?.name || 'Professional Vendor'}
+                        </Typography>
+                    </Box>
+                </Stack>
+                <IconButton 
+                    onClick={onClose} 
+                    sx={{ 
+                        position: 'absolute', 
+                        top: 20, 
+                        right: 20, 
+                        color: 'white', 
+                        bgcolor: 'rgba(255,255,255,0.1)',
+                        '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } 
+                    }}
+                >
+                    <CloseIcon fontSize="small" />
                 </IconButton>
             </Box>
 
-            <DialogContent sx={{ p: 4, pt: 5 }}>
-                <Stepper activeStep={activeStep} sx={{ mb: 6 }}>
-                    {steps.map((label) => (
-                        <Step key={label}>
-                            <StepLabel sx={{ '& .MuiStepLabel-label': { fontWeight: 700, mt: 1 } }}>{label}</StepLabel>
-                        </Step>
-                    ))}
-                </Stepper>
-
-                <Box sx={{ minHeight: 320, px: 2 }}>
+            <DialogContent sx={{ p: 4, pt: 2 }}>
+                <Box sx={{ minHeight: 240 }}>
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={activeStep}
@@ -309,13 +364,12 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ open, onClose, vendor }) => {
                 </Box>
 
                 <Box sx={{ 
-                    mt: 6, 
-                    mb: 2,
+                    mt: 4, 
                     display: 'flex', 
                     justifyContent: 'space-between', 
                     alignItems: 'center',
-                    borderTop: `1px solid ${theme.palette.divider}`,
-                    pt: 3
+                    pt: 3,
+                    borderTop: `1px solid ${theme.palette.divider}`
                 }}>
                     <Button 
                         disabled={activeStep === 0} 
@@ -323,45 +377,47 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ open, onClose, vendor }) => {
                         sx={{ 
                             fontWeight: 800, 
                             textTransform: 'none', 
-                            fontSize: '1rem',
                             color: 'text.secondary',
-                            '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) }
+                            px: 3,
+                            '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05), color: 'primary.main' }
                         }}
                     >
                         Back
                     </Button>
-                    <Box>
-                        {activeStep === steps.length - 1 ? (
-                            <FormButton 
-                                onClick={handleSubmit(onSubmit)} 
-                                loading={isSubmitting}
-                                sx={{ 
-                                    width: 220, 
-                                    borderRadius: '14px', 
-                                    height: 52,
-                                    fontSize: '1.1rem',
-                                    boxShadow: `0 8px 20px ${alpha(theme.palette.primary.main, 0.25)}`
-                                }}
-                            >
-                                Submit Request
-                            </FormButton>
-                        ) : (
-                            <Button 
-                                variant="contained" 
-                                onClick={handleNext}
-                                sx={{ 
-                                    width: 140, 
-                                    borderRadius: '12px', 
-                                    fontWeight: 800, 
-                                    textTransform: 'none',
-                                    height: 48,
-                                    fontSize: '1rem'
-                                }}
-                            >
-                                Next
-                            </Button>
-                        )}
-                    </Box>
+                    
+                    {activeStep === steps.length - 1 ? (
+                        <Button 
+                            variant="contained"
+                            onClick={handleSubmit(onSubmit)} 
+                            disabled={isSubmitting}
+                            sx={{ 
+                                minWidth: 180, 
+                                borderRadius: '14px', 
+                                height: 48,
+                                fontWeight: 800,
+                                textTransform: 'none',
+                                fontSize: '1rem',
+                                boxShadow: `0 10px 20px ${alpha(theme.palette.primary.main, 0.25)}`
+                            }}
+                        >
+                            {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'Confirm Booking'}
+                        </Button>
+                    ) : (
+                        <Button 
+                            variant="contained" 
+                            onClick={handleNext}
+                            sx={{ 
+                                minWidth: 120, 
+                                borderRadius: '12px', 
+                                fontWeight: 800, 
+                                textTransform: 'none',
+                                height: 48,
+                                boxShadow: `0 8px 15px ${alpha(theme.palette.primary.main, 0.2)}`
+                            }}
+                        >
+                            Next
+                        </Button>
+                    )}
                 </Box>
             </DialogContent>
         </Dialog>

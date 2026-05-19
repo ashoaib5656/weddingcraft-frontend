@@ -79,7 +79,7 @@ const Vendors = () => {
                     reviewCount: 0,
                     location: u.location || 'Local',
                     description: u.vendorProfile?.description || 'Elite wedding services provider specializing in high-end events and luxury celebrations.',
-                    services: u.products?.map((p: any) => p.name).slice(0, 3) || [u.category || u.vendorProfile?.category || 'Professional Services'],
+                    services: u.products?.length ? u.products.map((p: any) => p.name) : [u.category || u.vendorProfile?.category || 'Professional', 'Luxury Service', 'Verified Partner', 'Top Rated'],
                     reviews: [],
                     priceRange: (u.vendorProfile?.priceRange || 'Contact for pricing').replace('$', '₹')
                 }));
@@ -136,7 +136,7 @@ const Vendors = () => {
                             <Avatar 
                                 variant="rounded"
                                 src={vendor.vendorProfile?.imageUrl || `https://ui-avatars.com/api/?name=${vendor.vendorProfile?.businessName || 'V'}&background=random`}
-                                sx={{ width: 48, height: 48, borderRadius: '14px', boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.1)}` }}
+                                sx={{ width: 48, height: 48, borderRadius: '12px', boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.1)}` }}
                             />
                             <Box sx={{ textAlign: 'left' }}>
                                 <Typography sx={{ fontWeight: 800, fontSize: '15px', color: 'text.primary' }}>
@@ -216,7 +216,7 @@ const Vendors = () => {
         enableGlobalFilter: true,
         muiTablePaperProps: {
             elevation: 0,
-            sx: { borderRadius: '12px', border: 'none', overflow: 'hidden' },
+            sx: { borderRadius: 'inherit', border: 'none', overflow: 'hidden' },
         },
     });
 
@@ -224,39 +224,25 @@ const Vendors = () => {
         return (
             <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', pb: 10 }}>
                 {/* Marketplace Header */}
-                <Box sx={{ bgcolor: 'background.paper', pt: 4, pb: 2, borderBottom: `1px solid ${alpha(theme.palette.divider, 0.05)}` }}>
+                <Box sx={{ bgcolor: 'background.paper', pt: 4, pb: 4, borderBottom: `1px solid ${alpha(theme.palette.divider, 0.05)}` }}>
                     <Container maxWidth="xl">
-                        <Box sx={{ textAlign: 'left', mb: 2 }}>
-                            <Typography sx={{ fontWeight: 900, fontSize: '1.5rem', mb: 0.5, letterSpacing: '-0.02em', color: 'text.primary' }}>
-                                Service Marketplace
-                            </Typography>
-                            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                                Discover and collaborate with the world's most elite providers.
-                            </Typography>
-                        </Box>
-
-                        <Box sx={{ 
-                            display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', justifyContent: 'space-between',
-                            gap: 2, px: 2, py: 1.25, bgcolor: '#ffffff', borderRadius: '12px', border: `1px solid ${alpha(theme.palette.divider, 0.1)}`
-                        }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, md: 3 }, flexWrap: 'wrap' }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <VerifiedIcon sx={{ color: 'primary.main', fontSize: 16 }} />
-                                    <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.primary' }}>{vendors.length} VERIFIED PARTNERS</Typography>
-                                </Box>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <StarIcon sx={{ color: 'warning.main', fontSize: 16 }} />
-                                    <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.primary' }}>4.9/5 RATING</Typography>
-                                </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+                            <Box sx={{ textAlign: 'left' }}>
+                                <Typography sx={{ fontWeight: 900, fontSize: '1.5rem', mb: 0.5, letterSpacing: '-0.02em', color: 'text.primary' }}>
+                                    Service Marketplace
+                                </Typography>
+                                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                                    Discover and collaborate with the world's most elite providers.
+                                </Typography>
                             </Box>
 
                             <TextField
                                 placeholder="Find your wedding partner..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                sx={{ width: { xs: '100%', md: 350 }, '& .MuiOutlinedInput-root': { height: '40px', borderRadius: '10px' } }}
+                                sx={{ width: { xs: '100%', md: 400 }, '& .MuiOutlinedInput-root': { height: '44px', borderRadius: 'inherit', bgcolor: '#f8fafc' } }}
                                 InputProps={{
-                                    startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18 }} /></InputAdornment>,
+                                    startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 18, color: 'text.secondary' }} /></InputAdornment>,
                                     endAdornment: searchQuery && <IconButton size="small" onClick={() => setSearchQuery('')}><CloseIcon sx={{ fontSize: 16 }} /></IconButton>
                                 }}
                             />
@@ -279,7 +265,7 @@ const Vendors = () => {
                             {isLoading ? (
                                 Array.from(new Array(6)).map((_, i) => (
                                     <Grid item xs={12} sm={6} lg={4} key={i}>
-                                        <Skeleton variant="rectangular" height={300} sx={{ borderRadius: 3 }} />
+                                        <Skeleton variant="rectangular" height={300} sx={{ borderRadius: 'inherit' }} />
                                     </Grid>
                                 ))
                             ) : paginatedVendors.length > 0 ? (
@@ -306,7 +292,7 @@ const Vendors = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <DashboardCard sx={{ p: 0, overflow: 'hidden', border: `1px solid ${alpha(theme.palette.divider, 0.1)}`, borderRadius: '12px' }}>
+            <DashboardCard sx={{ p: 0, overflow: 'hidden', border: `1px solid ${alpha(theme.palette.divider, 0.1)}`, borderRadius: 'inherit' }}>
                 <TableHeaderToolbar 
                     title="Vendor Directory"
                     table={table} 

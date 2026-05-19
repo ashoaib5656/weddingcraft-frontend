@@ -68,7 +68,7 @@ const EditService = () => {
                         description: service.description,
                         price: service.price.toString(),
                         imageUrl: service.imageUrl || '',
-                        category: (service as any).category || 'Photography'
+                        category: service.category || 'Photography'
                     });
                 }
             } catch (error) {
@@ -104,9 +104,10 @@ const EditService = () => {
             await PRODUCT_SERVICE.UpdateProduct(id, payload);
             success("Service updated successfully!");
             navigate('/vendor/services');
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error updating service", error);
-            showError("Failed to update service.");
+            const message = error.response?.data?.message || "Failed to update service.";
+            showError(message);
         } finally {
             setLoading(false);
         }

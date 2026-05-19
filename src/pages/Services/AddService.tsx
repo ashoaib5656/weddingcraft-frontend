@@ -73,9 +73,10 @@ const AddService = () => {
             await PRODUCT_SERVICE.CreateProduct(payload);
             success("Service created successfully!");
             navigate('/vendor/services');
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error creating service", error);
-            showError("Failed to create service. Please try again.");
+            const message = error.response?.data?.message || "Failed to create service. Please try again.";
+            showError(message);
         } finally {
             setLoading(false);
         }

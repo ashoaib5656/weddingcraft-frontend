@@ -103,18 +103,6 @@ const Revenue = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography 
-                variant="h4" 
-                sx={{ 
-                    mb: 2, 
-                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    display: 'inline-block'
-                }}
-            >
-                Revenue Analytics
-            </Typography>
             <Grid container spacing={3} sx={{ mt: 1, mb: 2 }}>
                 {financeStats.map((stat, index) => (
                     <Grid item xs={12} sm={6} lg={3} key={index}>

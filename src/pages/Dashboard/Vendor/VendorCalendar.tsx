@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
     Box,
     Typography,
@@ -15,8 +15,7 @@ import {
     DialogContent,
     DialogActions,
     TextField,
-    Chip,
-    Badge
+    Chip
 } from '@mui/material';
 import {
     ChevronLeft,
@@ -24,21 +23,17 @@ import {
     Block,
     EventAvailable,
     CalendarMonth,
-    InfoOutlined,
     Close
 } from '@mui/icons-material';
 import dayjs, { Dayjs } from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import DashboardCard from '../../../components/Dashboard/DashboardCard/DashboardCard';
-import AVAILABILITY_SERVICE, { VendorAvailability } from '../../../api/services/availability';
-import { useAuth } from '../../../contexts/Auth/useAuth';
-import { motion, AnimatePresence } from 'framer-motion';
+import AVAILABILITY_SERVICE, { type VendorAvailability } from '../../../api/services/availability';
 
 dayjs.extend(isSameOrBefore);
 
 const VendorCalendar = () => {
     const theme = useTheme();
-    const { user } = useAuth();
     const [currentDate, setCurrentDate] = useState(dayjs());
     const [availability, setAvailability] = useState<VendorAvailability[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -51,10 +46,9 @@ const VendorCalendar = () => {
     }, []);
 
     const fetchAvailability = async () => {
-        if (!user?.id) return;
         setIsLoading(true);
         try {
-            const response = await AVAILABILITY_SERVICE.getVendorAvailability(user.id);
+            const response = await AVAILABILITY_SERVICE.getMyAvailability();
             setAvailability(response.data.data);
         } catch (error) {
             console.error("Failed to fetch availability", error);

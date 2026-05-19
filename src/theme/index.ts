@@ -37,7 +37,7 @@ let theme = createTheme({
       secondary: '#64748b'
     }
   },
-  shape: { borderRadius: 12 },
+  shape: { borderRadius: 16 },
   dashboard: {
     glass: 'rgba(255, 255, 255, 0.9)',
     glassBorder: 'rgba(226, 232, 240, 0.6)',
@@ -128,10 +128,9 @@ let theme = createTheme({
       }),
     },
     MuiCard: {
-
       styleOverrides: {
         root: {
-          borderRadius: 24, // var(--border-radius-xl) is 1.5rem = 24px
+          borderRadius: 16,
           border: '1px solid rgba(226, 232, 240, 0.6)',
           boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.08)',
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -211,7 +210,7 @@ let theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: 24,
+          borderRadius: 16,
           boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03)',
         }
       }

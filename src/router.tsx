@@ -24,6 +24,7 @@ import ManagerDashboard from "./pages/Dashboard/Manager/ManagerDashboard";
 import StaffDashboard from "./pages/Dashboard/Staff/StaffDashboard";
 import ClientDashboard from "./pages/Dashboard/Client/ClientDashboard";
 import BookingDashboard from "./pages/Dashboard/Client/BookingDashboard";
+import VendorDashboard from "./pages/Dashboard/Vendor/VendorDashboard";
 import VendorBookingDashboard from "./pages/Dashboard/Vendor/VendorBookingDashboard";
 
 import Profile from "./pages/Profile/Profile";

@@ -109,18 +109,6 @@ const AnalyticsPage = () => {
 
     return (
         <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto' }}>
-            <Typography 
-                variant="h4" 
-                sx={{ 
-                    mb: 2, 
-                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    display: 'inline-block'
-                }}
-            >
-                Analytics & Insights
-            </Typography>
 
             <Grid container spacing={3} sx={{ mt: 1, mb: 4 }}>
                 {stats.map((stat, index) => (

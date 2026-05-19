@@ -72,67 +72,32 @@ export const TableHeaderToolbar = ({ table, ExcelData, actionButton, title }: pr
 
       {/* Right Side: Actions */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <AnimatePresence mode="wait">
-          {!isSearchActive ? (
-            <motion.div
-              key="search-trigger"
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
-            >
-              <Tooltip title="Search">
-                <IconButton 
-                  onClick={() => table.setShowGlobalFilter(true)}
-                  size="small"
-                  sx={{ 
-                    bgcolor: alpha(theme.palette.divider, 0.05),
-                    borderRadius: '10px'
-                  }}
-                >
-                  <SearchIcon sx={{ fontSize: 20 }} />
-                </IconButton>
-              </Tooltip>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="search-field"
-              initial={{ opacity: 0, width: 0, originX: 1 }}
-              animate={{ opacity: 1, width: isMobile ? 160 : 250 }}
-              exit={{ opacity: 0, width: 0, originX: 1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}
-            >
-              <MRT_GlobalFilterTextField 
-                table={table} 
-                autoFocus
-                placeholder="Search..."
-                sx={{ 
-                  width: '100%',
-                  '& .MuiInputBase-root': { 
-                    height: '36px', 
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    backgroundColor: alpha(theme.palette.primary.main, 0.04),
-                    borderRadius: '10px',
-                    pr: 1,
-                    '& fieldset': { border: 'none' }
-                  }
-                }}
-              />
-              <IconButton 
-                size="small" 
-                onClick={() => {
-                  table.setGlobalFilter('');
-                  table.setShowGlobalFilter(false);
-                }}
-                sx={{ ml: 0.5, flexShrink: 0 }}
-              >
-                <CloseIcon sx={{ fontSize: 18 }} />
-              </IconButton>
-            </motion.div>
-
-          )}
-        </AnimatePresence>
+        <Box
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            width: isMobile ? '100%' : '300px',
+            maxWidth: '100%',
+            overflow: 'hidden' 
+          }}
+        >
+          <MRT_GlobalFilterTextField 
+            table={table} 
+            placeholder="Search..."
+            sx={{ 
+              width: '100%',
+              '& .MuiInputBase-root': { 
+                height: '40px', 
+                fontSize: '13px',
+                fontWeight: 600,
+                backgroundColor: alpha(theme.palette.primary.main, 0.04),
+                borderRadius: '12px',
+                pr: 2,
+                '& fieldset': { border: 'none' }
+              }
+            }}
+          />
+        </Box>
 
         {ExcelData && (
           <Tooltip title="Export to Excel">

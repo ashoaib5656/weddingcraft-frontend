@@ -17,6 +17,7 @@
     "@microsoft/signalr": "^10.0.0",
     "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.18.0",
+    "@mui/system": "^9.0.1",
     "@mui/x-date-pickers": "^5.0.20",
     "@nivo/bar": "^0.99.0",
     "@nivo/core": "^0.99.0",

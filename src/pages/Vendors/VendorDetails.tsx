@@ -32,7 +32,7 @@ import {
     Stars as StarIcon,
     Share as ShareIcon,
 } from '@mui/icons-material';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import USER_SERVICE from '../../api/services/users';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 import { type Vendor as BaseVendor } from '../../Types/vendor';
@@ -53,6 +53,7 @@ const VendorDetails: React.FC = () => {
     const [isBookingOpen, setIsBookingOpen] = useState(false);
     const [vendor, setVendor] = useState<Vendor | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [activeImageIndex, setActiveImageIndex] = useState(0);
 
     useEffect(() => {
         const fetchVendor = async () => {
@@ -115,7 +116,7 @@ const VendorDetails: React.FC = () => {
             sx={{ 
                 borderRadius: '12px', 
                 textTransform: 'none', 
-                fontWeight: 900, 
+                fontWeight: 700, 
                 px: 3,
                 height: 54,
                 fontSize: '1rem',
@@ -129,14 +130,18 @@ const VendorDetails: React.FC = () => {
         </Button>
     );
 
-    const mockGallery = [
+    const mockGallery = vendor ? [
         vendor.image,
+        'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=800',
         'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800',
         'https://images.unsplash.com/photo-1465495910483-0d674983021e?auto=format&fit=crop&q=80&w=800',
         'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=800',
         'https://images.unsplash.com/photo-1522673607200-1648482cee98?auto=format&fit=crop&q=80&w=800',
         'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&q=80&w=800',
-    ];
+    ] : [];
+
+    const handlePrev = () => setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : mockGallery.length - 1));
+    const handleNext = () => setActiveImageIndex((prev) => (prev < mockGallery.length - 1 ? prev + 1 : 0));
 
     const whatsIncluded = [
         'High-resolution edited photos',
@@ -214,104 +219,117 @@ const VendorDetails: React.FC = () => {
                                     position: 'relative', 
                                     borderRadius: '24px', 
                                     overflow: 'hidden',
-                                    height: { xs: 300, md: 500 },
+                                    height: { xs: 350, md: 550 },
                                     boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-                                    mb: 2
+                                    mb: 2,
+                                    bgcolor: '#000'
                                 }}
                             >
-                                <img 
-                                    src={vendor.image} 
-                                    alt={vendor.name} 
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                />
-                                <Chip 
-                                    icon={<VerifiedIcon sx={{ fontSize: '16px !important', color: 'white !important' }} />}
-                                    label="Premium Vendor" 
-                                    sx={{ 
-                                        position: 'absolute', top: 20, left: 20, 
-                                        bgcolor: alpha(theme.palette.common.black, 0.6),
-                                        backdropFilter: 'blur(10px)',
-                                        color: 'white', fontWeight: 700, borderRadius: '8px',
-                                        px: 1, py: 2
-                                    }} 
-                                />
-                                <Box sx={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', width: '100%', px: 2, display: 'flex', justifyContent: 'space-between' }}>
-                                    <IconButton sx={{ bgcolor: 'white', '&:hover': { bgcolor: 'white' } }} size="small"><PrevIcon /></IconButton>
-                                    <IconButton sx={{ bgcolor: 'white', '&:hover': { bgcolor: 'white' } }} size="small"><NextIcon /></IconButton>
+                                <AnimatePresence mode="wait">
+                                    <motion.img 
+                                        key={activeImageIndex}
+                                        src={mockGallery[activeImageIndex]} 
+                                        alt={`${vendor.name} gallery ${activeImageIndex}`}
+                                        initial={{ opacity: 0, scale: 1.1 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        transition={{ duration: 0.5, ease: "easeOut" }}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                </AnimatePresence>
+
+                                {/* Navigation Arrows */}
+                                <Box sx={{ 
+                                    position: 'absolute', 
+                                    top: '50%', 
+                                    transform: 'translateY(-50%)', 
+                                    width: '100%', 
+                                    px: 2, 
+                                    display: 'flex', 
+                                    justifyContent: 'space-between',
+                                    zIndex: 2
+                                }}>
+                                    <IconButton 
+                                        onClick={handlePrev}
+                                        sx={{ 
+                                            bgcolor: 'rgba(255,255,255,0.8)', 
+                                            backdropFilter: 'blur(4px)',
+                                            '&:hover': { bgcolor: 'white' } 
+                                        }} 
+                                        size="medium"
+                                    >
+                                        <PrevIcon />
+                                    </IconButton>
+                                    <IconButton 
+                                        onClick={handleNext}
+                                        sx={{ 
+                                            bgcolor: 'rgba(255,255,255,0.8)', 
+                                            backdropFilter: 'blur(4px)',
+                                            '&:hover': { bgcolor: 'white' } 
+                                        }} 
+                                        size="medium"
+                                    >
+                                        <NextIcon />
+                                    </IconButton>
                                 </Box>
-                                <Box sx={{ position: 'absolute', bottom: 20, right: 20, px: 1.5, py: 0.5, bgcolor: alpha(theme.palette.common.black, 0.5), borderRadius: '4px', color: 'white', fontSize: '0.75rem', fontWeight: 700 }}>
-                                    1 / 12
+
+                                {/* Premium Info Overlay - Frosted Glass Style */}
+                                <Box sx={{ 
+                                    position: 'absolute', 
+                                    bottom: 20, 
+                                    left: 20, 
+                                    right: 20, 
+                                    p: { xs: 2.5, md: 3 },
+                                    borderRadius: '20px',
+                                    bgcolor: 'rgba(255, 255, 255, 0.6)',
+                                    backdropFilter: 'blur(20px) saturate(180%)',
+                                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+                                    zIndex: 3
+                                }}>
+                                    <Box>
+                                        <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary', letterSpacing: '-0.02em', mb: 0.5 }}>
+                                            {vendor.name}
+                                        </Typography>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary' }}>
+                                                <LocationIcon sx={{ fontSize: 18, color: 'primary.main' }} />
+                                                <Typography variant="body2" sx={{ fontWeight: 700 }}>{vendor.location}</Typography>
+                                            </Box>
+                                        </Box>
+                                    </Box>
+                                    <Box sx={{ display: { xs: 'none', sm: 'block' }, textAlign: 'right' }}>
+                                        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, letterSpacing: '0.1em', display: 'block' }}>GALLERY</Typography>
+                                        <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 800 }}>{activeImageIndex + 1} / {mockGallery.length}</Typography>
+                                    </Box>
                                 </Box>
                             </Box>
-                            <Grid container spacing={1.5}>
-                                {mockGallery.map((img, idx) => (
-                                    <Grid item xs={2} key={idx}>
-                                        <Box sx={{ 
-                                            borderRadius: '12px', overflow: 'hidden', height: 80, cursor: 'pointer',
-                                            border: idx === 0 ? `2px solid ${theme.palette.primary.main}` : 'none',
-                                            transition: 'transform 0.2s',
-                                            '&:hover': { transform: 'scale(1.05)' },
-                                            position: 'relative'
-                                        }}>
-                                            <img src={img} alt="gallery" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                            {idx === 5 && (
-                                                <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, bgcolor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 800 }}>
-                                                    +8
-                                                </Box>
-                                            )}
-                                        </Box>
-                                    </Grid>
-                                ))}
-                            </Grid>
                         </Box>
 
                         {/* Info Section */}
-                        <DashboardCard sx={{ p: { xs: 3, md: 5 }, borderRadius: '24px', mb: 4 }}>
-                            <Box sx={{ mb: 3 }}>
-                                <Typography variant="h3" sx={{ fontWeight: 900, mb: 1.5, letterSpacing: '-0.02em', color: '#1e293b' }}>
-                                    {vendor.name}
-                                </Typography>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                        <Typography sx={{ fontWeight: 800, fontSize: '1.1rem' }}>4.5</Typography>
-                                        <Box sx={{ display: 'flex' }}>
-                                            {[1, 2, 3, 4].map(i => <StarIcon key={i} sx={{ color: '#FFD700', fontSize: 20 }} />)}
-                                            <StarIcon sx={{ color: '#e2e8f0', fontSize: 20 }} />
-                                        </Box>
-                                        <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>(120 Reviews)</Typography>
-                                    </Box>
-                                    <Divider orientation="vertical" flexItem sx={{ height: 20, my: 'auto' }} />
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                        <LocationIcon sx={{ fontSize: 20, color: 'primary.main' }} />
-                                        <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.secondary' }}>Bengaluru, India</Typography>
-                                    </Box>
-                                </Box>
+                        <DashboardCard sx={{ p: { xs: 3, md: 4 }, borderRadius: '24px', mb: 4 }}>
+                            <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.1em' }}>About the Service</Typography>
+                                <Divider sx={{ flexGrow: 1 }} />
                             </Box>
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 4 }}>
-                                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.secondary' }}>By Dream Moments</Typography>
-                                <Chip 
-                                    icon={<VerifiedIcon sx={{ fontSize: '14px !important' }} />}
-                                    label="Verified Vendor" 
-                                    size="small"
-                                    sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1), color: 'primary.main', fontWeight: 800, borderRadius: '6px' }} 
-                                />
-                            </Box>
-
-                            <Typography variant="body1" sx={{ color: '#475569', lineHeight: 1.8, fontSize: '1.05rem', mb: 5 }}>
-                                {vendor.description} We capture timeless moments with a blend of candid and editorial photography. Our goal is to tell your love story beautifully with natural emotions and artistic compositions.
+                            <Typography variant="body1" sx={{ color: 'text.secondary', lineHeight: 1.8, fontSize: '1.05rem', mb: 3 }}>
+                                {vendor.description}
                             </Typography>
 
-                            <Divider sx={{ mb: 5 }} />
+                            <Divider sx={{ mb: 4 }} />
 
                             <Box>
-                                <Typography variant="h6" sx={{ fontWeight: 900, mb: 3 }}>What's Included</Typography>
+                                <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: 'text.primary' }}>What's Included</Typography>
                                 <Grid container spacing={3}>
                                     {whatsIncluded.map((item, idx) => (
                                         <Grid item xs={12} sm={6} key={idx}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                                                 <CheckIcon sx={{ color: 'primary.main', fontSize: 20 }} />
-                                                <Typography sx={{ fontWeight: 600, color: '#1e293b' }}>{item}</Typography>
+                                                <Typography sx={{ fontWeight: 600, color: 'text.primary' }}>{item}</Typography>
                                             </Box>
                                         </Grid>
                                     ))}
@@ -324,29 +342,29 @@ const VendorDetails: React.FC = () => {
                     <Grid item xs={12} md={4}>
                         <Box sx={{ position: 'sticky', top: 40 }}>
                             {/* Booking Card */}
-                            <DashboardCard sx={{ p: 4, borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.04)', border: `1px solid ${alpha(theme.palette.divider, 0.05)}`, mb: 3 }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 4 }}>
+                            <DashboardCard sx={{ p: 3, borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.04)', border: `1px solid ${alpha(theme.palette.divider, 0.05)}`, mb: 3 }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
                                     <Box>
-                                        <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Starting From</Typography>
+                                        <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Starting From</Typography>
                                         <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
-                                            <Typography variant="h3" sx={{ fontWeight: 900, color: '#1e293b' }}>{vendor.priceRange}</Typography>
-                                            <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary' }}>/event</Typography>
+                                            <Typography variant="h3" sx={{ fontWeight: 800, color: 'text.primary' }}>{vendor.priceRange}</Typography>
+                                            <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary' }}>/event</Typography>
                                         </Box>
                                     </Box>
-                                    <Chip label="PREMIUM" size="small" sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1), color: 'primary.main', fontWeight: 900, borderRadius: '6px', fontSize: '0.65rem' }} />
+                                    <Chip label="PREMIUM" size="small" sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1), color: 'primary.main', fontWeight: 800, borderRadius: '6px', fontSize: '0.65rem' }} />
                                 </Box>
 
-                                <Box sx={{ p: 2.5, borderRadius: '16px', bgcolor: alpha(theme.palette.success.main, 0.04), border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`, mb: 4 }}>
+                                <Box sx={{ p: 2, borderRadius: '16px', bgcolor: alpha(theme.palette.success.main, 0.04), border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`, mb: 3 }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                                         <CheckIcon sx={{ color: 'success.main', fontSize: 18 }} />
-                                        <Typography variant="subtitle2" sx={{ fontWeight: 900 }}>Instant Booking</Typography>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>Instant Booking</Typography>
                                     </Box>
                                     <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.5, display: 'block' }}>
                                         Secure your date today with no hidden fees or surprise charges.
                                     </Typography>
                                 </Box>
 
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 4 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
                                     <CalendarIcon sx={{ fontSize: 20, color: 'text.disabled' }} />
                                     <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary' }}>Flexible dates available for 2025</Typography>
                                 </Box>
@@ -357,7 +375,7 @@ const VendorDetails: React.FC = () => {
                                         variant="outlined" 
                                         fullWidth 
                                         startIcon={<MessageIcon />}
-                                        sx={{ height: 54, borderRadius: '12px', textTransform: 'none', fontWeight: 800, borderColor: '#e2e8f0', color: '#1e293b' }}
+                                        sx={{ height: 54, borderRadius: '12px', textTransform: 'none', fontWeight: 700, borderColor: 'divider', color: 'text.primary' }}
                                     >
                                         Message Vendor
                                     </Button>
@@ -365,23 +383,23 @@ const VendorDetails: React.FC = () => {
 
                                 <Box sx={{ mt: 4, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
                                     <VerifiedIcon sx={{ fontSize: 14, color: 'text.disabled' }} />
-                                    <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 800, letterSpacing: '0.05em' }}>
+                                    <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 700, letterSpacing: '0.05em' }}>
                                         SECURE BOOKING SYSTEM
                                     </Typography>
                                 </Box>
                             </DashboardCard>
 
                             {/* Highlights Card */}
-                            <DashboardCard sx={{ p: 4, borderRadius: '24px', mb: 3 }}>
-                                <Stack spacing={3}>
+                            <DashboardCard sx={{ p: 3, borderRadius: '24px', mb: 3 }}>
+                                <Stack spacing={2.5}>
                                     {highlights.map((h, i) => (
                                         <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
                                             <Box sx={{ width: 44, height: 44, borderRadius: '12px', bgcolor: alpha(h.color, 0.1), color: h.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 {h.icon}
                                             </Box>
                                             <Box>
-                                                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, display: 'block' }}>{h.label}</Typography>
-                                                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#1e293b' }}>{h.value}</Typography>
+                                                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, display: 'block' }}>{h.label}</Typography>
+                                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>{h.value}</Typography>
                                             </Box>
                                         </Box>
                                     ))}
@@ -391,10 +409,10 @@ const VendorDetails: React.FC = () => {
                             {/* Share/Save Actions */}
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
-                                    <Button fullWidth variant="outlined" startIcon={<WishlistIcon />} sx={{ height: 48, borderRadius: '12px', textTransform: 'none', fontWeight: 800, color: '#1e293b', borderColor: '#e2e8f0' }}>Save</Button>
+                                    <Button fullWidth variant="outlined" startIcon={<WishlistIcon />} sx={{ height: 48, borderRadius: '12px', textTransform: 'none', fontWeight: 700, color: 'text.primary', borderColor: 'divider' }}>Save</Button>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Button fullWidth variant="outlined" startIcon={<ShareIcon />} sx={{ height: 48, borderRadius: '12px', textTransform: 'none', fontWeight: 800, color: '#1e293b', borderColor: '#e2e8f0' }}>Share</Button>
+                                    <Button fullWidth variant="outlined" startIcon={<ShareIcon />} sx={{ height: 48, borderRadius: '12px', textTransform: 'none', fontWeight: 700, color: 'text.primary', borderColor: 'divider' }}>Share</Button>
                                 </Grid>
                             </Grid>
                         </Box>

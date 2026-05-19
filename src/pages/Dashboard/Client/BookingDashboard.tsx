@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
     Box,
     Typography,
-    Container,
-    Grid,
-    Chip,
-    Button,
-    Stack,
     alpha,
     useTheme,
+    Chip,
 } from '@mui/material';
 import {
     CalendarMonth as CalendarIcon,
     LocationOn as LocationIcon,
-    CheckCircle as SuccessIcon,
-    Error as ErrorIcon,
     Payment as PaymentIcon,
     AccessTime as PendingIcon,
+    CheckCircle as SuccessIcon,
+    Error as ErrorIcon,
 } from '@mui/icons-material';
+import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../../components/Dashboard/DashboardCard/DashboardCard';
+import TableComponent from '../../../components/TableComponent/TableComponent';
+import { TableBottomToolbar, TableHeaderToolbar } from '../../../components/TableComponent/TableProps';
 import BOOKING_SERVICE from '../../../api/services/bookings';
 import { BookingStatus } from '../../../Types/booking';
 import type { Booking } from '../../../Types/booking';
@@ -33,9 +32,11 @@ const BookingDashboard: React.FC = () => {
         const fetchBookings = async () => {
             try {
                 const response = await BOOKING_SERVICE.getMyBookings();
-                setBookings(response.data.data);
+                const data = response.data?.data || [];
+                setBookings(Array.isArray(data) ? data : []);
             } catch (err) {
-                console.error(err);
+                console.error("Failed to fetch bookings:", err);
+                setBookings([]);
             } finally {
                 setIsLoading(false);
             }
@@ -46,96 +47,148 @@ const BookingDashboard: React.FC = () => {
     const getStatusConfig = (status: BookingStatus) => {
         switch (status) {
             case BookingStatus.Pending:
-                return { label: 'Pending Approval', color: 'warning', icon: <PendingIcon sx={{ fontSize: 16 }} /> };
+                return { label: 'Pending', color: 'warning', icon: <PendingIcon sx={{ fontSize: 14 }} /> };
             case BookingStatus.Confirmed:
-                return { label: 'Approved', color: 'info', icon: <SuccessIcon sx={{ fontSize: 16 }} /> };
+                return { label: 'Approved', color: 'info', icon: <SuccessIcon sx={{ fontSize: 14 }} /> };
             case BookingStatus.PaymentPending:
-                return { label: 'Awaiting Payment', color: 'primary', icon: <PaymentIcon sx={{ fontSize: 16 }} /> };
+                return { label: 'Payment Pending', color: 'primary', icon: <PaymentIcon sx={{ fontSize: 14 }} /> };
             case BookingStatus.Booked:
-                return { label: 'Booked', color: 'success', icon: <SuccessIcon sx={{ fontSize: 16 }} /> };
+                return { label: 'Booked', color: 'success', icon: <SuccessIcon sx={{ fontSize: 14 }} /> };
             case BookingStatus.Rejected:
-                return { label: 'Rejected', color: 'error', icon: <ErrorIcon sx={{ fontSize: 16 }} /> };
+                return { label: 'Rejected', color: 'error', icon: <ErrorIcon sx={{ fontSize: 14 }} /> };
             default:
-                return { label: BookingStatus[status], color: 'default', icon: undefined };
+                return { label: 'Processing', color: 'default', icon: <PendingIcon sx={{ fontSize: 14 }} /> };
         }
     };
+
+    const columns = useMemo(
+        () => [
+            {
+                accessorKey: 'id',
+                header: 'ID',
+                size: 80,
+                Cell: ({ cell }: any) => (
+                    <Typography sx={{ color: 'text.disabled', fontWeight: 800, fontSize: '11px' }}>
+                        #{cell.getValue()?.toString().slice(-4) || 'N/A'}
+                    </Typography>
+                )
+            },
+            {
+                accessorKey: 'vendorName',
+                header: 'Vendor / Service',
+                size: 250,
+                Cell: ({ row }: any) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Box sx={{ 
+                            width: 32, height: 32, borderRadius: '10px', 
+                            bgcolor: alpha(theme.palette.primary.main, 0.1),
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: 'primary.main'
+                        }}>
+                            <CalendarIcon sx={{ fontSize: 18 }} />
+                        </Box>
+                        <Box>
+                            <Typography sx={{ fontWeight: 600, fontSize: '14px' }}>{row.original.vendorName}</Typography>
+                            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>{row.original.serviceName}</Typography>
+                        </Box>
+                    </Box>
+                )
+            },
+            {
+                accessorKey: 'eventDate',
+                header: 'Booking Date',
+                Cell: ({ cell }: any) => (
+                    <Typography sx={{ fontWeight: 500, fontSize: '13px', color: 'text.secondary' }}>
+                        {cell.getValue() ? new Date(cell.getValue()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                    </Typography>
+                )
+            },
+            {
+                accessorKey: 'location',
+                header: 'Location',
+                Cell: ({ cell }: any) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary' }}>
+                        <LocationIcon sx={{ fontSize: 16 }} />
+                        <Typography sx={{ fontWeight: 500, fontSize: '13px' }}>{cell.getValue()}</Typography>
+                    </Box>
+                )
+            },
+            {
+                accessorKey: 'totalAmount',
+                header: 'Total Value',
+                muiTableHeadCellProps: { align: 'right' as const },
+                muiTableBodyCellProps: { align: 'right' as const },
+                Cell: ({ cell }: any) => (
+                    <Typography sx={{ fontWeight: 900, color: 'primary.main', fontSize: '15px' }}>
+                        ₹{cell.getValue()?.toLocaleString() || '0'}
+                    </Typography>
+                )
+            },
+            {
+                accessorKey: 'status',
+                header: 'Status',
+                Cell: ({ cell }: any) => {
+                    const config = getStatusConfig(cell.getValue());
+                    return (
+                        <Chip 
+                            label={config.label}
+                            size="small"
+                            sx={{ 
+                                fontWeight: 800, 
+                                fontSize: '10px', 
+                                height: 24,
+                                borderRadius: '8px',
+                                textTransform: 'uppercase',
+                                bgcolor: alpha((theme.palette as any)[config.color]?.main || theme.palette.grey[500], 0.1),
+                                color: (theme.palette as any)[config.color]?.main || theme.palette.grey[700],
+                            }}
+                        />
+                    );
+                }
+            }
+        ],
+        [theme]
+    );
+
+    const table = useMaterialReactTable({
+        columns,
+        data: bookings,
+        state: { isLoading },
+        enableColumnActions: false,
+        enableColumnFilters: true,
+        enableSorting: true,
+        enablePagination: true,
+        enableGlobalFilter: true,
+        muiTablePaperProps: {
+            elevation: 0,
+            sx: { borderRadius: '12px', border: 'none', overflow: 'hidden' },
+        },
+        renderEmptyRowsFallback: () => (
+            <Box sx={{ p: 10, textAlign: 'center' }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.secondary', mb: 1 }}>No results found</Typography>
+                <Typography variant="body2" sx={{ color: 'text.disabled', fontWeight: 600 }}>Try adjusting your filters or search query</Typography>
+            </Box>
+        ),
+    });
 
     if (isLoading) return <Loader fullScreen message="Fetching your bookings..." />;
 
     return (
-        <Box sx={{ py: 4, minHeight: '100vh', bgcolor: '#f8fafc' }}>
-            <Container maxWidth="lg">
-                <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box>
-                        <Typography variant="h4" sx={{ fontWeight: 900, color: '#1e293b' }}>My Bookings</Typography>
-                        <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>Track your wedding service requests and payments</Typography>
-                    </Box>
-                </Box>
-
-                {bookings.length === 0 ? (
-                    <DashboardCard sx={{ p: 8, textAlign: 'center' }}>
-                        <CalendarIcon sx={{ fontSize: 60, color: 'text.disabled', mb: 2 }} />
-                        <Typography variant="h6" sx={{ fontWeight: 800 }}>No bookings yet</Typography>
-                        <Typography sx={{ color: 'text.secondary', mb: 4 }}>Ready to start planning your big day?</Typography>
-                        <Button variant="contained" href="/customer/vendors" sx={{ borderRadius: '10px' }}>Browse Vendors</Button>
-                    </DashboardCard>
-                ) : (
-                    <Stack spacing={3}>
-                        {bookings.map((booking) => {
-                            const status = getStatusConfig(booking.status);
-                            return (
-                                <DashboardCard key={booking.id} sx={{ p: 0, overflow: 'hidden', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 12px 30px rgba(0,0,0,0.06)' } }}>
-                                    <Grid container>
-                                        <Grid item xs={12} md={3} sx={{ bgcolor: alpha(theme.palette.primary.main, 0.03), p: 3, borderRight: `1px solid ${theme.palette.divider}` }}>
-                                            <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary', textTransform: 'uppercase' }}>Ref: {booking.bookingReference}</Typography>
-                                            <Typography variant="h6" sx={{ fontWeight: 900, mt: 1 }}>{booking.vendorName}</Typography>
-                                            <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 700 }}>{booking.serviceName}</Typography>
-                                        </Grid>
-                                        
-                                        <Grid item xs={12} md={6} sx={{ p: 3 }}>
-                                            <Stack direction="row" spacing={4}>
-                                                <Box>
-                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                                                        <CalendarIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                                                        <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary' }}>DATE</Typography>
-                                                    </Box>
-                                                    <Typography sx={{ fontWeight: 700 }}>{new Date(booking.eventDate).toLocaleDateString()}</Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                                                        <LocationIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                                                        <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary' }}>LOCATION</Typography>
-                                                    </Box>
-                                                    <Typography sx={{ fontWeight: 700 }}>{booking.location}</Typography>
-                                                </Box>
-                                            </Stack>
-                                        </Grid>
-
-                                        <Grid item xs={12} md={3} sx={{ p: 3, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: { md: 'flex-end' } }}>
-                                            <Chip 
-                                                label={status.label} 
-                                                color={status.color as any} 
-                                                icon={status.icon}
-                                                sx={{ fontWeight: 800, borderRadius: '8px', mb: 2 }}
-                                            />
-                                            {booking.status === BookingStatus.Confirmed && (
-                                                <Button 
-                                                    variant="contained" 
-                                                    size="small"
-                                                    startIcon={<PaymentIcon />}
-                                                    sx={{ borderRadius: '8px', fontWeight: 800, textTransform: 'none' }}
-                                                >
-                                                    Pay Now
-                                                </Button>
-                                            )}
-                                        </Grid>
-                                    </Grid>
-                                </DashboardCard>
-                            );
-                        })}
-                    </Stack>
-                )}
-            </Container>
+        <Box sx={{ p: 0, maxWidth: 1600, margin: '0 auto', minHeight: '100vh' }}>
+            <Box sx={{ py: 2 }}>
+                <DashboardCard sx={{ p: 0, overflow: 'hidden', border: `1px solid ${alpha(theme.palette.divider, 0.1)}`, borderRadius: '12px' }}>
+                    <TableHeaderToolbar 
+                        title="Bookings & Events"
+                        table={table} 
+                        ExcelData={{
+                            data: bookings,
+                            fileName: 'Bookings_Export'
+                        }}
+                    />
+                    <TableComponent table={table} />
+                    <TableBottomToolbar table={table} />
+                </DashboardCard>
+            </Box>
         </Box>
     );
 };

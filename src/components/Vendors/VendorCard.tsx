@@ -71,7 +71,6 @@ const VendorCard: React.FC<VendorCardProps> = ({ vendor, actions }) => {
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
-                    borderRadius: 3,
                     overflow: 'hidden',
                     position: 'relative',
                     cursor: 'pointer',
@@ -92,10 +91,10 @@ const VendorCard: React.FC<VendorCardProps> = ({ vendor, actions }) => {
                 }}
             >
                 {/* Image Section */}
-                <Box sx={{ position: 'relative', pt: '65%' }}>
+                <Box sx={{ position: 'relative', pt: '60%' }}>
                     <CardMedia
                         component="img"
-                        image={vendor.image}
+                        image={vendor.image || 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=800'}
                         alt={vendor.name}
                         loading="lazy"
                         className="vendor-image"
@@ -108,6 +107,11 @@ const VendorCard: React.FC<VendorCardProps> = ({ vendor, actions }) => {
                             objectFit: 'cover',
                             transition: 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)',
                             willChange: 'transform',
+                            bgcolor: '#f1f5f9'
+                        }}
+                        onError={(e: any) => {
+                            e.target.onerror = null;
+                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(vendor.name)}&background=7c3aed&color=fff&size=512`;
                         }}
                     />
                     
@@ -128,7 +132,7 @@ const VendorCard: React.FC<VendorCardProps> = ({ vendor, actions }) => {
                             Starting At
                         </Typography>
                         <Typography variant="subtitle2" sx={{ color: 'white', fontWeight: 900, fontSize: '0.9rem' }}>
-                            {vendor.priceRange.replace('$', '₹')}
+                            {vendor.priceRange.split('-')[0].trim()}
                         </Typography>
                     </Box>
 
@@ -155,57 +159,22 @@ const VendorCard: React.FC<VendorCardProps> = ({ vendor, actions }) => {
                         </Typography>
                     </Box>
 
-                    {/* Rating Badge */}
-                    <Box sx={{
-                        position: 'absolute',
-                        top: 12,
-                        right: 12,
-                        bgcolor: 'rgba(255,255,255,0.9)',
-                        backdropFilter: 'blur(4px)',
-                        px: 1.5,
-                        py: 0.5,
-                        borderRadius: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 0.5,
-                        zIndex: 1
-                    }}>
-                        <StarsIcon sx={{ fontSize: 16, color: 'warning.main' }} />
-                        <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.primary' }}>{vendor.rating}</Typography>
-                    </Box>
                 </Box>
 
-                <CardContent sx={{ flexGrow: 1, p: 2.5, display: 'flex', flexDirection: 'column' }}>
-                    <Box sx={{ mb: 1.5 }}>
-                        <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5, color: 'text.primary', lineHeight: 1.2 }}>
+                <CardContent sx={{ flexGrow: 1, p: 2.25, display: 'flex', flexDirection: 'column' }}>
+                    <Box sx={{ mb: 1 }}>
+                        <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.25, color: 'text.primary', lineHeight: 1.2, fontSize: '1.1rem' }}>
                             {vendor.name}
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
-                            <LocationIcon sx={{ fontSize: 14, color: 'text.secondary' }} />
+                            <LocationIcon sx={{ fontSize: 13, color: 'text.secondary' }} />
                             <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
                                 {vendor.location}
                             </Typography>
                         </Box>
-                        <Typography 
-                            variant="body2" 
-                            sx={{ 
-                                color: 'text.secondary', 
-                                fontSize: '0.75rem', 
-                                fontWeight: 500,
-                                display: '-webkit-box',
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden',
-                                lineHeight: 1.5,
-                                minHeight: '2.25rem'
-                            }}
-                        >
-                            {vendor.description}
-                        </Typography>
                     </Box>
 
-                    {/* Services Section */}
-                    <Box sx={{ mb: 2 }}>
+                    <Box sx={{ mb: 1.5 }}>
                         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                             {vendor.services.slice(0, 3).map((service, idx) => (
                                 <Chip
@@ -227,7 +196,7 @@ const VendorCard: React.FC<VendorCardProps> = ({ vendor, actions }) => {
 
                     <Box sx={{ 
                         borderTop: `1px solid ${alpha(theme.palette.divider, 0.06)}`, 
-                        pt: 2, 
+                        pt: 1.5, 
                         mt: 'auto', 
                         display: 'flex', 
                         justifyContent: 'space-between', 

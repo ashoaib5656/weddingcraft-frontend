@@ -16,6 +16,9 @@ const AVAILABILITY_SERVICE = {
     getVendorAvailability: (vendorId: string) => 
         API.get<{ success: boolean; data: VendorAvailability[] }>(`/VendorAvailability/${vendorId}`),
 
+    getMyAvailability: () => 
+        API.get<{ success: boolean; data: VendorAvailability[] }>('/VendorAvailability/my'),
+
     blockDate: (request: BlockDateRequest) => 
         API.post<{ success: boolean; message: string }>('/VendorAvailability/block', request),
 

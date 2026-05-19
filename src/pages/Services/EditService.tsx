@@ -20,7 +20,6 @@ import {
 import {
     ArrowLeft,
     Save,
-    Image as ImageIcon,
     Info,
     IndianRupee,
     ChevronRight,

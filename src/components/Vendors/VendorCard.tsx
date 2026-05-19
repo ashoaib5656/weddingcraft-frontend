@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import { 
     LocationOn as LocationIcon, 
-    Stars as StarsIcon,
     CheckCircle as CheckIcon,
     ShoppingCart as CartIcon,
     Restaurant as FoodIcon

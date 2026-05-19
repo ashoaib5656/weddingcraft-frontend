@@ -195,7 +195,6 @@ const EarningsPage = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <TableHeaderToolbar 
                             table={table} 
-                            isSmall 
                             ExcelData={{
                                 data: transactions,
                                 fileName: 'Earnings_Report'

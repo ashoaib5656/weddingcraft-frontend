@@ -53,10 +53,10 @@ const Login: React.FC = (): JSX.Element => {
 
     try {
       const response = await login(email, password);
-      if (response.ok) {
+      if (response.success) {
         console.log("Login Success:", response);
         // Navigate to role-specific dashboard
-        const dashboardPath = getDashboardPath(response.role || "Client");
+        const dashboardPath = getDashboardPath(response.data?.role || "Client");
         console.log(dashboardPath)
         navigate(dashboardPath);
       } else {

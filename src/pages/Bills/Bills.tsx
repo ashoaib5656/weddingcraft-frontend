@@ -45,7 +45,7 @@ const BillsPage = () => {
                     client: o.user?.name || 'Unknown Client',
                     amount: o.totalAmount || 0,
                     date: o.createdAt ? new Date(o.createdAt).toISOString().split('T')[0] : '2026-01-01',
-                    status: (o.status === 'Completed' || o.status === 'Confirmed') ? 'paid' : 'pending'
+                    status: ((o.status === 'Completed' || o.status === 'Confirmed') ? 'paid' : 'pending') as 'paid' | 'pending' | 'overdue'
                 }));
                 setBills(mappedBills);
             } catch (error) {
@@ -204,7 +204,6 @@ const BillsPage = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <TableHeaderToolbar 
                             table={table} 
-                            isSmall 
                             ExcelData={{
                                 data: bills,
                                 fileName: 'Bills_Export'

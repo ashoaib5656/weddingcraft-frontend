@@ -1,10 +1,5 @@
 import { Box, Tooltip, useTheme, alpha, IconButton, Typography, useMediaQuery } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Search as SearchIcon, 
-  Close as CloseIcon, 
-  FilterList as FilterIcon,
-} from '@mui/icons-material';
+import { FilterList as FilterIcon } from '@mui/icons-material';
 import {
   type MRT_RowData,
   type MRT_TableInstance,
@@ -47,7 +42,6 @@ export const TableHeaderToolbar = ({ table, ExcelData, actionButton, title }: pr
   const userDateFormat = useAppSelector((state: any) => state.auth.user?.dateFormat) || 'DD-MM-YYYY';
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isSearchActive = !!table.getState().showGlobalFilter;
 
   return (
     <Box

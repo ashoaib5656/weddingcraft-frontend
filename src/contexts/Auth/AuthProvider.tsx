@@ -51,12 +51,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 try {
                     // Optional: Verify token with backend
                     const response = await AUTH_SERVICE.verifyToken({ token });
-                    if (response.ok) {
+                    if (response.success) {
                         updateAuthState({
                             accessToken: token,
                             refreshToken: refreshToken,
-                            role: response.role as string,
-                            name: response.name as string,
+                            role: (response.data?.role || (response as any).role) as string,
+                            name: (response.data?.name || (response as any).name) as string,
                             email: tokenStorage.getUserEmail()
                         });
                     } else {
@@ -68,10 +68,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                         try {
                             const refreshResp = await AUTH_SERVICE.refresh(refreshToken);
                             updateAuthState({
-                                accessToken: refreshResp.accessToken || refreshResp.data?.accessToken || null,
-                                refreshToken: refreshResp.refreshToken || refreshResp.data?.refreshToken || null,
-                                role: (refreshResp.role || refreshResp.data?.role) as string,
-                                name: (refreshResp.name || refreshResp.data?.name) as string,
+                                accessToken: refreshResp.data?.accessToken || null,
+                                refreshToken: refreshResp.data?.refreshToken || null,
+                                role: refreshResp.data?.role as string,
+                                name: refreshResp.data?.name as string,
                                 email: (refreshResp.data?.email || tokenStorage.getUserEmail()) as string
                             });
                         } catch (refreshErr) {
@@ -91,9 +91,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const login = useCallback(
         async (email: string, password: string) => {
             const response = await AUTH_SERVICE.login({ email, password });
-            const authData = response.data || response;
+            const authData = response.data;
             
-            if (authData.accessToken) {
+            if (authData?.accessToken) {
                 updateAuthState({
                     accessToken: authData.accessToken,
                     refreshToken: authData.refreshToken,
@@ -122,9 +122,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const register = useCallback(
         async (email: string, password: string, phone: string) => {
             const response = await AUTH_SERVICE.register({ email, password, phoneNumber: phone });
-            const authData = response.data || response;
+            const authData = response.data;
             
-            if (authData.accessToken) {
+            if (authData?.accessToken) {
                 updateAuthState({
                     accessToken: authData.accessToken,
                     refreshToken: authData.refreshToken,

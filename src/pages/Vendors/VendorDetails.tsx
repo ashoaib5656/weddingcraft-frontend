@@ -29,7 +29,6 @@ import {
     ChevronRight as NextIcon,
     Verified as VerifiedIcon,
     LocationOn as LocationIcon,
-    Stars as StarIcon,
     Share as ShareIcon,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';

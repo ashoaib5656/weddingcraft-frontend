@@ -17,7 +17,7 @@ import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
-import USER_SERVICE, { User } from '../../api/services/users';
+import USER_SERVICE, { type User } from '../../api/services/users';
 
 
 
@@ -151,10 +151,6 @@ const ClientsPage = () => {
         initialState: {
             pagination: { pageSize: 10, pageIndex: 0 },
         },
-        state: {
-            globalFilter,
-            showGlobalFilter,
-        },
         muiTablePaperProps: {
             elevation: 0,
             sx: {
@@ -184,7 +180,6 @@ const ClientsPage = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <TableHeaderToolbar 
                             table={table} 
-                            isSmall 
                             ExcelData={{
                                 data: clients,
                                 fileName: 'Clients_Export'

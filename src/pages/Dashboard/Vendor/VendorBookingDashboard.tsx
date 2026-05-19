@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react';
 import {
     Box,
     Typography,
-    Container,
     alpha,
     useTheme,
     Chip,
@@ -127,7 +126,7 @@ const VendorBookingDashboard: React.FC = () => {
                     const status = cell.getValue();
                     return (
                         <Chip 
-                            label={BookingStatus[status] || 'Pending'}
+                            label={(BookingStatus as any)[status] || 'Pending'}
                             size="small"
                             sx={{ 
                                 fontWeight: 800, 

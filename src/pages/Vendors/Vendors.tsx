@@ -25,7 +25,6 @@ import {
     Add as AddIcon,
     Search as SearchIcon,
     FilterList as FilterIcon,
-    Verified as VerifiedIcon,
     Close as CloseIcon
 } from '@mui/icons-material';
 import { useMaterialReactTable } from 'material-react-table';

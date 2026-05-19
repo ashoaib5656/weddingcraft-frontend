@@ -67,7 +67,7 @@ const RegisterPage: React.FC = (): JSX.Element => {
 
     try {
       const response = await register(email, password, phone);
-      if (response.ok) {
+      if (response.success) {
         console.log("Register Success:", response);
         // Navigate to login
         navigate("/login");

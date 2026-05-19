@@ -14,9 +14,9 @@ interface ProfileTopNavProps {
 const ProfileTopNav: React.FC<ProfileTopNavProps> = ({ activeTab, onTabChange }) => {
     const theme = useTheme();
     const navItems = [
-        { label: 'General Information', icon: <PersonIcon size={18} /> },
-        { label: 'Security & Privacy', icon: <LockIcon size={18} /> },
-        { label: 'Notifications', icon: <BellIcon size={18} /> },
+        { label: 'General Information', icon: <PersonIcon sx={{ fontSize: 18 }} /> },
+        { label: 'Security & Privacy', icon: <LockIcon sx={{ fontSize: 18 }} /> },
+        { label: 'Notifications', icon: <BellIcon sx={{ fontSize: 18 }} /> },
     ];
 
     return (

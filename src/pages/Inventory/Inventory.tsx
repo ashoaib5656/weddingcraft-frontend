@@ -16,7 +16,7 @@ import { useMaterialReactTable } from 'material-react-table';
 import DashboardCard from '../../components/Dashboard/DashboardCard/DashboardCard';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import { TableBottomToolbar, TableHeaderToolbar } from '../../components/TableComponent/TableProps';
-import INVENTORY_SERVICE, { InventoryItem } from '../../api/services/inventory';
+import INVENTORY_SERVICE, { type InventoryItem } from '../../api/services/inventory';
 
 
 
@@ -30,7 +30,7 @@ const InventoryPage = () => {
         const fetchInventory = async () => {
             try {
                 const response = await INVENTORY_SERVICE.GetAllInventoryItems();
-                setInventory(response.data?.data || response.data || []);
+                setInventory(response.data || []);
             } catch (error) {
                 console.error("Error fetching inventory", error);
             } finally {
@@ -160,10 +160,6 @@ const InventoryPage = () => {
         initialState: {
             pagination: { pageSize: 10, pageIndex: 0 },
         },
-        state: {
-            globalFilter,
-            showGlobalFilter,
-        },
         muiTablePaperProps: {
             elevation: 0,
             sx: {
@@ -200,7 +196,6 @@ const InventoryPage = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <TableHeaderToolbar 
                             table={table} 
-                            isSmall 
                             ExcelData={{
                                 data: inventory,
                                 fileName: 'Inventory_Export'
